@@ -1,7 +1,7 @@
 <template>
   <div class="body">
-    <div :class="['container',classFlag?'right-panel-active':'']">
-      <!-- 注册框 -->
+    <div :class="['container', classFlag ? 'right-panel-active' : '']">
+      <!-- 找回密码框 -->
       <div class="container_form container--signup">
         <div class="form" id="form1">
           <h2 class="form_title">找回密码</h2>
@@ -15,17 +15,28 @@
       <div class="container_form container--signin">
         <div class="form" id="form2">
           <h2 class="form_title">欢迎登录</h2>
-           <el-button>Default</el-button>
-    <el-button type="primary">Primary</el-button>
-    <el-button type="success">Success</el-button>
-    <el-button type="info">Info</el-button>
-    <el-button type="warning">Warning</el-button>
-    <el-button type="danger">Danger</el-button>
-    <el-button>中文</el-button>
-          <input type="email" placeholder="Email" class="input" />
-          <input type="password" placeholder="Password" class="input" />
-          <!-- <a href="#" class="link">忘记密码？</a> -->
-          <button class="btn">登录</button>
+          <el-form
+            class="login_form"
+            ref="loginRef"
+            label-width="0px"
+            :model="loginInfo"
+            :rules="loginRules"
+          >
+            <el-form-item prop="username">
+              <el-input
+                prefix-icon="iconfont icon-denglu"
+                v-model="loginInfo.username"
+              ></el-input>
+            </el-form-item>
+            <el-form-item prop="password">
+              <el-input
+                prefix-icon="iconfont icon-mimadenglu"
+                type="password"
+                v-model="loginInfo.password"
+              ></el-input>
+            </el-form-item>
+          </el-form>
+          <button class="btn" @click="login">登录</button>
         </div>
       </div>
       <div class="container_overlay">
@@ -47,24 +58,54 @@
 </template>
 
 <script>
-import { ref } from 'vue'
+import { ref, reactive, getCurrentInstance } from "vue";
 export default {
-  name: 'Login',
-  setup () {
-    const username = ref()
-    const password = ref()
-    const classFlag = ref(false)
-    function changeFlag () {
-      classFlag.value = !classFlag.value
+  name: "Login",
+  setup() {
+    const { proxy } = getCurrentInstance();
+    let loginInfo = reactive({
+      username: "admin",
+      password: "123456",
+    });
+    let classFlag = ref(false);
+    let loginRules = {
+      username: [
+        { required: true, message: "请输入用户名", trigger: "blur" },
+        { min: 3, max: 12, message: "长度在 3 到 12 个字符", trigger: "blur" },
+      ],
+      password: [
+        { required: true, message: "请输入密码", trigger: "blur" },
+        { min: 6, max: 18, message: "长度在 6 到 18 个字符", trigger: "blur" },
+      ],
+    };
+    let loginRole = reactive({});
+    // 切换 登录和找回密码
+    function changeFlag() {
+      classFlag.value = !classFlag.value;
+    }
+    // 登录
+    function login() {
+      proxy.$http.post("/user/login", loginInfo).then((res) => {
+        let { data } = res;
+        if (data.meta.status !== 200) {
+          return proxy.$message.error(data.meta.des);
+        }
+        // 登录成功
+        loginRole = data.result;
+        window.sessionStorage.setItem("token", data.token);
+        proxy.$router.push("/home");
+        proxy.$message.success(data.meta.des);
+      });
     }
     return {
-      username,
-      password,
       changeFlag,
-      classFlag
-    }
-  }
-}
+      classFlag,
+      loginInfo,
+      loginRules,
+      login,
+    };
+  },
+};
 </script>
 
 <style lang="less" scoped>
@@ -84,7 +125,7 @@ export default {
 .form_title {
   font-weight: 300;
   margin: 0;
-  margin-bottom: 1.25rem;
+  margin-bottom: 3rem;
 }
 
 .link {
@@ -258,5 +299,9 @@ export default {
     opacity: 1;
     z-index: 5;
   }
+}
+
+.el-input{
+  width: 300px;
 }
 </style>
