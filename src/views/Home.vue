@@ -4,9 +4,13 @@
     <el-header>
       <div>
         <img src="" alt="" />
-        <span>筑优原料入库管理系统</span>
+        <span @click="toHome" class="toHome">筑优原料入库管理系统</span>
+        <!-- <a href="http://localhost:8080/#/home">筑优拌合站原料入库管理系统</a> -->
       </div>
-      <el-button type="info" @click="logout">退出</el-button>
+      <div>
+        <span class="user">当前用户：{{ person.username }}</span>
+        <el-button type="info" @click="logout" size="small">退出</el-button>
+      </div>
     </el-header>
     <el-container>
       <!-- 侧边栏 -->
@@ -55,6 +59,7 @@
 
 <script>
 import { ref, reactive, onMounted, getCurrentInstance } from "vue";
+import LoginVue from "./Login.vue";
 export default {
   name: "Home",
   setup() {
@@ -66,18 +71,23 @@ export default {
       400: "iconfont icon-shangpin",
     });
     let menuList = ref([]);
+    let person = ref({});
     let isCollapse = ref(false);
     let defaultActive = ref("12");
-
     // 加载菜单
     onMounted(() => {
+      proxy.$store.dispatch(
+        "logining",
+        JSON.parse(window.sessionStorage.getItem("loginObj"))
+      );
+      person.value = proxy.$store.state.loginObj;
       proxy.$http.get("/menu").then((res) => {
         let { data } = res;
         if (data.meta.status !== 200) {
           return proxy.$message.error(data.meta.des);
         }
         menuList.value = data.result;
-        defaultActive.value = window.sessionStorage.getItem('activePath');
+        defaultActive.value = window.sessionStorage.getItem("activePath");
       });
     });
     // 保存当前的页面
@@ -94,14 +104,22 @@ export default {
       window.sessionStorage.clear();
       proxy.$router.push("/login");
     }
+    //
+    function toHome() {
+      proxy.$router.push("/home");
+      window.sessionStorage.setItem("activePath", "");
+      defaultActive.value = window.sessionStorage.getItem("activePath");
+    }
     return {
       menuList,
       isCollapse,
       defaultActive,
+      iconObj,
+      person,
       saveNavState,
       toggleCollapse,
       logout,
-      iconObj
+      toHome,
     };
   },
 };
@@ -124,6 +142,9 @@ export default {
     align-items: center;
   }
 }
+.user {
+  margin-right: 20px;
+}
 
 .el-aside {
   background-color: #606266;
@@ -145,6 +166,10 @@ export default {
   font-size: 10px;
   line-height: 24px;
   letter-spacing: 0.2em;
+  cursor: pointer;
+}
+
+.toHome {
   cursor: pointer;
 }
 </style>

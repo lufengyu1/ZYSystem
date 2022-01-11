@@ -93,6 +93,11 @@ export default {
         // 登录成功
         loginRole = data.result;
         window.sessionStorage.setItem("token", data.token);
+        window.sessionStorage.setItem("loginObj", JSON.stringify({username:data.result.username,_id:data.result._id}));
+        proxy.$store.dispatch(
+          "logining",
+          JSON.parse(window.sessionStorage.getItem("loginObj"))
+        );
         proxy.$router.push("/home");
         proxy.$message.success(data.meta.des);
       });
@@ -301,7 +306,7 @@ export default {
   }
 }
 
-.el-input{
+.el-input {
   width: 300px;
 }
 </style>
