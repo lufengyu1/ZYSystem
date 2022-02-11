@@ -28,7 +28,7 @@
       </el-col>
     </el-row>
     <!-- 数据渲染区 -->
-    <el-table :data="userList" border stripe>
+    <el-table :data="userList" border stripe max-height="470">
       <el-table-column type="index" width="50" label="#"> </el-table-column>
       <el-table-column prop="username" label="用户名" width="180" />
       <el-table-column prop="email" label="邮箱" width="180" />
@@ -110,9 +110,10 @@ export default {
       getUserList();
     }
     async function updateState(info) {
+      console.log(info);
       let { data } = await proxy.$http.put("/user/update", {
-        id: info._id,
-        userinfo: { state: info.state },
+        _id: info._id,
+        userInfo: { state: info.state },
       });
       if (data.meta.status !== 200) {
         info.state = !info.state;

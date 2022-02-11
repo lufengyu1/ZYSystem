@@ -2,17 +2,41 @@ import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
 
 const routes: Array<RouteRecordRaw> = [
   {
-    path:'/',
+    path: '/',
     component: () => import('../views/Login.vue')
-  },{
+  }, {
     path: '/login',
     component: () => import('../views/Login.vue')
-  },{
-    path:'/home',
+  }, {
+    path: '/home',
     component: () => import('../views/Home.vue'),
-    children:[{
-      path:'/users',
-      component:()=>import ('../views/User.vue')
+    children: [{
+      path: '/users',
+      component: () => import('../views/User.vue')
+    }, {
+      path: '/materialinfo',
+      component: () => import('../views/MaterialInfo.vue')
+    }, {
+      path: '/supplier',
+      component: () => import('../views/Supplier.vue')
+    }, {
+      path: '/bill',
+      component: () => import('../views/Bill.vue')
+    },{
+      path:'/reject',
+      component:()=>import('../views/Reject.vue')
+    },{
+      path:'/register',
+      component:()=>import('../views/Register.vue')
+    },{
+      path:'/stock',
+      component:()=>import('../views/Stock.vue')
+    },{
+      path:'/quality',
+      component:()=>import('../views/Quality.vue')
+    },{
+      path:'/question',
+      component:()=>import('../views/Question.vue')
     }]
   }
 ]

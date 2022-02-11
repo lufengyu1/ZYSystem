@@ -59,7 +59,6 @@
 
 <script>
 import { ref, reactive, onMounted, getCurrentInstance } from "vue";
-import LoginVue from "./Login.vue";
 export default {
   name: "Home",
   setup() {
