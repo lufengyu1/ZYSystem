@@ -24,7 +24,6 @@
       <el-table-column label="操作">
         <template #default=""> 
           <el-button type="primary" icon="el-icon-edit" size="mini"></el-button>
-          <el-button type="danger" icon="el-icon-delete" size="mini"></el-button>
         </template>
       </el-table-column>
     </el-table>
