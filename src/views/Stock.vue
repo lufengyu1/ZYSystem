@@ -8,7 +8,7 @@
     <el-table :data="stockList" border stripe max-height="470">
       <el-table-column type="index" width="50" label="#"></el-table-column>
       <el-table-column prop="name" label="原料" width="180"></el-table-column>
-      <el-table-column prop="number" label="库存" width="150"></el-table-column>
+      <el-table-column prop="quantity" label="库存" width="150"></el-table-column>
       <el-table-column prop="limit" label="下限" width="150"></el-table-column>
     </el-table>
     <el-pagination

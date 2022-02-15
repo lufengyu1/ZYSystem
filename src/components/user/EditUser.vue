@@ -93,16 +93,17 @@ export default {
       editUserVisible.value = false;
     }
     async function editUser() {
-        proxy.$refs.editUserRef.validate(async (valid) => {
+      proxy.$refs.editUserRef.validate(async (valid) => {
         if (!valid) return console.log("error");
         let { data } = await proxy.$http.put("/user/update", {
           _id: proxy.editUserInfo._id,
           userInfo: editUserInfo.value,
         });
-        if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
+        if (data.meta.status !== 200)
+          return proxy.$message.error(data.meta.des);
         proxy.$message.success("用户信息更新成功");
         editUserVisible.value = false;
-        proxy.$bus.emit('getUsersList');
+        proxy.$bus.emit("getUsersList");
       });
     }
     onMounted(() => {});

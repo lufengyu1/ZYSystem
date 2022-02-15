@@ -5,25 +5,49 @@
       <el-breadcrumb-item>原料管理</el-breadcrumb-item>
       <el-breadcrumb-item>原料信息</el-breadcrumb-item>
     </el-breadcrumb>
+    <!-- 搜索区 -->
+    <el-row :gutter="20">
+      <el-col :span="7">
+        <el-input
+          placeholder="请输入内容"
+          class="input-with-select"
+          v-model="queryInfo.query"
+          clearable
+        >
+          <template #append>
+            <el-button icon="el-icon-search" @click="getMaterialInfoList"></el-button>
+          </template>
+        </el-input>
+      </el-col>
+    </el-row>
     <el-table :data="materialInfoList" border stripe max-height="500">
       <el-table-column type="index" width="50" label="#"></el-table-column>
       <el-table-column prop="name" label="原料" width="180"></el-table-column>
-      <el-table-column prop="supplier" label="供应商" width="180"></el-table-column>
+      <el-table-column
+        prop="supplier"
+        label="供应商"
+        width="180"
+      ></el-table-column>
       <el-table-column prop="PD" label="生产日期" width="180"></el-table-column>
       <el-table-column
         prop="EXP"
         label="有效日期"
         width="180"
       ></el-table-column>
-      <el-table-column prop="price" label="单价" width="150"></el-table-column>
+      <el-table-column prop="price" label="单价(元)" width="150"></el-table-column>
       <el-table-column
         prop="quantity"
-        label="数量"
+        label="数量(千克)"
         width="150"
       ></el-table-column>
       <el-table-column label="操作">
-        <template #default=""> 
-          <el-button type="primary" icon="el-icon-edit" size="mini"></el-button>
+        <template #default="scope">
+          <el-button
+            type="primary"
+            icon="el-icon-edit"
+            size="mini"
+            @click="openBuyDialog(scope.row)"
+          ></el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -38,16 +62,22 @@
     >
     </el-pagination>
   </el-card>
+  <Buy></Buy>
 </template>
 
 <script>
+import Buy from "../components/material/Buy";
 import { ref, getCurrentInstance, onMounted } from "vue";
 export default {
   name: "MaterialInfo",
+  components: {
+    Buy,
+  },
   setup() {
     const { proxy } = getCurrentInstance();
     let materialInfoList = ref([]);
     let queryInfo = ref({
+      query:'',
       pageSize: 5,
       pageNum: 1,
     });
@@ -56,9 +86,8 @@ export default {
       const { data } = await proxy.$http.get("/materialInfo/materialInfo", {
         params: queryInfo.value,
       });
-      console.log(data);
       if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
-      total.value=data.result.total
+      total.value = data.result.total;
       materialInfoList.value = data.result.materialInfo;
     }
     function handleSizeChange() {
@@ -66,6 +95,9 @@ export default {
     }
     function handleCurrentChange() {
       getMaterialInfoList();
+    }
+    function openBuyDialog(info) {
+      proxy.$bus.emit("openBuy",info);
     }
     onMounted(() => {
       getMaterialInfoList();
@@ -76,6 +108,8 @@ export default {
       total,
       handleSizeChange,
       handleCurrentChange,
+      openBuyDialog,
+      getMaterialInfoList
     };
   },
 };
