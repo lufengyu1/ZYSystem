@@ -103,7 +103,7 @@ export default {
       window.sessionStorage.clear();
       proxy.$router.push("/login");
     }
-    //
+    // 跳转
     function toHome() {
       proxy.$router.push("/home");
       window.sessionStorage.setItem("activePath", "");

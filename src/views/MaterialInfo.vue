@@ -82,6 +82,7 @@ export default {
       pageNum: 1,
     });
     let total = ref(0);
+    // 获取原料信息
     async function getMaterialInfoList() {
       const { data } = await proxy.$http.get("/materialInfo/materialInfo", {
         params: queryInfo.value,
@@ -96,6 +97,7 @@ export default {
     function handleCurrentChange() {
       getMaterialInfoList();
     }
+    // 打开购买页面
     function openBuyDialog(info) {
       proxy.$bus.emit("openBuy",info);
     }

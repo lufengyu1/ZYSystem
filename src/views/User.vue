@@ -93,6 +93,7 @@ export default {
     let userList = ref([]);
     let queryInfo = ref({ query: "", pageNum: 1, pageSize: 5 });
     let total = ref(0);
+    // 获取用户列表
     async function getUserList() {
       const { data } = await proxy.$http.get("/user/users", {
         params: queryInfo.value,
@@ -109,6 +110,7 @@ export default {
       console.log(queryInfo.value);
       getUserList();
     }
+    // 禁用 开启 用户登录功能
     async function updateState(info) {
       console.log(info);
       let { data } = await proxy.$http.put("/user/update", {
@@ -123,12 +125,15 @@ export default {
         return proxy.$message.success("用户已禁用");
       }
     }
+    // 打开用户添加页面
     function openAddUserDialog() {
       proxy.$bus.emit("openAddUser");
     }
+    // 打开用户更新页面
     function openEditUserDialog(info) {
       proxy.$bus.emit('openEditUser',info);
     }
+    // 删除用户
     async function deleteUserById(info) {
       let confirmResult = await proxy
         .$confirm(

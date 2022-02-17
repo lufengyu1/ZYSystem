@@ -36,9 +36,14 @@
                 size="mini"
                 type="primary"
                 v-if="scope.row.status === 0"
+                @click="receive(scope.row)"
                 >接受</el-button
               >
-              <el-button size="mini" type="danger" v-if="scope.row.status === 0"
+              <el-button
+                size="mini"
+                type="danger"
+                v-if="scope.row.status === 0"
+                @click="refuse(scope.row)"
                 >拒绝</el-button
               >
               <i v-if="scope.row.status === 1">已入库</i>
@@ -86,9 +91,14 @@
                 size="mini"
                 type="primary"
                 v-if="scope.row.status === 0"
+                @click="receive(scope.row)"
                 >接受</el-button
               >
-              <el-button size="mini" type="danger" v-if="scope.row.status === 0"
+              <el-button
+                size="mini"
+                type="danger"
+                v-if="scope.row.status === 0"
+                @click="refuse(scope.row)"
                 >拒绝</el-button
               >
               <i v-if="scope.row.status === 1">已入库</i>
@@ -97,9 +107,9 @@
           </el-table-column>
         </el-table>
         <el-pagination
-          v-model:currentPage="queryInfo.pageNum"
+          v-model:currentPage="queryInfo.pageNum1"
           :page-sizes="[5, 10, 15, 20]"
-          v-model:page-size="queryInfo.pageSize"
+          v-model:page-size="queryInfo.pageSize1"
           layout="total, sizes, prev, pager, next, jumper"
           :total="total1"
           @size-change="handleSizeChange"
@@ -109,13 +119,17 @@
       ></el-tab-pane>
     </el-tabs>
   </el-card>
+  <Refuse></Refuse>
 </template>
 
 <script>
 import { ref, getCurrentInstance, onMounted } from "vue";
+import Refuse from "../components/register/Refuse.vue";
 export default {
   name: "Register",
+  components: { Refuse },
   setup() {
+    const getCurrentTime = require("../assets/fun/getTime");
     const { proxy } = getCurrentInstance();
     let registerList = ref([]);
     let registerList1 = ref([]);
@@ -128,8 +142,9 @@ export default {
 
     let total = ref(0);
     let total1 = ref(0);
-    // 全部信息
+    // 获取出入库信息
     async function getRegisterList() {
+      console.log(queryInfo.value);
       let { data } = await proxy.$http.get("/register/register", {
         params: queryInfo.value,
       });
@@ -138,7 +153,6 @@ export default {
       registerList1.value = data.result.registerList1;
       total.value = data.result.total;
       total1.value = data.result.total1;
-      // 带处理
     }
     function handleSizeChange() {
       getRegisterList();
@@ -146,8 +160,26 @@ export default {
     function handleCurrentChange() {
       getRegisterList();
     }
+    // 原料可以入库
+    async function receive(info) {
+      let time = getCurrentTime();
+      let name = JSON.parse(window.sessionStorage.getItem("loginObj")).username;
+      info.time = time;
+      info.operator = name;
+      info.status = 1;
+      let { data } = await proxy.$http.put("/register/update", info);
+      if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
+      proxy.$message.success(data.meta.des);
+      getRegisterList();
+    }
+    // 拒绝入库时 打开详细页面
+    function refuse(info) {
+      proxy.$bus.emit("openRefuse", info);
+    }
+
     onMounted(() => {
       getRegisterList();
+      proxy.$bus.on("getRegisterList", getRegisterList);
     });
     return {
       registerList,
@@ -157,6 +189,8 @@ export default {
       total1,
       handleSizeChange,
       handleCurrentChange,
+      receive,
+      refuse,
     };
   },
 };

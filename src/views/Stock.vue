@@ -36,6 +36,7 @@ export default {
       pageSize: 5,
     });
     let total = ref(0);
+    // 获取库存信息
     async function getStockList() {
       let { data } = await proxy.$http.get("/stock/stock", {
         params: queryInfo.value,

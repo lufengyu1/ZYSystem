@@ -54,6 +54,7 @@ export default {
       pageSize: 5,
     });
     let total = ref(0);
+    // 获取账单信息
     async function getBillList() {
       let { data } = await proxy.$http.get("/bill/bill", {
         params: queryInfo.value,
@@ -62,6 +63,7 @@ export default {
       billList.value = data.result.billList;
       total.value = data.result.total;
     }
+    
     function handleSizeChange() {
       getBillList();
     }

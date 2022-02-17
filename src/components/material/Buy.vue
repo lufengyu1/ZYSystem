@@ -36,6 +36,7 @@ export default {
     let buyVisible = ref(false);
     let materialInfo = ref({});
     let quantity = ref(0);
+    // 获取购买原料的信息
     function openBuy(info) {
       buyVisible.value = true;
       materialInfo.value = info;
@@ -46,7 +47,7 @@ export default {
       buyVisible.value = false;
       
     }
-    function registerInsert() {}
+    // 购买成功 向bill 和 register 中添加对应的信息
     async function insert() {
       if (quantity.value <= 0) return proxy.$message.info("购买数量必须大于0");
       if (isNaN(quantity.value)) return proxy.$message.info("请输入正确的数字");
@@ -78,6 +79,8 @@ export default {
       quantity.value=0;
       buyVisible.value = false;
     }
+
+    // 只能输入数字
     function keyUp(e) {
       e.target.value = e.target.value.replace(/[^\d]/g,"");
     }

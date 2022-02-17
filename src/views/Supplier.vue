@@ -36,6 +36,7 @@ export default {
       pageSize: 5,
     });
     let total = ref(0);
+    // 获取供应商信息
     async function getSupplierList() {
       let { data } = await proxy.$http.get("/supplier/supplier", {
         params: queryInfo.value,
