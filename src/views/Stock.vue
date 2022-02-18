@@ -51,6 +51,7 @@ export default {
     function handleCurrentChange() {
       getStockList();
     }
+    
     onMounted(() => {
       getStockList();
     });

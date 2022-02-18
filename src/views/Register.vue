@@ -17,7 +17,7 @@
           ></el-table-column>
           <el-table-column label="出库/入库" width="180">
             <template #default="scope">
-              {{ scope.row.operation === 0 ? "出库" : "入库" }}
+              {{ scope.row.operation === 0 ? "入库" : "出库" }}
             </template>
           </el-table-column>
           <el-table-column
@@ -160,7 +160,7 @@ export default {
     function handleCurrentChange() {
       getRegisterList();
     }
-    // 原料可以入库
+    // 原料可以入库  更新stock 和bill
     async function receive(info) {
       let time = getCurrentTime();
       let name = JSON.parse(window.sessionStorage.getItem("loginObj")).username;
@@ -171,6 +171,9 @@ export default {
       if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
       proxy.$message.success(data.meta.des);
       getRegisterList();
+      let data1 =await proxy.$http.put('/stock/update',info);
+      let data2 =await proxy.$http.put('/bill/update',info);
+      console.log(2);
     }
     // 拒绝入库时 打开详细页面
     function refuse(info) {
