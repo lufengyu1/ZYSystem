@@ -103,16 +103,13 @@ export default {
       total.value = data.result.total;
     }
     function handleSizeChange() {
-      console.log(queryInfo.value);
       getUserList();
     }
     function handleCurrentChange() {
-      console.log(queryInfo.value);
       getUserList();
     }
     // 禁用 开启 用户登录功能
     async function updateState(info) {
-      console.log(info);
       let { data } = await proxy.$http.put("/user/update", {
         _id: info._id,
         userInfo: { state: info.state },

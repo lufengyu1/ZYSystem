@@ -32,8 +32,8 @@ const routes: Array<RouteRecordRaw> = [
       path:'/stock',
       component:()=>import('../views/Stock.vue')
     },{
-      path:'/quality',
-      component:()=>import('../views/Quality.vue')
+      path:'/isssuance',
+      component:()=>import('../views/Isssuance.vue')
     },{
       path:'/question',
       component:()=>import('../views/Question.vue')

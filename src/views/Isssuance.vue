@@ -1,0 +1,85 @@
+<template>
+  <el-card>
+    <el-breadcrumb separator-class="el-icon-arrow-right">
+      <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
+      <el-breadcrumb-item>原料库存管理</el-breadcrumb-item>
+      <el-breadcrumb-item>原料出库</el-breadcrumb-item>
+    </el-breadcrumb>
+    <el-table :data="isssuanceList" border stripe max-height="500">
+      <el-table-column type="index" width="50" label="#"></el-table-column>
+      <el-table-column prop="name" width="220" label="原料"></el-table-column>
+      <el-table-column
+        prop="supplier"
+        width="220"
+        label="供应商"
+      ></el-table-column>
+      <el-table-column prop="PD" width="220" label="生产日期"></el-table-column>
+      <el-table-column
+        prop="EXP"
+        width="220"
+        label="有效日期"
+      ></el-table-column>
+      <el-table-column width="220" label="出库"
+        ><template default="">
+          <el-button
+            type="primary"
+            icon="el-icon-edit"
+            size="mini"
+          ></el-button> </template
+      ></el-table-column>
+    </el-table>
+    <el-pagination
+      v-model:currentPage="queryInfo.pageNum"
+      :page-sizes="[5, 10, 15, 20]"
+      v-model:page-size="queryInfo.pageSize"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="total"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+    >
+    </el-pagination>
+  </el-card>
+</template>
+
+<script>
+import { ref, getCurrentInstance, onMounted } from "vue";
+export default {
+  name: "Isssuance",
+  setup() {
+    const { proxy } = getCurrentInstance();
+    let isssuanceList = ref([]);
+    let queryInfo = ref({
+      pageNum: 1,
+      pageSize: 5,
+    });
+    let total = ref(0);
+    async function getIsssuanceList() {
+      let { data } = await proxy.$http.get("/isssuance/isssuance", {
+        params: queryInfo.value,
+      });
+      if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
+      isssuanceList.value = data.result.isssuance;
+      total.value = data.result.total;
+    }
+    function handleSizeChange() {
+      getIsssuanceList();
+    }
+    function handleCurrentChange() {
+      getIsssuanceList();
+    }
+    onMounted(() => {
+      getIsssuanceList();
+    });
+    return {
+      isssuanceList,
+      queryInfo,
+      total,
+      handleSizeChange,
+      handleCurrentChange,
+    };
+  },
+};
+</script>
+
+<style lang="less" scoped>
+</style>

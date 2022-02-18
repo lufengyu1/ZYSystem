@@ -144,7 +144,6 @@ export default {
     let total1 = ref(0);
     // 获取出入库信息
     async function getRegisterList() {
-      console.log(queryInfo.value);
       let { data } = await proxy.$http.get("/register/register", {
         params: queryInfo.value,
       });
@@ -171,8 +170,10 @@ export default {
       if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
       proxy.$message.success(data.meta.des);
       getRegisterList();
-      let data1 =await proxy.$http.put('/stock/update',info);
-      let data2 =await proxy.$http.put('/bill/update',info);
+      let data1 = await proxy.$http.put("/stock/update", info);
+      let data2 = await proxy.$http.put("/bill/update", info);
+      console.log(1);
+      let data3 = await proxy.$http.put("/isssuance/insert", info);
       console.log(2);
     }
     // 拒绝入库时 打开详细页面
