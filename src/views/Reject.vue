@@ -1,13 +1,13 @@
 <template>
-  
+ 
 </template>
 
 <script>
 export default {
-name:'Reject'
-}
+  name: "Reject",
+  
+};
 </script>
 
 <style lang="less" scoped>
-
 </style>

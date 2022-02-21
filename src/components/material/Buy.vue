@@ -11,12 +11,11 @@
       <el-form-item label="生产日期">{{ materialInfo.PD }}</el-form-item>
       <el-form-item label="有效日期">{{ materialInfo.EXP }}</el-form-item>
       <el-form-item label="数量"
-        ><el-input
-          v-model="quantity"
-          @keyup="keyUp"
-          @keydown="keyDown"
-        ></el-input
-      ></el-form-item>
+        ><el-input-number
+          v-model="number"
+          :step="10"
+          :min="0"
+      /></el-form-item>
     </el-form>
     <template #footer>
       <span class="dialog-footer">
@@ -35,7 +34,7 @@ export default {
     const { proxy } = getCurrentInstance();
     let buyVisible = ref(false);
     let materialInfo = ref({});
-    let quantity = ref(0);
+    let number = ref(0);
     // 获取购买原料的信息
     function openBuy(info) {
       buyVisible.value = true;
@@ -43,22 +42,20 @@ export default {
     }
     function handleClose() {
       proxy.$refs.buyRef.resetFields();
-      quantity.value=0
+      number.value = 0;
       buyVisible.value = false;
-      
     }
     // 购买成功 向bill 和 register 中添加对应的信息
     async function insert() {
-      if (quantity.value <= 0) return proxy.$message.info("购买数量必须大于0");
-      if (isNaN(quantity.value)) return proxy.$message.info("请输入正确的数字");
+      if (number.value <= 0) return proxy.$message.info("购买数量必须大于0");
       let billInfo = {
         name: materialInfo.value.name,
         supplier: materialInfo.value.supplier,
         PD: materialInfo.value.PD,
         EXP: materialInfo.value.EXP,
         price: materialInfo.value.price,
-        quantity: quantity.value,
-        total: materialInfo.value.price * quantity.value,
+        quantity: number.value,
+        total: materialInfo.value.price * number.value,
         status: 0,
       };
       let { data } = await proxy.$http.put("/bill/insert", billInfo);
@@ -68,6 +65,7 @@ export default {
         id: data.result._id,
         name: data.result.name,
         operation: 0,
+        quantity: number.value,
         operator: "",
         time: "",
         status: 0,
@@ -76,17 +74,17 @@ export default {
       if (data1.data.meta.status !== 200)
         return proxy.$message.error(data1.data.meta.des);
       proxy.$message.success(data1.data.meta.des);
-      quantity.value=0;
+      number.value = 0;
       buyVisible.value = false;
     }
 
     // 只能输入数字
-    function keyUp(e) {
-      e.target.value = e.target.value.replace(/[^\d]/g,"");
-    }
-    function keyDown(e) {
-      e.target.value = e.target.value.replace(/[^\d]/g,"");
-    }
+    // function keyUp(e) {
+    //   e.target.value = e.target.value.replace(/[^\d]/g, "");
+    // }
+    // function keyDown(e) {
+    //   e.target.value = e.target.value.replace(/[^\d]/g, "");
+    // }
     onMounted(() => {
       proxy.$bus.on("openBuy", openBuy);
     });
@@ -94,10 +92,8 @@ export default {
       buyVisible,
       handleClose,
       materialInfo,
-      quantity,
+      number,
       insert,
-      keyUp,
-      keyDown
     };
   },
 };

@@ -58,10 +58,20 @@ export default {
       registerInfo.value.time = time;
       registerInfo.value.operator = name;
       registerInfo.value.status = 2;
-      let { data } = await proxy.$http.put("/register/update", registerInfo.value);
+      let { data } = await proxy.$http.put(
+        "/register/update",
+        registerInfo.value
+      );
       if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
       proxy.$message.success(data.meta.des);
       proxy.$bus.emit("getRegisterList");
+      let data1 = await proxy.$http.put("/question/insert", {
+        ...registerInfo.value,
+        reason: reason.value,
+      });
+      if(registerInfo.value.operation===0){
+        
+      }
       handleClose();
     }
     return { refuseVisible, registerInfo, handleClose, reason, refuse };

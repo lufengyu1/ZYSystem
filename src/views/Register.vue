@@ -21,6 +21,11 @@
             </template>
           </el-table-column>
           <el-table-column
+            prop="quantity"
+            label="数量"
+            width="180"
+          ></el-table-column>
+          <el-table-column
             prop="operator"
             label="操作人"
             width="180"
@@ -72,9 +77,14 @@
           ></el-table-column>
           <el-table-column label="出库/入库" width="180">
             <template #default="scope">
-              {{ scope.row.operation === 0 ? "出库" : "入库" }}
+              {{ scope.row.operation === 0 ? "入库" : "出库" }}
             </template>
           </el-table-column>
+          <el-table-column
+            prop="quantity"
+            label="数量"
+            width="180"
+          ></el-table-column>
           <el-table-column
             prop="operator"
             label="操作人"
@@ -172,9 +182,11 @@ export default {
       getRegisterList();
       let data1 = await proxy.$http.put("/stock/update", info);
       let data2 = await proxy.$http.put("/bill/update", info);
-      console.log(1);
-      let data3 = await proxy.$http.put("/isssuance/insert", info);
-      console.log(2);
+      if (info.operation === 0) {
+        let data3 = await proxy.$http.put("/isssuance/insert", info);
+      }else if(info.operation === 1){
+        let data4=await proxy.$http.put('/isssuance/update',info);
+      }
     }
     // 拒绝入库时 打开详细页面
     function refuse(info) {

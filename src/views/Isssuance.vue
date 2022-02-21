@@ -7,7 +7,7 @@
     </el-breadcrumb>
     <el-table :data="isssuanceList" border stripe max-height="500">
       <el-table-column type="index" width="50" label="#"></el-table-column>
-      <el-table-column prop="name" width="220" label="原料"></el-table-column>
+      <el-table-column prop="name" width="150" label="原料"></el-table-column>
       <el-table-column
         prop="supplier"
         width="220"
@@ -19,14 +19,24 @@
         width="220"
         label="有效日期"
       ></el-table-column>
+      <el-table-column
+        prop="quantity"
+        width="150"
+        label="数量"
+      ></el-table-column>
       <el-table-column width="220" label="出库"
-        ><template default="">
+        ><template #default="scope">
           <el-button
+            v-if="scope.row.state === 0"
+            size="mini"
             type="primary"
             icon="el-icon-edit"
-            size="mini"
-          ></el-button> </template
-      ></el-table-column>
+            @click="openOutDialog(scope.row)"
+          >
+          </el-button>
+          <i v-if="scope.row.state === 1">处理中</i>
+        </template></el-table-column
+      >
     </el-table>
     <el-pagination
       v-model:currentPage="queryInfo.pageNum"
@@ -39,12 +49,17 @@
     >
     </el-pagination>
   </el-card>
+  <Out></Out>
 </template>
 
 <script>
 import { ref, getCurrentInstance, onMounted } from "vue";
+import Out from '../components/isssuance/Out.vue'
 export default {
   name: "Isssuance",
+  components:{
+Out
+  },
   setup() {
     const { proxy } = getCurrentInstance();
     let isssuanceList = ref([]);
@@ -67,6 +82,9 @@ export default {
     function handleCurrentChange() {
       getIsssuanceList();
     }
+    function openOutDialog(info){
+      proxy.$bus.emit('openOut',info);
+    }
     onMounted(() => {
       getIsssuanceList();
     });
@@ -76,6 +94,7 @@ export default {
       total,
       handleSizeChange,
       handleCurrentChange,
+      openOutDialog
     };
   },
 };
