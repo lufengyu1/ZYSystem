@@ -14,6 +14,11 @@
         label="数量"
         width="150"
       ></el-table-column>
+      <el-table-column  label="出/入库" width="180">
+      <template #default="scope">
+          <span v-if="scope.row.operation===0">入库</span>
+          <span v-if="scope.row.operation===1">出库</span>
+      </template></el-table-column>
       <el-table-column prop="reason" label="问题" width="180"></el-table-column>
     </el-table>
     <el-pagination
@@ -46,7 +51,6 @@ export default {
       let { data } =await proxy.$http.get("/question/question", {
         params: queryInfo.value,
       });
-      console.log(data);
       questionList.value=data.result.questionList;
     }
 

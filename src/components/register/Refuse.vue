@@ -65,12 +65,17 @@ export default {
       if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
       proxy.$message.success(data.meta.des);
       proxy.$bus.emit("getRegisterList");
+      // 向question表插入
       let data1 = await proxy.$http.put("/question/insert", {
         ...registerInfo.value,
         reason: reason.value,
       });
-      if(registerInfo.value.operation===0){
-        
+      // 向reject表插入
+      if (registerInfo.value.operation === 0) {
+        let data2 = await proxy.$http.put("/reject/insert", {
+          ...registerInfo.value,
+          reason: reason.value,
+        });
       }
       handleClose();
     }
