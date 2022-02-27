@@ -67,8 +67,15 @@
         >
         </el-pagination
       ></el-tab-pane>
-      <el-tab-pane label="待处理"
-        ><el-table :data="registerList1" border stripe max-height="450">
+      <el-tab-pane
+        ><template #label>
+          <el-badge :value="total1" v-if="total1" class="item" :max="99"
+            >待处理</el-badge
+          >
+          <span v-if="!total1"> 待处理</span>
+        </template>
+
+        <el-table :data="registerList1" border stripe max-height="450">
           <el-table-column type="index" width="50" label="#"></el-table-column>
           <el-table-column
             prop="name"
@@ -184,8 +191,8 @@ export default {
       let data2 = await proxy.$http.put("/bill/update", info);
       if (info.operation === 0) {
         let data3 = await proxy.$http.put("/isssuance/insert", info);
-      }else if(info.operation === 1){
-        let data4=await proxy.$http.put('/isssuance/update',info);
+      } else if (info.operation === 1) {
+        let data4 = await proxy.$http.put("/isssuance/update", info);
       }
     }
     // 拒绝入库时 打开详细页面

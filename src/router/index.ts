@@ -8,18 +8,18 @@ const routes: Array<RouteRecordRaw> = [
     path: '/login',
     component: () => import('../views/Login.vue')
   }, {
-    path: '/home',
-    component: () => import('../views/Home.vue'),
+    path: '/welcome',
+    component: () => import('../views/Welcome.vue'),
     children: [{
       path: '/users',
       component: () => import('../views/User.vue')
-    }, {
+    },{
       path: '/materialinfo',
       component: () => import('../views/MaterialInfo.vue')
-    }, {
+    },{
       path: '/supplier',
       component: () => import('../views/Supplier.vue')
-    }, {
+    },{
       path: '/bill',
       component: () => import('../views/Bill.vue')
     },{
@@ -37,6 +37,9 @@ const routes: Array<RouteRecordRaw> = [
     },{
       path:'/question',
       component:()=>import('../views/Question.vue')
+    },{
+      path:'/home',
+      component:()=>import('../views/Home.vue')
     }]
   }
 ]

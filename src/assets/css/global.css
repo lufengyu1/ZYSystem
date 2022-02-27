@@ -33,3 +33,8 @@ a {
     text-decoration: none;
     color: #FFFFFF;
 }
+
+sup {
+    top: 9px !important;
+    right: -3px !important;
+}

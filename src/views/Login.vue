@@ -93,12 +93,12 @@ export default {
         // 登录成功
         loginRole = data.result;
         window.sessionStorage.setItem("token", data.token);
-        window.sessionStorage.setItem("loginObj", JSON.stringify({username:data.result.username,_id:data.result._id}));
+        window.sessionStorage.setItem("loginObj", JSON.stringify({username:data.result.username,role:data.result.role}));
         proxy.$store.dispatch(
           "logining",
           JSON.parse(window.sessionStorage.getItem("loginObj"))
         );
-        proxy.$router.push("/home");
+        proxy.$router.push("/welcome");
         proxy.$message.success(data.meta.des);
       });
     }

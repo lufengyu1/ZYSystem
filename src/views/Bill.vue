@@ -16,11 +16,11 @@
       <el-table-column prop="name" label="材料" width="180"></el-table-column>
       <el-table-column
         prop="quantity"
-        label="数量"
+        label="数量/千克"
         width="150"
       ></el-table-column>
-      <el-table-column prop="price" label="单价" width="150"></el-table-column>
-      <el-table-column prop="total" label="总价" width="150"></el-table-column>
+      <el-table-column prop="price" label="单价/元" width="150"></el-table-column>
+      <el-table-column prop="total" label="总价/元" width="150"></el-table-column>
       <el-table-column label="状态">
         <template #default="scope">
           <i v-if="scope.row.state === 0">处理中</i>
