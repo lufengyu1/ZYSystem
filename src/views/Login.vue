@@ -98,7 +98,7 @@ export default {
           "logining",
           JSON.parse(window.sessionStorage.getItem("loginObj"))
         );
-        proxy.$router.push("/welcome");
+        proxy.$router.push("/home");
         proxy.$message.success(data.meta.des);
       });
     }

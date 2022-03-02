@@ -19,8 +19,27 @@
         label="数量/千克"
         width="150"
       ></el-table-column>
-      <el-table-column prop="price" label="单价/元" width="150"></el-table-column>
-      <el-table-column prop="total" label="总价/元" width="150"></el-table-column>
+      <el-table-column
+        prop="price"
+        label="单价/元"
+        width="150"
+      ></el-table-column>
+      <el-table-column
+        prop="total"
+        label="总价/元"
+        width="150"
+      ></el-table-column>
+      <el-table-column
+        prop="operator"
+        label="操作人"
+        width="150"
+      ></el-table-column>
+      <el-table-column
+        prop="time"
+        label="下单时间"
+        width="150"
+      ></el-table-column>
+
       <el-table-column label="状态">
         <template #default="scope">
           <i v-if="scope.row.state === 0">处理中</i>
@@ -63,7 +82,7 @@ export default {
       billList.value = data.result.billList;
       total.value = data.result.total;
     }
-    
+
     function handleSizeChange() {
       getBillList();
     }

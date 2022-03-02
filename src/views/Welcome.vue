@@ -7,8 +7,18 @@
         <span @click="toHome" class="toHome">筑优拌合站原料入库管理系统</span>
       </div>
       <div>
-        <span class="user">当前用户：{{ person.username }}</span>
-        <el-button type="info" @click="logout" size="small">退出</el-button>
+        <el-dropdown trigger="click" size="small">
+          <el-button type="primary" >
+            {{ person.username }}<i class="el-icon-arrow-right"></i>
+          </el-button>
+          <template #dropdown>
+            <el-dropdown-menu>
+              <el-dropdown-item>个人资料</el-dropdown-item>
+              <el-dropdown-item>修改密码</el-dropdown-item>
+              <el-dropdown-item @click="logout">退出</el-dropdown-item>
+            </el-dropdown-menu>
+          </template>
+        </el-dropdown>
       </div>
     </el-header>
     <el-container>
@@ -178,5 +188,8 @@ export default {
 
 .toHome {
   cursor: pointer;
+}
+.example-showcase .el-dropdown + .el-dropdown {
+  margin-left: 15px;
 }
 </style>

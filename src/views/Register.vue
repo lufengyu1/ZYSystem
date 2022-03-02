@@ -8,12 +8,20 @@
     <!--  Badege -->
     <el-tabs class="demo-tabs">
       <el-tab-pane label="全部信息"
-        ><el-table :data="registerList" border stripe max-height="450">
+        ><el-table
+          :data="registerList"
+          border
+          stripe
+          max-height="450"
+          @sort-change="sort"
+        >
           <el-table-column type="index" width="50" label="#"></el-table-column>
           <el-table-column
             prop="name"
             label="原料"
             width="180"
+            sortable="custom"
+            :sort-orders="['ascending', 'descending']"
           ></el-table-column>
           <el-table-column label="出库/入库" width="180">
             <template #default="scope">
@@ -23,6 +31,8 @@
           <el-table-column
             prop="quantity"
             label="数量"
+            sortable="custom"
+            :sort-orders="['ascending', 'descending']"
             width="180"
           ></el-table-column>
           <el-table-column
@@ -140,7 +150,7 @@
 </template>
 
 <script>
-import { ref, getCurrentInstance, onMounted } from "vue";
+import { ref, getCurrentInstance, onMounted,reactive } from "vue";
 import Refuse from "../components/register/Refuse.vue";
 export default {
   name: "Register",
@@ -159,6 +169,7 @@ export default {
 
     let total = ref(0);
     let total1 = ref(0);
+    let sortInfo=reactive({});
     // 获取出入库信息
     async function getRegisterList() {
       let { data } = await proxy.$http.get("/register/register", {
@@ -187,7 +198,7 @@ export default {
       if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
       proxy.$message.success(data.meta.des);
       getRegisterList();
-      let data1 = await proxy.$http.put("/stock/update", info);
+      let data1 = await proxy.$http.put("/stock/update", { ...info, type: 0 });
       let data2 = await proxy.$http.put("/bill/update", info);
       if (info.operation === 0) {
         let data3 = await proxy.$http.put("/isssuance/insert", info);
@@ -199,7 +210,21 @@ export default {
     function refuse(info) {
       proxy.$bus.emit("openRefuse", info);
     }
-
+    // 排序
+    async function sort(val){
+      let key=val.prop;
+      let value=val.order==='ascending'?1:0;
+      sortInfo[key]=value;
+      //
+      let { data } = await proxy.$http.get("/register/register", {
+        params:{ ...queryInfo.value,sort:sortInfo},
+      });
+      if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
+      registerList.value = data.result.registerList;
+      registerList1.value = data.result.registerList1;
+      total.value = data.result.total;
+      total1.value = data.result.total1;
+    }
     onMounted(() => {
       getRegisterList();
       proxy.$bus.on("getRegisterList", getRegisterList);
@@ -214,6 +239,7 @@ export default {
       handleCurrentChange,
       receive,
       refuse,
+      sort
     };
   },
 };

@@ -1,4 +1,4 @@
-import {ElInputNumber,ElTabs,ElTabPane,ElBadge,ElMessageBox,ElDialog,ElSwitch, ElPagination,ElTable,ElTableColumn, ElButton ,ElForm,ElFormItem,ElInput,ElMessage,ElContainer,ElHeader,ElAside,ElMain,ElMenu,ElSubmenu,ElMenuItem,ElCard,ElBreadcrumb,ElBreadcrumbItem,ElRow,ElCol } from 'element-plus'
+import {ElDropdown,ElDropdownItem,ElDropdownMenu,ElInputNumber,ElTabs,ElTabPane,ElBadge,ElMessageBox,ElDialog,ElSwitch, ElPagination,ElTable,ElTableColumn, ElButton ,ElForm,ElFormItem,ElInput,ElMessage,ElContainer,ElHeader,ElAside,ElMain,ElMenu,ElSubmenu,ElMenuItem,ElCard,ElBreadcrumb,ElBreadcrumbItem,ElRow,ElCol } from 'element-plus'
 
 export default (app:any) => {
   app.use(ElButton),
@@ -26,6 +26,9 @@ export default (app:any) => {
   app.use(ElTabPane)  
   app.use(ElTabs)  
   app.use(ElInputNumber)  
+  app.use(ElDropdown)  
+  app.use(ElDropdownItem)  
+  app.use(ElDropdownMenu)  
   app.config.globalProperties.$message = ElMessage
   app.config.globalProperties.$confirm = ElMessageBox.confirm
 }

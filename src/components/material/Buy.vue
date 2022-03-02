@@ -31,6 +31,7 @@ import { ref, getCurrentInstance, onMounted } from "vue";
 export default {
   name: "Buy",
   setup() {
+    const getCurrentTime = require("../../assets/fun/getTime");
     const { proxy } = getCurrentInstance();
     let buyVisible = ref(false);
     let materialInfo = ref({});
@@ -57,6 +58,8 @@ export default {
         quantity: number.value,
         total: materialInfo.value.price * number.value,
         status: 0,
+        operator:JSON.parse(window.sessionStorage.getItem("loginObj")).username,
+        time:getCurrentTime(),
       };
       let { data } = await proxy.$http.put("/bill/insert", billInfo);
       if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);

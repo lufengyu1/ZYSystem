@@ -70,6 +70,7 @@ export default {
     onMounted(() => {
       getStockList();
     });
+    proxy.$bus.on('getStockList',getStockList)
     return {
       stockList,
       queryInfo,

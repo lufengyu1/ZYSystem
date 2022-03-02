@@ -12,8 +12,12 @@
       <el-form-item label="库存">
         {{ limitInfo.quantity }}
       </el-form-item>
-      <el-form-item label="下限">
-        <el-input v-model="limitInfo.limit"></el-input>
+      <el-form-item label="下限" prop="limit">
+        <el-input-number
+          v-model="limitInfo.limit"
+          :min="0"
+          controls-position="right"
+        />
       </el-form-item>
     </el-form>
     <template #footer>
@@ -41,7 +45,12 @@ export default {
       limitVisible.value = true;
       limitInfo.value = info;
     }
-    function update() {}
+    async function update() {
+      let {data}=await proxy.$http.put('/stock/update',{...limitInfo.value,type:1});
+      if(data.meta.status!==200) return proxy.$message.error(data.meta.des);
+      proxy.$bus.emit('getStockList');
+      limitVisible.value=false;
+    }
     onMounted(() => {
       proxy.$bus.on("openLimit", openLimit);
     });
