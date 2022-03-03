@@ -11,7 +11,7 @@
     <el-row :gutter="20">
       <el-col :span="7">
         <el-input
-          placeholder="请输入内容"
+          placeholder="请输入用户名"
           class="input-with-select"
           v-model="queryInfo.query"
           clearable

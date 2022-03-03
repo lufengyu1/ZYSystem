@@ -7,8 +7,26 @@
     </el-breadcrumb>
     <!--  Badege -->
     <el-tabs class="demo-tabs">
-      <el-tab-pane label="全部信息"
-        ><el-table
+      <el-tab-pane label="全部信息">
+        <!-- 搜索区 -->
+        <el-row :gutter="20">
+          <el-col :span="7">
+            <el-input
+              placeholder="请输入用户名"
+              class="input-with-select"
+              v-model="queryInfo.query"
+              clearable
+            >
+              <template #append>
+                <el-button
+                  icon="el-icon-search"
+                  @click="getUserList"
+                ></el-button>
+              </template>
+            </el-input>
+          </el-col>
+        </el-row>
+        <el-table
           :data="registerList"
           border
           stripe
@@ -16,6 +34,11 @@
           @sort-change="sort"
         >
           <el-table-column type="index" width="50" label="#"></el-table-column>
+          <el-table-column
+            prop="id"
+            label="订单号"
+            width="250px"
+          ></el-table-column>
           <el-table-column
             prop="name"
             label="原料"
@@ -88,6 +111,11 @@
         <el-table :data="registerList1" border stripe max-height="450">
           <el-table-column type="index" width="50" label="#"></el-table-column>
           <el-table-column
+            prop="id"
+            label="订单号"
+            width="250px"
+          ></el-table-column>
+          <el-table-column
             prop="name"
             label="原料"
             width="180"
@@ -150,7 +178,7 @@
 </template>
 
 <script>
-import { ref, getCurrentInstance, onMounted,reactive } from "vue";
+import { ref, getCurrentInstance, onMounted, reactive } from "vue";
 import Refuse from "../components/register/Refuse.vue";
 export default {
   name: "Register",
@@ -165,11 +193,12 @@ export default {
       pageSize: 5,
       pageNum1: 1,
       pageSize1: 5,
+      type: "time",
+      num: 1,
     });
 
     let total = ref(0);
     let total1 = ref(0);
-    let sortInfo=reactive({});
     // 获取出入库信息
     async function getRegisterList() {
       let { data } = await proxy.$http.get("/register/register", {
@@ -211,13 +240,15 @@ export default {
       proxy.$bus.emit("openRefuse", info);
     }
     // 排序
-    async function sort(val){
-      let key=val.prop;
-      let value=val.order==='ascending'?1:0;
-      sortInfo[key]=value;
+    async function sort(val) {
+      let key = val.prop;
+      let value = val.order === "ascending" ? 1 : -1;
+      queryInfo.value.type = key;
+      queryInfo.value.num = value;
+      console.log(queryInfo.value);
       //
       let { data } = await proxy.$http.get("/register/register", {
-        params:{ ...queryInfo.value,sort:sortInfo},
+        params: queryInfo.value,
       });
       if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
       registerList.value = data.result.registerList;
@@ -239,7 +270,7 @@ export default {
       handleCurrentChange,
       receive,
       refuse,
-      sort
+      sort,
     };
   },
 };

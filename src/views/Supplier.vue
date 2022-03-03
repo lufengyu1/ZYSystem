@@ -9,6 +9,9 @@
       <el-table-column type="index" width="50" label="#"></el-table-column>
       <el-table-column prop="name" label="供应商" width="180"></el-table-column>
       <el-table-column prop="des" label="描述" width="180"></el-table-column>
+      <el-table-column prop="phone" label="联系方式" width="180"></el-table-column>
+      <el-table-column prop="address" label="地址" width="180"></el-table-column>
+      <el-table-column prop="card" label="银行卡号" width="180"></el-table-column>
       <el-table-column prop="CD" label="创建日期" width="180"></el-table-column>
     </el-table>
     <el-pagination

@@ -20,6 +20,8 @@
           <span v-if="scope.row.operation === 1">出库</span>
         </template></el-table-column
       >
+      <el-table-column label="操作人" prop="operator"></el-table-column>
+      <el-table-column label="操作时间" prop="time"></el-table-column>
       <el-table-column prop="reason" label="问题" width="180"></el-table-column>
     </el-table>
     <el-pagination
@@ -51,11 +53,14 @@ export default {
       let { data } = await proxy.$http.get("/reject/reject", {
         params: queryInfo.value,
       });
+      console.log(data);
+      if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
       rejectList.value = data.result.rejectList;
+      total.value= data.result.total
     }
 
-    function handleSizeChange() {}
-    function handleCurrentChange() {}
+    function handleSizeChange() {getRejectList()}
+    function handleCurrentChange() {getRejectList()}
     onMounted(() => {
       getRejectList();
     });

@@ -40,7 +40,7 @@
         width="150"
       ></el-table-column>
 
-      <el-table-column label="状态">
+      <el-table-column label="状态" fixed="right">
         <template #default="scope">
           <i v-if="scope.row.state === 0">处理中</i>
           <i v-else-if="scope.row.state === 1">完成</i>
