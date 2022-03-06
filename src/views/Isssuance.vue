@@ -5,7 +5,7 @@
       <el-breadcrumb-item>原料库存管理</el-breadcrumb-item>
       <el-breadcrumb-item>原料出库</el-breadcrumb-item>
     </el-breadcrumb>
-    <el-table :data="isssuanceList" border stripe max-height="500">
+    <el-table :data="isssuanceList" border stripe max-height="450" @sort-change="sort">
       <el-table-column type="index" width="50" label="#"></el-table-column>
       <el-table-column prop="name" width="150" label="原料"></el-table-column>
       <el-table-column
@@ -23,6 +23,8 @@
         prop="quantity"
         width="150"
         label="数量"
+        sortable="custom"
+        :sort-orders="['ascending', 'descending']"
       ></el-table-column>
       <el-table-column width="220" label="出库"
         ><template #default="scope">
@@ -54,11 +56,11 @@
 
 <script>
 import { ref, getCurrentInstance, onMounted } from "vue";
-import Out from '../components/isssuance/Out.vue'
+import Out from "../components/isssuance/Out.vue";
 export default {
   name: "Isssuance",
-  components:{
-Out
+  components: {
+    Out,
   },
   setup() {
     const { proxy } = getCurrentInstance();
@@ -82,8 +84,11 @@ Out
     function handleCurrentChange() {
       getIsssuanceList();
     }
-    function openOutDialog(info){
-      proxy.$bus.emit('openOut',info);
+    function openOutDialog(info) {
+      proxy.$bus.emit("openOut", info);
+    }
+    async function sort(){
+      
     }
     onMounted(() => {
       getIsssuanceList();
@@ -94,7 +99,7 @@ Out
       total,
       handleSizeChange,
       handleCurrentChange,
-      openOutDialog
+      openOutDialog,
     };
   },
 };

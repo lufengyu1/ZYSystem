@@ -15,6 +15,7 @@
           class="input-with-select"
           v-model="queryInfo.query"
           clearable
+          @clear="getUserList"
         >
           <template #append>
             <el-button icon="el-icon-search" @click="getUserList"></el-button>

@@ -7,7 +7,7 @@
     </el-breadcrumb>
     <el-table :data="questionList" border stripe max-height="470">
       <el-table-column type="index" width="50" label="#"></el-table-column>
-      <el-table-column prop="id" label="订单号" width="250"></el-table-column>
+      <el-table-column prop="_id" label="订单号" width="250"></el-table-column>
       <el-table-column prop="name" label="原料" width="180"></el-table-column>
       <el-table-column
         prop="quantity"

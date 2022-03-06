@@ -12,15 +12,16 @@
         <el-row :gutter="20">
           <el-col :span="7">
             <el-input
-              placeholder="请输入用户名"
+              placeholder="请输入订单号"
               class="input-with-select"
               v-model="queryInfo.query"
               clearable
+              @clear="getRegisterList"
             >
               <template #append>
                 <el-button
                   icon="el-icon-search"
-                  @click="getUserList"
+                  @click="getRegisterList"
                 ></el-button>
               </template>
             </el-input>
@@ -34,11 +35,11 @@
           @sort-change="sort"
         >
           <el-table-column type="index" width="50" label="#"></el-table-column>
-          <el-table-column
-            prop="id"
-            label="订单号"
-            width="250px"
-          ></el-table-column>
+          <el-table-column label="订单号" width="250px"
+            ><template #default="scope">
+              {{ scope.row.operation === 0 ? scope.row.id : scope.row._id }}
+            </template></el-table-column
+          >
           <el-table-column
             prop="name"
             label="原料"
@@ -68,7 +69,7 @@
             label="操作时间"
             width="180"
           ></el-table-column>
-          <el-table-column label="操作">
+          <el-table-column label="操作"  fixed="right" >
             <template #default="scope">
               <el-button
                 size="mini"
@@ -107,14 +108,32 @@
           >
           <span v-if="!total1"> 待处理</span>
         </template>
-
+        <!-- 搜索区 -->
+        <el-row :gutter="20">
+          <el-col :span="7">
+            <el-input
+              placeholder="请输入订单号"
+              class="input-with-select"
+              v-model="queryInfo.query1"
+              clearable
+              clear="getRegisterList"
+            >
+              <template #append>
+                <el-button
+                  icon="el-icon-search"
+                  @click="getRegisterList"
+                ></el-button>
+              </template>
+            </el-input>
+          </el-col>
+        </el-row>
         <el-table :data="registerList1" border stripe max-height="450">
           <el-table-column type="index" width="50" label="#"></el-table-column>
-          <el-table-column
-            prop="id"
-            label="订单号"
-            width="250px"
-          ></el-table-column>
+          <el-table-column label="订单号" width="250px"
+            ><template #default="scope">
+              {{ scope.row.operation === 0 ? id : _id }}
+            </template></el-table-column
+          >
           <el-table-column
             prop="name"
             label="原料"
@@ -140,7 +159,7 @@
             label="操作时间"
             width="180"
           ></el-table-column>
-          <el-table-column label="操作">
+          <el-table-column label="操作" fixed="right" >
             <template #default="scope">
               <el-button
                 size="mini"
@@ -189,6 +208,8 @@ export default {
     let registerList = ref([]);
     let registerList1 = ref([]);
     let queryInfo = ref({
+      query1: "",
+      query: "",
       pageNum: 1,
       pageSize: 5,
       pageNum1: 1,
@@ -268,6 +289,7 @@ export default {
       total1,
       handleSizeChange,
       handleCurrentChange,
+      getRegisterList,
       receive,
       refuse,
       sort,

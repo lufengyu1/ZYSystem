@@ -5,7 +5,26 @@
       <el-breadcrumb-item>原料管理</el-breadcrumb-item>
       <el-breadcrumb-item>账单信息</el-breadcrumb-item>
     </el-breadcrumb>
-    <el-table :data="billList" border stripe max-height="500">
+    <!-- 搜索区 -->
+    <el-row :gutter="20">
+      <el-col :span="7">
+        <el-input
+          placeholder="请输入订单号"
+          class="input-with-select"
+          v-model="queryInfo.query"
+          clearable
+          @clear="getBillList"
+        >
+          <template #append>
+            <el-button
+              icon="el-icon-search"
+              @click="getBillList"
+            ></el-button>
+          </template>
+        </el-input>
+      </el-col>
+    </el-row>
+    <el-table :data="billList" border stripe max-height="450">
       <el-table-column type="index" width="50" label="#"></el-table-column>
       <el-table-column prop="_id" width="220" label="订单号"></el-table-column>
       <el-table-column
@@ -71,6 +90,7 @@ export default {
     let queryInfo = ref({
       pageNum: 1,
       pageSize: 5,
+      query:''
     });
     let total = ref(0);
     // 获取账单信息
@@ -98,6 +118,7 @@ export default {
       total,
       handleSizeChange,
       handleCurrentChange,
+      getBillList
     };
   },
 };

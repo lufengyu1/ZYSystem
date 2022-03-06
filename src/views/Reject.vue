@@ -5,6 +5,25 @@
       <el-breadcrumb-item>原料管理</el-breadcrumb-item>
       <el-breadcrumb-item>退货信息</el-breadcrumb-item>
     </el-breadcrumb>
+     <!-- 搜索区 -->
+        <el-row :gutter="20">
+          <el-col :span="7">
+            <el-input
+              placeholder="请输入订单号"
+              class="input-with-select"
+              v-model="queryInfo.query"
+              clearable
+              @clear="getRejectList"
+            >
+              <template #append>
+                <el-button
+                  icon="el-icon-search"
+                  @click="getRejectList"
+                ></el-button>
+              </template>
+            </el-input>
+          </el-col>
+        </el-row>
     <el-table :data="rejectList" border stripe max-height="470">
       <el-table-column type="index" width="50" label="#"></el-table-column>
       <el-table-column prop="id" label="订单号" width="250"></el-table-column>
@@ -47,6 +66,7 @@ export default {
     let queryInfo = ref({
       pageNum: 1,
       pageSize: 5,
+      query:''
     });
     let total = ref(0);
     async function getRejectList() {
@@ -70,6 +90,7 @@ export default {
       queryInfo,
       handleSizeChange,
       handleCurrentChange,
+      getRejectList
     };
   },
 };
