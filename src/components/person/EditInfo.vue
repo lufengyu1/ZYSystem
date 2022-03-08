@@ -1,32 +1,32 @@
 <template>
   <el-dialog
-    title="编辑用户"
-    v-model="editUserVisible"
+    title="个人信息"
+    v-model="editInfoVisible"
     width="50%"
     :before-close="handleClose"
     :close-on-click-modal="false"
   >
     <!-- 内容主题 -->
     <el-form
-      :model="editUserInfo"
-      :rules="editUserRules"
-      ref="editUserRef"
+      :model="editInfo"
+      :rules="editRules"
+      ref="editRef"
       label-width="70px"
     >
       <el-form-item label="用户名">
-        <el-input v-model="editUserInfo.username" disabled></el-input>
+        <el-input v-model="editInfo.username" disabled></el-input>
       </el-form-item>
       <el-form-item label="邮箱" prop="email">
-        <el-input v-model="editUserInfo.email"></el-input>
+        <el-input v-model="editInfo.email"></el-input>
       </el-form-item>
       <el-form-item label="电话" prop="phone">
-        <el-input v-model="editUserInfo.phone"></el-input>
+        <el-input v-model="editInfo.phone"></el-input>
       </el-form-item>
     </el-form>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="handleClose">取消</el-button>
-        <el-button type="primary" @click="editUser">确定</el-button>
+        <el-button type="primary" @click="editPerson">确定</el-button>
       </span>
     </template>
   </el-dialog>
@@ -35,7 +35,7 @@
 <script>
 import { ref, getCurrentInstance, onMounted } from "vue";
 export default {
-  name: "EditUser",
+  name: "EditInfo",
   setup() {
     //  验证邮箱规则
     let checkEmail = (rule, value, cb) => {
@@ -52,9 +52,9 @@ export default {
       cb(new Error("请输入合法的号码"));
     };
     const { proxy } = getCurrentInstance();
-    let editUserVisible = ref(false);
-    let editUserInfo = ref({});
-    let editUserRules = ref({
+    let editInfoVisible = ref(false);
+    let editInfo = ref({});
+    let editRules = ref({
       email: [
         {
           required: true,
@@ -78,41 +78,36 @@ export default {
         },
       ],
     });
-    async function openEditUser(info) {
-      let { data } = await proxy.$http.get("/user/userinfo", {
-        params: { _id: info._id },
-      });
-      if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
-      editUserInfo.value = data.result;
-      editUserVisible.value = true;
-    }
     function handleClose() {
-      proxy.$refs.editUserRef.resetFields();
-      editUserVisible.value = false;
+      proxy.$refs.editRef.resetFields();
+      editInfoVisible.value = false;
     }
-    async function editUser() {
-      proxy.$refs.editUserRef.validate(async (valid) => {
+    function editPerson() {
+      proxy.$refs.editRef.validate(async (valid) => {
         if (!valid) return console.log("error");
         let { data } = await proxy.$http.put("/user/update", {
-          _id: proxy.editUserInfo._id,
-          userInfo: editUserInfo.value,
+          _id: proxy.editInfo._id,
+          userInfo: editInfo.value,
         });
         if (data.meta.status !== 200)
           return proxy.$message.error(data.meta.des);
         proxy.$message.success("用户信息更新成功");
-        editUserVisible.value = false;
-        proxy.$bus.emit("getUsersList");
+        editInfoVisible.value = false;
       });
     }
-    onMounted(() => {});
-    proxy.$bus.on("openEditUser", openEditUser);
-    return {
-      editUserVisible,
-      editUserInfo,
-      editUserRules,
-      handleClose,
-      editUser,
-    };
+    async function openEditInfo(info) {
+      editInfoVisible.value = true;
+      let { data } = await proxy.$http.get("/user/userinfo", {
+        params: { username: info.username },
+      });
+      if (data.meta.status !== 200)
+        return proxy.$message.error("用户信息获取失败");
+      editInfo.value = data.result;
+    }
+    onMounted(() => {
+      proxy.$bus.on("openEditInfo", openEditInfo);
+    });
+    return { editInfoVisible, editInfo, editRules, handleClose, editPerson };
   },
 };
 </script>

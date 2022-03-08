@@ -8,13 +8,17 @@
       </div>
       <div>
         <el-dropdown trigger="click" size="small">
-          <el-button type="primary" >
+          <el-button type="primary">
             {{ person.username }}<i class="el-icon-arrow-right"></i>
           </el-button>
           <template #dropdown>
             <el-dropdown-menu>
-              <el-dropdown-item>个人资料</el-dropdown-item>
-              <el-dropdown-item>修改密码</el-dropdown-item>
+              <el-dropdown-item @click="openEditInfoDialog"
+                >个人资料</el-dropdown-item
+              >
+              <el-dropdown-item @click="openEditPasswordDialog"
+                >修改密码</el-dropdown-item
+              >
               <el-dropdown-item @click="logout">退出</el-dropdown-item>
             </el-dropdown-menu>
           </template>
@@ -68,12 +72,17 @@
       <el-main> <router-view></router-view></el-main>
     </el-container>
   </el-container>
+  <EditInfo></EditInfo>
+  <Password></Password>
 </template>
 
 <script>
 import { ref, reactive, onMounted, getCurrentInstance } from "vue";
+import EditInfo from "../components/person/EditInfo.vue";
+import Password from "../components/person/Password.vue";
 export default {
-  name: "Home",
+  name: "Welcome",
+  components: { EditInfo ,Password},
   setup() {
     const { proxy } = getCurrentInstance();
     const iconObj = ref({
@@ -127,6 +136,13 @@ export default {
       window.sessionStorage.setItem("activePath", "");
       defaultActive.value = window.sessionStorage.getItem("activePath");
     }
+    // 打开个人资料
+    function openEditInfoDialog() {
+      proxy.$bus.emit("openEditInfo", person.value);
+    }
+    function openEditPasswordDialog() {
+      proxy.$bus.emit("openEditPassword", person.value);
+    }
     return {
       menuList,
       isCollapse,
@@ -137,6 +153,8 @@ export default {
       toggleCollapse,
       logout,
       toHome,
+      openEditInfoDialog,
+      openEditPasswordDialog,
     };
   },
 };

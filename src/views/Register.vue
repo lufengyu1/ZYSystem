@@ -72,6 +72,8 @@
           <el-table-column
             prop="time"
             label="操作时间"
+             sortable="custom"
+            :sort-orders="['ascending', 'descending']"
             width="180"
           ></el-table-column>
           <el-table-column label="操作" fixed="right">

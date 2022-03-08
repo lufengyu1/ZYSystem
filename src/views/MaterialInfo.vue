@@ -15,7 +15,10 @@
           clearable
         >
           <template #append>
-            <el-button icon="el-icon-search" @click="getMaterialInfoList"></el-button>
+            <el-button
+              icon="el-icon-search"
+              @click="getMaterialInfoList"
+            ></el-button>
           </template>
         </el-input>
       </el-col>
@@ -34,12 +37,12 @@
         label="有效日期"
         width="180"
       ></el-table-column>
-      <el-table-column prop="price" label="单价(元)" width="150"></el-table-column>
       <el-table-column
-        prop="quantity"
-        label="数量(千克)"
+        prop="price"
+        label="单价(元)"
         width="150"
       ></el-table-column>
+
       <el-table-column label="操作">
         <template #default="scope">
           <el-button
@@ -77,7 +80,7 @@ export default {
     const { proxy } = getCurrentInstance();
     let materialInfoList = ref([]);
     let queryInfo = ref({
-      query:'',
+      query: "",
       pageSize: 5,
       pageNum: 1,
     });
@@ -99,7 +102,7 @@ export default {
     }
     // 打开购买页面
     function openBuyDialog(info) {
-      proxy.$bus.emit("openBuy",info);
+      proxy.$bus.emit("openBuy", info);
     }
     onMounted(() => {
       getMaterialInfoList();
@@ -111,7 +114,7 @@ export default {
       handleSizeChange,
       handleCurrentChange,
       openBuyDialog,
-      getMaterialInfoList
+      getMaterialInfoList,
     };
   },
 };

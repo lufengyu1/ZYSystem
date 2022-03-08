@@ -4,6 +4,7 @@
     title="购买原料"
     width="30%"
     :before-close="handleClose"
+    :close-on-click-modal="false"
   >
     <el-form ref="buyRef" :model="materialInfo" label-width="70px">
       <el-form-item label="原料">{{ materialInfo.name }}</el-form-item>

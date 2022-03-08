@@ -4,6 +4,7 @@
     title="原料出库"
     width="30%"
     :before-close="handleClose"
+    :close-on-click-modal="false"
   >
     <el-form ref="outRef" :model="outInfo" label-width="70px">
       <el-form-item label="原料">{{ outInfo.name }}</el-form-item>

@@ -4,6 +4,7 @@
     title="添加用户"
     width="50%"
     :before-close="handleClose"
+    :close-on-click-modal="false"
   >
     <el-form
       :model="addUserInfo"

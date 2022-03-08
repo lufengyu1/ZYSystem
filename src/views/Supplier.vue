@@ -16,17 +16,33 @@
           @clear="getSupplierList"
         >
           <template #append>
-            <el-button icon="el-icon-search" @click="getSupplierList"></el-button>
+            <el-button
+              icon="el-icon-search"
+              @click="getSupplierList"
+            ></el-button>
           </template>
         </el-input>
+      </el-col>
+      <el-col :span="4">
+        <el-button type="primary" @click="openAddSupplierDialog"
+          >添加供应商</el-button
+        >
       </el-col>
     </el-row>
     <el-table :data="supplierList" border stripe max-height="500">
       <el-table-column type="expand">
-      <template #default="scope">
-        <p v-for=" item in scope.row.children" :key="item">原料: {{item.name }} 价格: {{item.price}}</p>
-      </template>
-    </el-table-column>
+        <template #default="scope">
+          <p v-for="item in scope.row.children" :key="item">
+            原料:
+            <el-tag class="ml-2" type="success" size="small">{{
+              item.name
+            }}</el-tag>
+            价格:<el-tag class="ml-2" type="info" size="small">{{
+              item.price
+            }}</el-tag>
+          </p>
+        </template>
+      </el-table-column>
       <el-table-column type="index" width="50" label="#"></el-table-column>
       <el-table-column prop="name" label="供应商" width="180"></el-table-column>
       <el-table-column prop="des" label="描述" width="180"></el-table-column>
@@ -58,19 +74,24 @@
     >
     </el-pagination>
   </el-card>
+  <AddSupplier></AddSupplier>
 </template>
 
 <script>
 import { ref, getCurrentInstance, onMounted } from "vue";
+import AddSupplier from '../components/supplier/AddSupplier.vue'
 export default {
   name: "Supplier",
+  components:{
+AddSupplier
+  },
   setup() {
     const { proxy } = getCurrentInstance();
     let supplierList = ref([]);
     let queryInfo = ref({
       pageNum: 1,
       pageSize: 5,
-      query:''
+      query: "",
     });
     let total = ref(0);
     // 获取供应商信息
@@ -88,8 +109,12 @@ export default {
     function handleCurrentChange() {
       getSupplierList();
     }
+    function openAddSupplierDialog(){
+      proxy.$bus.emit('openAddSupplier');
+    }
     onMounted(() => {
       getSupplierList();
+      proxy.$bus.on('getSupplierList',getSupplierList)
     });
     return {
       supplierList,
@@ -97,7 +122,8 @@ export default {
       total,
       handleSizeChange,
       handleCurrentChange,
-      getSupplierList
+      getSupplierList,
+      openAddSupplierDialog
     };
   },
 };

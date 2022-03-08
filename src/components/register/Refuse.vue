@@ -4,6 +4,7 @@
     title="拒收原因"
     width="50%"
     :before-close="handleClose"
+    :close-on-click-modal="false"
   >
     <el-form :model="registerInfo" ref="refuseRef" label-width="70px">
       <el-form-item label="订单号" prop="id"
