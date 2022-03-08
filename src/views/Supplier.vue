@@ -22,6 +22,11 @@
       </el-col>
     </el-row>
     <el-table :data="supplierList" border stripe max-height="500">
+      <el-table-column type="expand">
+      <template #default="scope">
+        <p v-for=" item in scope.row.children" :key="item">原料: {{item.name }} 价格: {{item.price}}</p>
+      </template>
+    </el-table-column>
       <el-table-column type="index" width="50" label="#"></el-table-column>
       <el-table-column prop="name" label="供应商" width="180"></el-table-column>
       <el-table-column prop="des" label="描述" width="180"></el-table-column>

@@ -47,7 +47,12 @@
             sortable="custom"
             :sort-orders="['ascending', 'descending']"
           ></el-table-column>
-          <el-table-column label="出库/入库" width="180">
+          <el-table-column
+            label="出库/入库"
+            width="180"
+            :filters="[]"
+            :filter-method="filterHandler"
+          >
             <template #default="scope">
               {{ scope.row.operation === 0 ? "入库" : "出库" }}
             </template>
@@ -69,7 +74,7 @@
             label="操作时间"
             width="180"
           ></el-table-column>
-          <el-table-column label="操作"  fixed="right" >
+          <el-table-column label="操作" fixed="right">
             <template #default="scope">
               <el-button
                 size="mini"
@@ -159,7 +164,7 @@
             label="操作时间"
             width="180"
           ></el-table-column>
-          <el-table-column label="操作" fixed="right" >
+          <el-table-column label="操作" fixed="right">
             <template #default="scope">
               <el-button
                 size="mini"
@@ -277,6 +282,13 @@ export default {
       total.value = data.result.total;
       total1.value = data.result.total1;
     }
+    function filterHandler(value, row, column) {
+      const property = column["property"];
+      return row[property] === value;
+    }
+    const filterTag = (value, row) => {
+      return row.tag === value;
+    };
     onMounted(() => {
       getRegisterList();
       proxy.$bus.on("getRegisterList", getRegisterList);
@@ -293,6 +305,7 @@ export default {
       receive,
       refuse,
       sort,
+      filterHandler,
     };
   },
 };
