@@ -29,18 +29,52 @@
         >
       </el-col>
     </el-row>
-    <el-table :data="supplierList" border stripe max-height="500">
+    <el-table :data="supplierList" border stripe max-height="450">
       <el-table-column type="expand">
         <template #default="scope">
-          <p v-for="item in scope.row.children" :key="item">
-            原料:
-            <el-tag class="ml-2" type="success" size="small">{{
-              item.name
-            }}</el-tag>
-            价格:<el-tag class="ml-2" type="info" size="small">{{
-              item.price
-            }}</el-tag>
-          </p>
+          <el-row :gutter="20">
+            <el-col :span="6"
+              ><el-input
+                v-model="addInfo.name"
+                placeholder="请输入原料"
+                size="small"
+                class="w-50 m-2"
+              >
+                <template #prepend>原料</template>
+              </el-input></el-col
+            >
+            <el-col :span="6"
+              ><el-input
+                v-model="addInfo.price"
+                placeholder="请输入价格"
+                size="small"
+                class="w-50 m-2"
+              >
+                <template #prepend>价格</template>
+              </el-input></el-col
+            >
+            <el-col :span="8">
+              <el-button
+                type="success"
+                size="mini"
+                @click="addMaterial(scope.row)"
+                >添加原料</el-button
+              ></el-col
+            >
+          </el-row>
+
+          <el-table
+            :data="scope.row.children"
+            v-if="scope.row.children.length"
+            class="customer-table"
+          >
+            <el-table-column prop="name" label="原料" width="180" />
+            <el-table-column prop="price" label="价格" width="180" />
+            <el-table-column label="操作">
+              <el-button type="primary" size="mini">编辑</el-button>
+              <el-button type="danger" size="mini">删除</el-button>
+            </el-table-column>
+          </el-table>
         </template>
       </el-table-column>
       <el-table-column type="index" width="50" label="#"></el-table-column>
@@ -62,6 +96,12 @@
         width="180"
       ></el-table-column>
       <el-table-column prop="CD" label="创建日期" width="180"></el-table-column>
+      <el-table-column label="操作" width="180" fixed="right" >
+        <template #default="scope" >
+          <el-button type="primary" size="mini" @click="openEditSupplierDialog(scope.row)">编辑</el-button>
+          <el-button type="danger" size="mini" @click="del(scope.row)">删除</el-button>
+        </template>
+      </el-table-column>
     </el-table>
     <el-pagination
       v-model:currentPage="queryInfo.pageNum"
@@ -75,15 +115,17 @@
     </el-pagination>
   </el-card>
   <AddSupplier></AddSupplier>
+  <EditSupplier></EditSupplier>
 </template>
 
 <script>
 import { ref, getCurrentInstance, onMounted } from "vue";
-import AddSupplier from '../components/supplier/AddSupplier.vue'
+import AddSupplier from "../components/supplier/AddSupplier.vue";
+import EditSupplier from "../components/supplier/EditSupplier.vue"
 export default {
   name: "Supplier",
-  components:{
-AddSupplier
+  components: {
+    AddSupplier,EditSupplier
   },
   setup() {
     const { proxy } = getCurrentInstance();
@@ -94,6 +136,12 @@ AddSupplier
       query: "",
     });
     let total = ref(0);
+    // 添加的原料信息
+    let addInfo = ref({
+      name: "",
+      price: "",
+      supplier: "",
+    });
     // 获取供应商信息
     async function getSupplierList() {
       let { data } = await proxy.$http.get("/supplier/supplier", {
@@ -109,12 +157,34 @@ AddSupplier
     function handleCurrentChange() {
       getSupplierList();
     }
-    function openAddSupplierDialog(){
-      proxy.$bus.emit('openAddSupplier');
+    // 添加供应商
+    function openAddSupplierDialog() {
+      proxy.$bus.emit("openAddSupplier");
+    }
+    //添加供应商的原料
+    async function addMaterial(info) {
+      addInfo.value.supplier = info.name;
+      let { data } = await proxy.$http.put("/supplier/updateMaterial", {
+        ...info,
+        info: addInfo.value,
+      });
+      if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
+      proxy.$message.success("信息更新成功");
+      info.children = data.result;
+      addInfo.value.name = "";
+      addInfo.value.price = "";
+      addInfo.value.supplier = "";
+    }
+    // 编辑供应商信息
+    function openEditSupplierDialog(info) {
+      proxy.$bus.emit('openEditSupplier',info);
+    }
+    async function del(info) {
+
     }
     onMounted(() => {
       getSupplierList();
-      proxy.$bus.on('getSupplierList',getSupplierList)
+      proxy.$bus.on("getSupplierList", getSupplierList);
     });
     return {
       supplierList,
@@ -123,7 +193,11 @@ AddSupplier
       handleSizeChange,
       handleCurrentChange,
       getSupplierList,
-      openAddSupplierDialog
+      openAddSupplierDialog,
+      addMaterial,
+      addInfo,
+      openEditSupplierDialog,
+      del
     };
   },
 };

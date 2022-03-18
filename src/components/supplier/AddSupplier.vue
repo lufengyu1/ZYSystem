@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     v-model="addSupplierVisible"
-    title="添加用户"
+    title="添加供应商"
     width="50%"
     :before-close="handleClose"
     :close-on-click-modal="false"
@@ -51,6 +51,7 @@ export default {
       if (regPhone.test(value)) return cb();
       cb(new Error("请输入合法的号码"));
     };
+    // 验证银行卡号
     let checkCard = (rule, value, cb) => {
       const regCard = /^([1-9]{1})(\d{14}|\d{18})$/;
       if (regPhone.test(value)) return cb();

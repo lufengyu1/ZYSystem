@@ -31,13 +31,14 @@
           :data="registerList"
           border
           stripe
-          max-height="450"
+          max-height="410"
           @sort-change="sort"
         >
           <el-table-column type="index" width="50" label="#"></el-table-column>
           <el-table-column label="订单号" width="250px"
             ><template #default="scope">
-              {{ scope.row.operation === 0 ? scope.row.id : scope.row._id }}
+              <!-- {{ scope.row.operation === 0 ? scope.row.id : scope.row._id }} -->
+              {{ scope.row._id}}
             </template></el-table-column
           >
           <el-table-column
@@ -76,7 +77,7 @@
             :sort-orders="['ascending', 'descending']"
             width="180"
           ></el-table-column>
-          <el-table-column label="操作" fixed="right">
+          <el-table-column label="操作" fixed="right" width="150" >
             <template #default="scope">
               <el-button
                 size="mini"
@@ -134,11 +135,12 @@
             </el-input>
           </el-col>
         </el-row>
-        <el-table :data="registerList1" border stripe max-height="450">
+        <el-table :data="registerList1" border stripe max-height="410">
           <el-table-column type="index" width="50" label="#"></el-table-column>
           <el-table-column label="订单号" width="250px"
             ><template #default="scope">
-              {{ scope.row.operation === 0 ? id : _id }}
+              <!-- {{ scope.row.operation === 0 ? id : _id }} -->
+              {{ scope.row._id}}
             </template></el-table-column
           >
           <el-table-column
@@ -166,7 +168,7 @@
             label="操作时间"
             width="180"
           ></el-table-column>
-          <el-table-column label="操作" fixed="right">
+          <el-table-column label="操作" fixed="right" width="150">
             <template #default="scope">
               <el-button
                 size="mini"

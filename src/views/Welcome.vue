@@ -143,6 +143,9 @@ export default {
     function openEditPasswordDialog() {
       proxy.$bus.emit("openEditPassword", person.value);
     }
+    onMounted(()=>{
+      proxy.$bus.on('logout',logout);
+    })
     return {
       menuList,
       isCollapse,

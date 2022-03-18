@@ -100,6 +100,7 @@ export default {
       handleSizeChange,
       handleCurrentChange,
       openOutDialog,
+      sort
     };
   },
 };
