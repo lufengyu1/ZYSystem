@@ -96,10 +96,17 @@
         width="180"
       ></el-table-column>
       <el-table-column prop="CD" label="创建日期" width="180"></el-table-column>
-      <el-table-column label="操作" width="180" fixed="right" >
-        <template #default="scope" >
-          <el-button type="primary" size="mini" @click="openEditSupplierDialog(scope.row)">编辑</el-button>
-          <el-button type="danger" size="mini" @click="del(scope.row)">删除</el-button>
+      <el-table-column label="操作" width="180" fixed="right">
+        <template #default="scope">
+          <el-button
+            type="primary"
+            size="mini"
+            @click="openEditSupplierDialog(scope.row)"
+            >编辑</el-button
+          >
+          <el-button type="danger" size="mini" @click="del(scope.row)"
+            >删除</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -121,11 +128,12 @@
 <script>
 import { ref, getCurrentInstance, onMounted } from "vue";
 import AddSupplier from "../components/supplier/AddSupplier.vue";
-import EditSupplier from "../components/supplier/EditSupplier.vue"
+import EditSupplier from "../components/supplier/EditSupplier.vue";
 export default {
   name: "Supplier",
   components: {
-    AddSupplier,EditSupplier
+    AddSupplier,
+    EditSupplier,
   },
   setup() {
     const { proxy } = getCurrentInstance();
@@ -177,10 +185,31 @@ export default {
     }
     // 编辑供应商信息
     function openEditSupplierDialog(info) {
-      proxy.$bus.emit('openEditSupplier',info);
+      proxy.$bus.emit("openEditSupplier", info);
     }
+    // 删除供应商信息
     async function del(info) {
-
+      console.log(info);
+      let confirmResult = await proxy
+        .$confirm("此操作将删除供应商：" + info.name + "，是否继续", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        })
+        .catch((err) => {
+          return err;
+        });
+      if (confirmResult === "confirm") {
+        let { data } = await proxy.$http.delete("/supplier/delete", {
+          params: { _id: info._id },
+        });
+        if (data.meta.status !== 200)
+          return proxy.$message.error(data.meta.des);
+        proxy.$message.success("供应商:" + info.name + "已删除");
+        getSupplierList();
+      } else {
+        proxy.$message("已取消删除供应商:" + info.name);
+      }
     }
     onMounted(() => {
       getSupplierList();
@@ -197,7 +226,7 @@ export default {
       addMaterial,
       addInfo,
       openEditSupplierDialog,
-      del
+      del,
     };
   },
 };
