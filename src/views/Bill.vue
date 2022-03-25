@@ -59,10 +59,10 @@
         width="150"
       ></el-table-column>
 
-      <el-table-column label="状态" fixed="right">
+      <el-table-column label="状态" fixed="right"  width="200">
         <template #default="scope">
           <i v-if="scope.row.state === 0">处理中</i>
-          <i v-else-if="scope.row.state === 1">完成</i>
+          <i v-else-if="scope.row.state === 1">完成 <el-button size="mini" style="float:right" @click="openInfoDialog(scope.row)">查看订单详情</el-button></i>
           <i v-else>异常</i>
         </template>
       </el-table-column>
@@ -78,12 +78,15 @@
     >
     </el-pagination>
   </el-card>
+  <Info></Info>
 </template>
 
 <script>
 import { ref, getCurrentInstance, onMounted } from "vue";
+import Info from '../components/bill/Info.vue'
 export default {
   name: "Bill",
+  components:{Info},
   setup() {
     const { proxy } = getCurrentInstance();
     let billList = ref([]);
@@ -109,6 +112,9 @@ export default {
     function handleCurrentChange() {
       getBillList();
     }
+    function openInfoDialog(info){
+      proxy.$bus.emit('openInfo',info);
+    }
     onMounted(() => {
       getBillList();
     });
@@ -118,7 +124,8 @@ export default {
       total,
       handleSizeChange,
       handleCurrentChange,
-      getBillList
+      getBillList,
+      openInfoDialog
     };
   },
 };

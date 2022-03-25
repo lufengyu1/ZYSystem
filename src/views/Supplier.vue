@@ -71,8 +71,20 @@
             <el-table-column prop="name" label="原料" width="180" />
             <el-table-column prop="price" label="价格" width="180" />
             <el-table-column label="操作">
-              <el-button type="primary" size="mini">编辑</el-button>
-              <el-button type="danger" size="mini">删除</el-button>
+              <template #default="scope">
+                <el-button
+                  type="primary"
+                  size="mini"
+                  @click="openEditPriceDialog(scope.row)"
+                  >修改价格</el-button
+                >
+                <el-button
+                  type="danger"
+                  size="mini"
+                  @click="delMaterial(scope.row)"
+                  >删除</el-button
+                >
+              </template>
             </el-table-column>
           </el-table>
         </template>
@@ -123,17 +135,20 @@
   </el-card>
   <AddSupplier></AddSupplier>
   <EditSupplier></EditSupplier>
+  <EditPrice></EditPrice>
 </template>
 
 <script>
 import { ref, getCurrentInstance, onMounted } from "vue";
 import AddSupplier from "../components/supplier/AddSupplier.vue";
 import EditSupplier from "../components/supplier/EditSupplier.vue";
+import EditPrice from "../components/supplier/EditPrice.vue";
 export default {
   name: "Supplier",
   components: {
     AddSupplier,
     EditSupplier,
+    EditPrice,
   },
   setup() {
     const { proxy } = getCurrentInstance();
@@ -172,7 +187,7 @@ export default {
     //添加供应商的原料
     async function addMaterial(info) {
       addInfo.value.supplier = info.name;
-      let { data } = await proxy.$http.put("/supplier/updateMaterial", {
+      let { data } = await proxy.$http.put("/supplier/insertMaterial", {
         ...info,
         info: addInfo.value,
       });
@@ -211,6 +226,31 @@ export default {
         proxy.$message("已取消删除供应商:" + info.name);
       }
     }
+    // 编辑原料价格
+    function openEditPriceDialog(info) {
+      proxy.$bus.emit("openEditPrice", info);
+    }
+    // 删除原料
+    async function delMaterial(info) {
+      let confirmResult = await proxy
+        .$confirm("此操作将永久删除原料：" + info.name + "，是否继续", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        })
+        .catch((err) => {
+          return err;
+        });
+      if (confirmResult === "confirm") {
+        let { data } = proxy.$http.delete("/supplier/delMaterial", {
+          params: info,
+        });
+        if (data.meta.des !== 200) return proxy.$message.error(data.meta.des);
+        proxy.$message.success("原料:" + info.name + "已删除");
+      }else{
+        proxy.$message("已取消删除原料:" + info.name);
+      }
+    }
     onMounted(() => {
       getSupplierList();
       proxy.$bus.on("getSupplierList", getSupplierList);
@@ -227,6 +267,8 @@ export default {
       addInfo,
       openEditSupplierDialog,
       del,
+      openEditPriceDialog,
+      delMaterial,
     };
   },
 };
