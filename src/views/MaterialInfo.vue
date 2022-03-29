@@ -31,12 +31,7 @@
         label="供应商"
         width="180"
       ></el-table-column>
-      <el-table-column prop="PD" label="生产日期" width="180"></el-table-column>
-      <el-table-column
-        prop="EXP"
-        label="有效日期"
-        width="180"
-      ></el-table-column>
+
       <el-table-column
         prop="price"
         label="单价(元)"

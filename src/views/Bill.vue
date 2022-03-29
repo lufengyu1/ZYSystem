@@ -16,10 +16,7 @@
           @clear="getBillList"
         >
           <template #append>
-            <el-button
-              icon="el-icon-search"
-              @click="getBillList"
-            ></el-button>
+            <el-button icon="el-icon-search" @click="getBillList"></el-button>
           </template>
         </el-input>
       </el-col>
@@ -59,10 +56,25 @@
         width="150"
       ></el-table-column>
 
-      <el-table-column label="状态" fixed="right"  width="200">
+      <el-table-column label="状态" fixed="right" width="200">
         <template #default="scope">
-          <i v-if="scope.row.state === 0">处理中</i>
-          <i v-else-if="scope.row.state === 1">完成 <el-button size="mini" style="float:right" @click="openInfoDialog(scope.row)">查看订单详情</el-button></i>
+          <i v-if="scope.row.state === 0"
+            >处理中<el-button
+              size="mini"
+              style="float: right"
+              @click="openInfoDialog(scope.row)"
+              >查看订单详情</el-button
+            ></i
+          >
+          <i v-else-if="scope.row.state === 1"
+            >完成
+            <el-button
+              size="mini"
+              style="float: right"
+              @click="openInfoDialog(scope.row)"
+              >查看订单详情</el-button
+            ></i
+          >
           <i v-else>异常</i>
         </template>
       </el-table-column>
@@ -83,17 +95,17 @@
 
 <script>
 import { ref, getCurrentInstance, onMounted } from "vue";
-import Info from '../components/bill/Info.vue'
+import Info from "../components/bill/Info.vue";
 export default {
   name: "Bill",
-  components:{Info},
+  components: { Info },
   setup() {
     const { proxy } = getCurrentInstance();
     let billList = ref([]);
     let queryInfo = ref({
       pageNum: 1,
       pageSize: 5,
-      query:''
+      query: "",
     });
     let total = ref(0);
     // 获取账单信息
@@ -112,8 +124,8 @@ export default {
     function handleCurrentChange() {
       getBillList();
     }
-    function openInfoDialog(info){
-      proxy.$bus.emit('openInfo',info);
+    function openInfoDialog(info) {
+      proxy.$bus.emit("openInfo", info);
     }
     onMounted(() => {
       getBillList();
@@ -125,7 +137,7 @@ export default {
       handleSizeChange,
       handleCurrentChange,
       getBillList,
-      openInfoDialog
+      openInfoDialog,
     };
   },
 };

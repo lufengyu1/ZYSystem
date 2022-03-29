@@ -38,7 +38,7 @@
           <el-table-column label="订单号" width="250px"
             ><template #default="scope">
               <!-- {{ scope.row.operation === 0 ? scope.row.id : scope.row._id }} -->
-              {{ scope.row._id}}
+              {{ scope.row._id }}
             </template></el-table-column
           >
           <el-table-column
@@ -48,12 +48,7 @@
             sortable="custom"
             :sort-orders="['ascending', 'descending']"
           ></el-table-column>
-          <el-table-column
-            label="出库/入库"
-            width="180"
-            :filters="[]"
-            :filter-method="filterHandler"
-          >
+          <el-table-column label="出库/入库" width="130">
             <template #default="scope">
               {{ scope.row.operation === 0 ? "入库" : "出库" }}
             </template>
@@ -73,11 +68,11 @@
           <el-table-column
             prop="time"
             label="操作时间"
-             sortable="custom"
+            sortable="custom"
             :sort-orders="['ascending', 'descending']"
             width="180"
           ></el-table-column>
-          <el-table-column label="操作" fixed="right" width="150" >
+          <el-table-column label="操作" fixed="right" width="150">
             <template #default="scope">
               <el-button
                 size="mini"
@@ -140,7 +135,7 @@
           <el-table-column label="订单号" width="250px"
             ><template #default="scope">
               <!-- {{ scope.row.operation === 0 ? id : _id }} -->
-              {{ scope.row._id}}
+              {{ scope.row._id }}
             </template></el-table-column
           >
           <el-table-column
@@ -148,7 +143,7 @@
             label="原料"
             width="180"
           ></el-table-column>
-          <el-table-column label="出库/入库" width="180">
+          <el-table-column label="出库/入库" width="130">
             <template #default="scope">
               {{ scope.row.operation === 0 ? "入库" : "出库" }}
             </template>
@@ -240,6 +235,7 @@ export default {
       total.value = data.result.total;
       total1.value = data.result.total1;
     }
+    
     function handleSizeChange() {
       getRegisterList();
     }
@@ -261,8 +257,10 @@ export default {
       let data2 = await proxy.$http.put("/bill/update", info);
       if (info.operation === 0) {
         let data3 = await proxy.$http.put("/isssuance/insert", info);
+        proxy.$bus.emit("getStockList");
       } else if (info.operation === 1) {
         let data4 = await proxy.$http.put("/isssuance/update", info);
+        proxy.$bus.emit("getStockList");
       }
     }
     // 拒绝入库时 打开详细页面
@@ -275,7 +273,6 @@ export default {
       let value = val.order === "ascending" ? 1 : -1;
       queryInfo.value.type = key;
       queryInfo.value.num = value;
-      console.log(queryInfo.value);
       //
       let { data } = await proxy.$http.get("/register/register", {
         params: queryInfo.value,
@@ -286,13 +283,7 @@ export default {
       total.value = data.result.total;
       total1.value = data.result.total1;
     }
-    function filterHandler(value, row, column) {
-      const property = column["property"];
-      return row[property] === value;
-    }
-    const filterTag = (value, row) => {
-      return row.tag === value;
-    };
+
     onMounted(() => {
       getRegisterList();
       proxy.$bus.on("getRegisterList", getRegisterList);
@@ -309,7 +300,6 @@ export default {
       receive,
       refuse,
       sort,
-      filterHandler,
     };
   },
 };

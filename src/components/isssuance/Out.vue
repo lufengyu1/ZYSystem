@@ -58,6 +58,7 @@ export default {
       if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
       proxy.$message.success(data.meta.des);
       handleClose();
+      proxy.$bus.emit('getStockList');
     }
     function openOut(info) {
       outVisible.value = true;

@@ -204,7 +204,6 @@ export default {
     }
     // 删除供应商信息
     async function del(info) {
-      console.log(info);
       let confirmResult = await proxy
         .$confirm("此操作将删除供应商：" + info.name + "，是否继续", "提示", {
           confirmButtonText: "确定",
@@ -233,7 +232,7 @@ export default {
     // 删除原料
     async function delMaterial(info) {
       let confirmResult = await proxy
-        .$confirm("此操作将永久删除原料：" + info.name + "，是否继续", "提示", {
+        .$confirm("此操作将永久删除：" + info.name + "，是否继续", "提示", {
           confirmButtonText: "确定",
           cancelButtonText: "取消",
           type: "warning",
@@ -242,13 +241,15 @@ export default {
           return err;
         });
       if (confirmResult === "confirm") {
-        let { data } = proxy.$http.delete("/supplier/delMaterial", {
+        let { data } = await proxy.$http.delete("/supplier/delMaterial", {
           params: info,
         });
-        if (data.meta.des !== 200) return proxy.$message.error(data.meta.des);
-        proxy.$message.success("原料:" + info.name + "已删除");
-      }else{
-        proxy.$message("已取消删除原料:" + info.name);
+        if (data.meta.status !== 200)
+          return proxy.$message.error(data.meta.des);
+        proxy.$message.success("原料：" + info.name + "已删除");
+        getSupplierList();
+      } else {
+        proxy.$message.info("已取消删除：" + info.name);
       }
     }
     onMounted(() => {

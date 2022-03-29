@@ -54,7 +54,7 @@ export default {
     // 验证银行卡号
     let checkCard = (rule, value, cb) => {
       const regCard = /^([1-9]{1})(\d{14}|\d{18})$/;
-      if (regPhone.test(value)) return cb();
+      if (regCard.test(value)) return cb();
       cb(new Error("请输入合法的银行卡号"));
     };
     let addSupplierVisible = ref(false);
@@ -95,10 +95,9 @@ export default {
       addSupplierVisible.value = true;
     }
     async function addSupplier() {
-      // proxy.$refs.addSupplierRef.validate(async (valid)=>{
-      //   console.log(valid);
-      // })
       addSupplierInfo.value.CD = getCurrentTime();
+      proxy.$refs.addSupplierRef.validate(async (valid) => {
+        if(!valid) return console.log("err");
         let { data } = await proxy.$http.put(
           "/supplier/insert",
           addSupplierInfo.value
@@ -109,6 +108,7 @@ export default {
         proxy.$refs.addSupplierRef.resetFields();
         addSupplierVisible.value = false;
         proxy.$bus.emit("getSupplierList");
+      });
     }
     onMounted(() => {
       proxy.$bus.on("openAddSupplier", openAddSupplier);

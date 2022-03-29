@@ -5,7 +5,29 @@
       <el-breadcrumb-item>原料库存管理</el-breadcrumb-item>
       <el-breadcrumb-item>原料出库</el-breadcrumb-item>
     </el-breadcrumb>
-    <el-table :data="isssuanceList" border stripe max-height="450" @sort-change="sort">
+    <!-- 搜索区 -->
+    <el-row :gutter="20">
+      <el-col :span="7">
+        <el-input
+          placeholder="请输入原料"
+          class="input-with-select"
+          v-model="queryInfo.query"
+          clearable
+          @clear="getIsssuanceList"
+        >
+          <template #append>
+            <el-button icon="el-icon-search" @click="getIsssuanceList"></el-button>
+          </template>
+        </el-input>
+      </el-col>
+    </el-row>
+    <el-table
+      :data="isssuanceList"
+      border
+      stripe
+      max-height="450"
+      @sort-change="sort"
+    >
       <el-table-column type="index" width="50" label="#"></el-table-column>
       <el-table-column prop="name" width="150" label="原料"></el-table-column>
       <el-table-column
@@ -13,12 +35,8 @@
         width="220"
         label="供应商"
       ></el-table-column>
-      <el-table-column prop="PD" width="220" label="生产日期"></el-table-column>
-      <el-table-column
-        prop="EXP"
-        width="220"
-        label="有效日期"
-      ></el-table-column>
+      <el-table-column prop="time" width="220" label="入库时间"></el-table-column>
+     
       <el-table-column
         prop="quantity"
         width="150"
@@ -68,6 +86,7 @@ export default {
     let queryInfo = ref({
       pageNum: 1,
       pageSize: 5,
+      query:''
     });
     let total = ref(0);
     async function getIsssuanceList() {
@@ -87,9 +106,7 @@ export default {
     function openOutDialog(info) {
       proxy.$bus.emit("openOut", info);
     }
-    async function sort(){
-      
-    }
+    async function sort() {}
     onMounted(() => {
       getIsssuanceList();
     });
@@ -100,7 +117,8 @@ export default {
       handleSizeChange,
       handleCurrentChange,
       openOutDialog,
-      sort
+      sort,
+      getIsssuanceList
     };
   },
 };

@@ -21,9 +21,9 @@
       <el-form-item label="地址" prop="address">
         <el-input v-model="editSupplierInfo.address"></el-input>
       </el-form-item>
-      <!-- <el-form-item label="银行卡" prop="card">
+      <el-form-item label="银行卡" prop="card">
         <el-input v-model="editSupplierInfo.card"></el-input>
-      </el-form-item> -->
+      </el-form-item>
       <el-form-item label="描述" prop="des">
         <el-input v-model="editSupplierInfo.des"></el-input>
       </el-form-item>
