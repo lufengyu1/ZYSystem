@@ -123,7 +123,7 @@ export default {
     }
     function addUser() {
       proxy.$refs.addUserRef.validate(async (valid) => {
-        if (!valid) return;
+        if (!valid) return console.log(err);
         let { data } = await proxy.$http.put("/user/add", addUserInfo.value);
         if (data.meta.status !== 200) {
           return proxy.$message.error(data.meta.des);

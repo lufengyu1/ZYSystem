@@ -37,7 +37,6 @@
           <el-table-column type="index" width="50" label="#"></el-table-column>
           <el-table-column label="订单号" width="250px"
             ><template #default="scope">
-              <!-- {{ scope.row.operation === 0 ? scope.row.id : scope.row._id }} -->
               {{ scope.row._id }}
             </template></el-table-column
           >
@@ -72,7 +71,7 @@
             :sort-orders="['ascending', 'descending']"
             width="180"
           ></el-table-column>
-          <el-table-column label="操作" fixed="right" width="150">
+          <el-table-column label="操作" fixed="right" width="200">
             <template #default="scope">
               <el-button
                 size="mini"
@@ -88,8 +87,8 @@
                 @click="refuse(scope.row)"
                 >拒绝</el-button
               >
-              <i v-if="scope.row.status === 1">已入库</i>
-              <i v-if="scope.row.status === 2">已拒收</i>
+              <i v-if="scope.row.status === 1">已入库 <el-button size="mini" @click="openRegisterInfoDialog(scope.row)" style="float:right"> 查看详情</el-button></i>
+              <i v-if="scope.row.status === 2">已拒收  <el-button size="mini" @click="openRegisterInfoDialog(scope.row)" style="float:right">查看详情</el-button></i>
             </template>
           </el-table-column>
         </el-table>
@@ -134,7 +133,6 @@
           <el-table-column type="index" width="50" label="#"></el-table-column>
           <el-table-column label="订单号" width="250px"
             ><template #default="scope">
-              <!-- {{ scope.row.operation === 0 ? id : _id }} -->
               {{ scope.row._id }}
             </template></el-table-column
           >
@@ -163,7 +161,7 @@
             label="操作时间"
             width="180"
           ></el-table-column>
-          <el-table-column label="操作" fixed="right" width="150">
+          <el-table-column label="操作" fixed="right" width="200">
             <template #default="scope">
               <el-button
                 size="mini"
@@ -198,14 +196,16 @@
     </el-tabs>
   </el-card>
   <Refuse></Refuse>
+  <RegisterInfo></RegisterInfo>
 </template>
 
 <script>
 import { ref, getCurrentInstance, onMounted, reactive } from "vue";
 import Refuse from "../components/register/Refuse.vue";
+import RegisterInfo from '../components/register/RegisterInfo.vue'
 export default {
   name: "Register",
-  components: { Refuse },
+  components: { Refuse ,RegisterInfo},
   setup() {
     const getCurrentTime = require("../assets/fun/getTime");
     const { proxy } = getCurrentInstance();
@@ -226,16 +226,24 @@ export default {
     let total1 = ref(0);
     // 获取出入库信息
     async function getRegisterList() {
-      let { data } = await proxy.$http.get("/register/register", {
-        params: queryInfo.value,
-      });
-      if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
-      registerList.value = data.result.registerList;
-      registerList1.value = data.result.registerList1;
-      total.value = data.result.total;
-      total1.value = data.result.total1;
+      if (
+        queryInfo.value.query.trim().length === 0 ||
+        queryInfo.value.query.trim().length === 24
+      ) {
+        let { data } = await proxy.$http.get("/register/register", {
+          params: queryInfo.value,
+        });
+        if (data.meta.status !== 200)
+          return proxy.$message.error(data.meta.des);
+        registerList.value = data.result.registerList;
+        registerList1.value = data.result.registerList1;
+        total.value = data.result.total;
+        total1.value = data.result.total1;
+      } else {
+        return proxy.$message.info("订单号错误");
+      }
     }
-    
+
     function handleSizeChange() {
       getRegisterList();
     }
@@ -283,7 +291,9 @@ export default {
       total.value = data.result.total;
       total1.value = data.result.total1;
     }
-
+    function openRegisterInfoDialog(info){
+      proxy.$bus.emit('openRegisterInfo',info);
+    }
     onMounted(() => {
       getRegisterList();
       proxy.$bus.on("getRegisterList", getRegisterList);
@@ -300,6 +310,7 @@ export default {
       receive,
       refuse,
       sort,
+      openRegisterInfoDialog
     };
   },
 };

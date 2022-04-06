@@ -9,13 +9,9 @@
     <el-form ref="buyRef" :model="materialInfo" label-width="70px">
       <el-form-item label="原料">{{ materialInfo.name }}</el-form-item>
       <el-form-item label="供应商">{{ materialInfo.supplier }}</el-form-item>
-      <el-form-item label="生产日期">{{ materialInfo.PD }}</el-form-item>
-      <el-form-item label="有效日期">{{ materialInfo.EXP }}</el-form-item>
+      <el-form-item label="价格">{{ materialInfo.price }}元/千克</el-form-item>
       <el-form-item label="数量"
-        ><el-input-number
-          v-model="number"
-          :step="10"
-          :min="0"
+        ><el-input-number v-model="number" :step="10" :min="0"
       /></el-form-item>
     </el-form>
     <template #footer>
@@ -44,12 +40,24 @@ export default {
     }
     function handleClose() {
       proxy.$refs.buyRef.resetFields();
+      s;
       number.value = 0;
       buyVisible.value = false;
     }
+    function multiply(a, b) {
+      let getMul = (num) =>
+        num.toString().indexOf(".") == -1
+          ? 0
+          : num.toString().split(".")[1].length;
+      let mathpow = (a) => a * 10 ** getMul(a);
+      // console.log((mathpow(a) * mathpow(b)) / 10 ** (getMul(a) + getMul(b)));
+      return (mathpow(a) * mathpow(b)) / 10 ** (getMul(a) + getMul(b));
+    }
+
     // 购买成功 向bill 和 register 中添加对应的信息
     async function insert() {
       if (number.value <= 0) return proxy.$message.info("购买数量必须大于0");
+      let x= multiply(materialInfo.value.price, number.value);
       let billInfo = {
         name: materialInfo.value.name,
         supplier: materialInfo.value.supplier,
@@ -57,13 +65,15 @@ export default {
         EXP: materialInfo.value.EXP,
         price: materialInfo.value.price,
         quantity: number.value,
-        total: materialInfo.value.price * number.value,
+        total:x,
         status: 0,
-        operator:JSON.parse(window.sessionStorage.getItem("loginObj")).username,
-        time:getCurrentTime(),
+        operator: JSON.parse(window.sessionStorage.getItem("loginObj"))
+          .username,
+        time: getCurrentTime(),
       };
       let { data } = await proxy.$http.put("/bill/insert", billInfo);
       if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
+      console.log(data.result._id);
       proxy.$message.success(data.meta.des);
       let registerInfo = {
         id: data.result._id,
@@ -82,13 +92,6 @@ export default {
       buyVisible.value = false;
     }
 
-    // 只能输入数字
-    // function keyUp(e) {
-    //   e.target.value = e.target.value.replace(/[^\d]/g, "");
-    // }
-    // function keyDown(e) {
-    //   e.target.value = e.target.value.replace(/[^\d]/g, "");
-    // }
     onMounted(() => {
       proxy.$bus.on("openBuy", openBuy);
     });

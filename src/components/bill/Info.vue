@@ -22,6 +22,11 @@
         <el-form-item label="总价">{{ infoList.total }}</el-form-item>
         <el-form-item label="下单人">{{ infoList.operator }}</el-form-item>
         <el-form-item label="下单时间">{{ infoList.time }}</el-form-item>
+        <el-form-item label="收货信息">
+          安徽省合肥市庐阳区长江中路49号</el-form-item
+        >
+        <el-form-item label="付款账号"> 6228482918445077111</el-form-item>
+        <el-form-item label="收款账号"> {{ supplierInfo.card}}</el-form-item>
       </el-form>
       <el-timeline v-show="infoList.state === 0">
         <el-timeline-item :timestamp="infoList.time">
@@ -40,9 +45,7 @@
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="handleClose">取消</el-button>
-        <el-button v-print="'#printMe'" type="primary" @click="printInfo"
-          >打印</el-button
-        >
+        <el-button v-print="'#printMe'" type="primary">打印</el-button>
       </span>
     </template>
   </el-dialog>
@@ -56,13 +59,13 @@ export default {
     const { proxy } = getCurrentInstance();
     let infoList = ref({});
     let questionList = ref({});
-
     let infoVisible = ref(false);
-
+    let supplierInfo = ref({});
     function handleClose() {
       infoVisible.value = false;
       proxy.$refs.infoRef.resetFields();
     }
+    
     async function openInfo(info) {
       infoVisible.value = true;
       infoList.value = info;
@@ -74,12 +77,14 @@ export default {
           return proxy.$message.error(data.meta.des);
         questionList.value = data.result;
       }
+         let data1 = await proxy.$http.get("/supplier/name", {
+        params: { name: info.supplier }});
+        supplierInfo.value=data1.data.result;
     }
-    function printInfo() {}
     onMounted(() => {
       proxy.$bus.on("openInfo", openInfo);
     });
-    return { handleClose, infoList, infoVisible, printInfo, questionList };
+    return { handleClose, infoList, infoVisible, questionList, supplierInfo };
   },
 };
 </script>

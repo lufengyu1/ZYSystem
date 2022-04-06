@@ -38,3 +38,7 @@ sup {
     top: 9px !important;
     right: -3px !important;
 }
+
+li {
+    list-style: none;
+}

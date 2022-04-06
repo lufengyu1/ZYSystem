@@ -14,6 +14,7 @@
         <el-form-item label="操作类型">入库</el-form-item>
         <el-form-item label="数量">{{ infoList.quantity }}</el-form-item>
         <el-form-item label="问题原因">{{ infoList.reason }}</el-form-item>
+        <el-form-item label="原料处理">{{ infoList.action }}</el-form-item>
         <el-form-item label="制单人">{{ infoList.operator }}</el-form-item>
         <el-form-item label="制单时间">{{ infoList.time }}</el-form-item>
       </el-form>

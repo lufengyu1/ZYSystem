@@ -21,6 +21,21 @@
           placeholder="Please input"
         />
       </el-form-item>
+      <el-form-item label="原料处理">
+        <template v-if="registerInfo.operation===0">
+          <el-select v-model="value" class="m-2" placeholder="Select">
+            <el-option
+              v-for="item in options"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+        </template>
+        <template v-if="registerInfo.operation===1">
+           <el-input v-model="value"></el-input>
+        </template>
+      </el-form-item>
     </el-form>
     <template #footer>
       <span class="dialog-footer">
@@ -42,10 +57,26 @@ export default {
     let refuseVisible = ref(false);
     let registerInfo = ref({});
     let reason = ref("");
+    const value = ref("");
+    const options = [
+      {
+        value: "退货退款",
+        label: "退货退款",
+      },
+      {
+        value: "仅退货",
+        label: "仅退货",
+      },
+      {
+        value: "仅退款",
+        label: "仅退款",
+      },
+    ];
     // 拒绝原料的信息
     function openRefuse(info) {
       refuseVisible.value = true;
       registerInfo.value = info;
+      console.log(registerInfo.value);
     }
     function handleClose() {
       refuseVisible.value = false;
@@ -54,6 +85,9 @@ export default {
     }
     // 拒绝原料入库 填写原因
     async function refuse() {
+      if(reason.value.trim().length===0||value.value.trim().length===0){
+        return proxy.$message.info("拒绝原因、原料处理不能为空")
+      }
       let time = getCurrentTime();
       let name = JSON.parse(window.sessionStorage.getItem("loginObj")).username;
       registerInfo.value.time = time;
@@ -67,22 +101,32 @@ export default {
       proxy.$message.success(data.meta.des);
       proxy.$bus.emit("getRegisterList");
       // 向question表插入
-      if (registerInfo.value.operation === 1){
+      if (registerInfo.value.operation === 1) {
         let data1 = await proxy.$http.put("/question/insert", {
-        ...registerInfo.value,
-        reason: reason.value,
-      });
+          ...registerInfo.value,
+          reason: reason.value,
+          action: value.value,
+        });
       }
       // 向reject表插入
       if (registerInfo.value.operation === 0) {
         let data2 = await proxy.$http.put("/reject/insert", {
           ...registerInfo.value,
           reason: reason.value,
+          action: value.value,
         });
       }
       handleClose();
     }
-    return { refuseVisible, registerInfo, handleClose, reason, refuse };
+    return {
+      refuseVisible,
+      registerInfo,
+      handleClose,
+      reason,
+      refuse,
+      options,
+      value,
+    };
   },
 };
 </script>

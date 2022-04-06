@@ -79,7 +79,7 @@ export default {
     });
     let total = ref(0);
     async function getQuestionList() {
-      if (queryInfo.value.query.length===0||queryInfo.value.query.length===24) {
+      if (queryInfo.value.query.trim().length===0||queryInfo.value.query.trim().length===24) {
         let { data } = await proxy.$http.get("/question/question", {
           params: queryInfo.value,
         });
