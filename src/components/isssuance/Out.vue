@@ -9,8 +9,6 @@
     <el-form ref="outRef" :model="outInfo" label-width="70px">
       <el-form-item label="原料">{{ outInfo.name }}</el-form-item>
       <el-form-item label="供应商">{{ outInfo.supplier }}</el-form-item>
-      <el-form-item label="生产日期">{{ outInfo.PD }}</el-form-item>
-      <el-form-item label="有效日期">{{ outInfo.EXP }}</el-form-item>
       <el-form-item label="总量">{{ outInfo.quantity }}</el-form-item>
       <el-form-item label="数量">
         <el-input-number
@@ -49,7 +47,7 @@ export default {
         id: outInfo.value._id,
         name: outInfo.value.name,
         operation: 1,
-        quantity:number.value,
+        quantity: number.value,
         operator: "",
         time: "",
         status: 0,
@@ -58,7 +56,7 @@ export default {
       if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
       proxy.$message.success(data.meta.des);
       handleClose();
-      proxy.$bus.emit('getStockList');
+      proxy.$bus.emit("getStockList");
     }
     function openOut(info) {
       outVisible.value = true;

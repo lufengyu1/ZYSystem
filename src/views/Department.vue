@@ -8,32 +8,112 @@
     </el-breadcrumb>
     <!-- 1 -->
     <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
-       <el-tab-pane label="全部" name=""></el-tab-pane>
-      <el-tab-pane v-for="item in depList" :key="item._id" :label="item.name" :name="item.name">{{item.name}}</el-tab-pane>
+      <el-tab-pane label="全部" name="全部"></el-tab-pane>
+      <el-tab-pane
+        v-for="item in depList"
+        :key="item._id"
+        :label="item.name"
+        :name="item.name"
+      ></el-tab-pane>
     </el-tabs>
+    <!-- 2 -->
+    <el-table :data="userList" border stripe max-height="470">
+      <el-table-column type="index" width="50" label="#"> </el-table-column>
+      <el-table-column prop="username" label="用户名" width="180" />
+      <el-table-column prop="name" label="姓名" width="180" />
+      <el-table-column prop="email" label="邮箱" width="180" />
+      <el-table-column prop="phone" label="号码" width="180" />
+      <el-table-column prop="department" label="部门" width="180" />
+      <el-table-column prop="create" label="创建时间" width="" />
+      <el-table-column
+        label="操作"
+        width="180"
+        v-if="login.role === '超级管理员'"
+      >
+        <template #default="scope">
+          <el-button
+            type="primary"
+            size="mini"
+            @click="openDisDepDialog(scope.row)"
+            >分配部门</el-button
+          >
+        </template>
+      </el-table-column>
+    </el-table>
+    <!-- 分页区 -->
+    <el-pagination
+      v-model:currentPage="queryInfo.pageNum"
+      :page-sizes="[5, 10, 15, 20]"
+      v-model:page-size="queryInfo.pageSize"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="total"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+    >
+    </el-pagination>
   </el-card>
+  <DisDep></DisDep>
 </template>
 
 <script >
+import DisDep from "../components/department/DisDep.vue";
 import { ref, onMounted, getCurrentInstance } from "vue";
 export default {
   name: "Department",
+  components: { DisDep },
   setup() {
     const { proxy } = getCurrentInstance();
     let depList = ref([]);
     let activeName = ref("全部");
+    let userList = ref([]);
+    let queryInfo = ref({ query: "", pageNum: 1, pageSize: 5 });
+    let total = ref(0);
+    const login = ref("");
+    // 获取部门列表
     async function getDepList() {
-      let { data } =await proxy.$http.get("/department");
+      let { data } = await proxy.$http.get("/department");
       if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
       depList.value = data.result;
     }
-    const handleClick = (tab, event) => {
-      console.log(tab.props.name);
-    };
+
+    async function handleClick(tab, event) {
+      if (activeName.value === "全部") {
+        queryInfo.value.query = "";
+      } else queryInfo.value.query = activeName.value;
+      const { data } = await proxy.$http.get("/user/department", {
+        params: queryInfo.value,
+      });
+      if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
+      userList.value = data.result.users;
+      total.value = data.result.total;
+    }
+    function handleSizeChange() {
+      handleClick();
+    }
+    function handleCurrentChange() {
+      handleClick();
+    }
+    function openDisDepDialog(info) {
+      proxy.$bus.emit("openDisDep", info);
+    }
     onMounted(() => {
+      login.value = JSON.parse(window.sessionStorage.getItem("loginObj"));
       getDepList();
+      handleClick();
+      proxy.$bus.on("handleClick");
     });
-    return { depList, activeName, handleClick };
+    return {
+      depList,
+      activeName,
+      handleClick,
+      userList,
+      queryInfo,
+      total,
+      login,
+      handleSizeChange,
+      handleCurrentChange,
+      openDisDepDialog,
+    };
   },
 };
 </script>

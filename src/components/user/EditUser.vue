@@ -101,7 +101,7 @@ export default {
           return proxy.$message.error(data.meta.des);
         proxy.$message.success("用户信息更新成功");
         editUserVisible.value = false;
-        proxy.$bus.emit("getUsersList");
+        proxy.$bus.emit("getUserList");
       });
     }
     onMounted(() => {});

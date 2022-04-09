@@ -46,6 +46,9 @@ const routes: Array<RouteRecordRaw> = [
     },{
       path:'/department',
       component:()=>import('../views/Department.vue')
+    },{
+      path:'/statistics',
+      component:()=>import('../views/Statistics.vue')
     }]
   }
 ]

@@ -45,21 +45,25 @@
           </el-switch>
         </template>
       </el-table-column>
-      <el-table-column label="操作" width="">
+      <el-table-column label="操作" min-width="300px">
         <template #default="scope">
           <el-button
             size="mini"
             type="primary"
-            icon="el-icon-edit"
             @click="openEditUserDialog(scope.row)"
-          ></el-button>
+          >编辑用户</el-button>
+           <el-button
+            size="mini"
+            type="success"
+            @click="openDisRoleDialog(scope.row)"
+            :disabled="scope.row.username === 'admin'"
+          >分配角色</el-button>
           <el-button
             size="mini"
             type="danger"
-            icon="el-icon-delete"
             @click="deleteUserById(scope.row)"
             :disabled="scope.row.username === 'admin'"
-          ></el-button>
+          >删除用户</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -77,17 +81,20 @@
   </el-card>
   <AddUser></AddUser>
   <EditUser/>
+  <DisRole/>
 </template>
 
 <script>
 import AddUser from "../components/user/AddUser.vue";
 import EditUser from "../components/user/EditUser.vue";
+import DisRole from "../components/user/DisRole.vue";
 import { ref, onMounted, getCurrentInstance } from "vue";
 export default {
   name: "User",
   components: {
     AddUser,
-    EditUser
+    EditUser,
+    DisRole
   },
   setup() {
     const { proxy } = getCurrentInstance();
@@ -131,6 +138,11 @@ export default {
     function openEditUserDialog(info) {
       proxy.$bus.emit('openEditUser',info);
     }
+    // 打开用户分配角色页面
+    function openDisRoleDialog(info) {
+      proxy.$bus.emit('openDisRole',info);
+    }
+
     // 删除用户
     async function deleteUserById(info) {
       let confirmResult = await proxy
@@ -172,7 +184,8 @@ export default {
       updateState,
       deleteUserById,
       openAddUserDialog,
-      openEditUserDialog
+      openEditUserDialog,
+      openDisRoleDialog
     };
   },
 };

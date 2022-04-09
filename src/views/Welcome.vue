@@ -82,14 +82,14 @@ import EditInfo from "../components/person/EditInfo.vue";
 import Password from "../components/person/Password.vue";
 export default {
   name: "Welcome",
-  components: { EditInfo ,Password},
+  components: { EditInfo, Password },
   setup() {
     const { proxy } = getCurrentInstance();
     const iconObj = ref({
       100: "iconfont icon-users",
       200: "iconfont icon-tijikongjian",
       300: "iconfont icon-danju",
-      400: "iconfont icon-shangpin",
+      400: "iconfont icon-shujutongji",
     });
     let menuList = ref([]);
     let person = ref({});
@@ -143,9 +143,9 @@ export default {
     function openEditPasswordDialog() {
       proxy.$bus.emit("openEditPassword", person.value);
     }
-    onMounted(()=>{
-      proxy.$bus.on('logout',logout);
-    })
+    onMounted(() => {
+      proxy.$bus.on("logout", logout);
+    });
     return {
       menuList,
       isCollapse,

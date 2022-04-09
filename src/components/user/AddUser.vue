@@ -15,6 +15,9 @@
       <el-form-item label="用户名" prop="username">
         <el-input v-model="addUserInfo.username"></el-input>
       </el-form-item>
+      <el-form-item label="姓名" prop="name">
+        <el-input v-model="addUserInfo.name"></el-input>
+      </el-form-item>
       <el-form-item label="密码" prop="password">
         <el-input v-model="addUserInfo.password"></el-input>
       </el-form-item>
@@ -23,6 +26,27 @@
       </el-form-item>
       <el-form-item label="电话" prop="phone">
         <el-input v-model="addUserInfo.phone"></el-input>
+      </el-form-item>
+      <el-form-item label="分配角色">
+        <el-select v-model="addUserInfo.role" class="m-2" placeholder="Select">
+          <el-option
+            v-for="item in roleList"
+            :key="item.name"
+            :label="item.name"
+            :value="item.name"
+            :disabled="item.name === '超级管理员'"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="选择部门">
+        <el-select v-model="addUserInfo.department" class="m-2" placeholder="Select">
+          <el-option
+            v-for="item in depList"
+            :key="item.name"
+            :label="item.name"
+            :value="item.name"
+          />
+        </el-select>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -39,6 +63,7 @@ import { ref, getCurrentInstance, onMounted } from "vue";
 export default {
   name: "AddUser",
   setup() {
+    const getTime=require('../../assets/fun/getTime');
     const { proxy } = getCurrentInstance();
     //  验证邮箱规则
     let checkEmail = (rule, value, cb) => {
@@ -60,9 +85,11 @@ export default {
       password: "123456",
       email: "123@qq.com",
       phone: "13888888888",
-      role: "普通管理员",
+      role: "普通成员",
       state: true,
       isLogin: 0,
+      create: "",
+      department: "开发部",
     });
     let addUserRules = {
       username: [
@@ -73,8 +100,8 @@ export default {
         },
         {
           min: 3,
-          max: 12,
-          message: "长度在 3 到 12 个字符",
+          max: 18,
+          message: "长度在 3 到 18 个字符",
           trigger: "blur",
         },
       ],
@@ -114,27 +141,46 @@ export default {
         },
       ],
     };
+    let roleList = ref([]);
+    let depList = ref([]);
     function handleClose() {
       proxy.$refs.addUserRef.resetFields();
       addUserVisible.value = false;
     }
+    // 打开dialog
     function openAddUser() {
       addUserVisible.value = true;
     }
+    // 发送添加用户请求
     function addUser() {
       proxy.$refs.addUserRef.validate(async (valid) => {
         if (!valid) return console.log(err);
+        addUserInfo.value.create=getTime();
         let { data } = await proxy.$http.put("/user/add", addUserInfo.value);
         if (data.meta.status !== 200) {
           return proxy.$message.error(data.meta.des);
         }
         proxy.$message.success("用户添加成功");
-        proxy.addUserVisible = false;
+        handleClose();
         proxy.$bus.emit("getUserList");
       });
     }
+    // 获取角色列表
+    async function getRoleList() {
+      let { data } = await proxy.$http.get("/role/role");
+      if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
+      roleList.value = data.result;
+    }
+    // 获取部门列表
+    async function getDepList() {
+      let { data } = await proxy.$http.get("/department");
+      if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
+      depList.value = data.result;
+    }
     onMounted(() => {
       proxy.$bus.on("openAddUser", openAddUser);
+      getRoleList();
+      getDepList();
     });
     return {
       addUserVisible,
@@ -142,6 +188,8 @@ export default {
       addUserRules,
       handleClose,
       addUser,
+      roleList,
+      depList,
     };
   },
 };
