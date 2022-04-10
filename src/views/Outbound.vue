@@ -6,8 +6,31 @@
       <el-breadcrumb-item>数据统计</el-breadcrumb-item>
       <el-breadcrumb-item>原料出库数据统计</el-breadcrumb-item>
     </el-breadcrumb>
-    
-    <div id="in" style="width: 1200px; height: 510px"></div>
+    <el-tabs v-model="activeName" class="demo-tabs" style="max-height: 560px">
+      <el-tab-pane label="月份" name="月份">
+        <!-- 1 -->
+        <div class="year">
+          选择年份：<el-select
+            v-model="year"
+            class="m-2"
+            placeholder="Select"
+            @change="getDoneList"
+          >
+            <el-option
+              v-for="item in years"
+              :key="item"
+              :label="item"
+              :value="item"
+            />
+          </el-select>
+        </div>
+        <!-- 2 -->
+        <div id="outMon" style="width: 1200px; height: 500px"></div
+      ></el-tab-pane>
+      <el-tab-pane label="年份" name="年份"
+        ><div id="outYear" style="width: 1200px; height: 500px"></div
+      ></el-tab-pane>
+    </el-tabs>
   </el-card>
 </template>
 
@@ -19,8 +42,14 @@ export default {
   setup() {
     const { proxy } = getCurrentInstance();
     let doneList = ref([]);
-    let outList = reactive([]);
+    let outList = reactive({});
+    let yearList = reactive([]);
+    let years = ref([]);
+    let year = ref("2022");
+    let activeName = ref("月份");
     async function getDoneList() {
+      outList = {};
+      yearList = [];
       let { data } = await proxy.$http.get("/register/done");
       if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
       doneList.value = data.result;
@@ -28,6 +57,7 @@ export default {
       for (let item of doneList.value) {
         let y = item.time.split("-")[0];
         let m = item.time.split("-")[1];
+        let flag1 = false;
         let flag2 = false;
         if (!(y in outList)) outList[y] = [];
         if (item.operation === 1) {
@@ -37,38 +67,64 @@ export default {
             k[m] = item.quantity;
             outList[y].push(k);
             continue;
-          }
-          // b
-          for (let i of outList[y]) {
-            if (item.name === i.name) {
-              // 判断对象i 是否有这个属性
-              if (!(m in i)) {
-                i[m] = 0;
+          } else {
+            // b
+            for (let i of outList[y]) {
+              if (item.name === i.name) {
+                // 判断对象i 是否有这个属性
+                if (!(m in i)) {
+                  i[m] = 0;
+                }
+                i[m] += item.quantity;
+                flag1 = true;
+                continue;
               }
-              i[m] += item.quantity;
-              flag2 = true;
+            }
+            // c
+            if (!flag1) {
+              let k = { name: item.name };
+              k[m] = item.quantity;
+              outList[y].push(k);
               continue;
             }
           }
-          // c
-          if (!flag2) {
+
+          //
+          //
+          //
+          if (yearList.length === 0) {
             let k = { name: item.name };
-            k[m] = item.quantity;
-            outList[y].push(k);
-            continue;
+            k[y] = item.quantity;
+            yearList.push(k);
+          } else {
+            for (let i of yearList) {
+              if (item.name === i.name) {
+                if (!(y in i)) {
+                  i[y] = 0;
+                }
+                i[y] += item.quantity;
+                flag2 = true;
+                continue;
+              }
+            }
+            if (!flag2) {
+              let k = { name: item.name };
+              k[y] = item.quantity;
+              yearList.push(k);
+            }
           }
         }
       }
-      console.log(outList);
+      years.value = Object.keys(outList);
+      let series = [];
+      for (let i = 0; i < years.value.length; i++) {
+        series.push({ type: "bar" });
+      }
       let option1 = {
         title: { text: "原料出库数据统计" },
         legend: {},
         tooltip: {},
         dataset: {
-          // 用 dimensions 指定了维度的顺序。直角坐标系中，如果 X 轴 type 为 category，
-          // 默认把第一个维度映射到 X 轴上，后面维度映射到 Y 轴上。
-          // 如果不指定 dimensions，也可以通过指定 series.encode
-          // 完成映射，参见后文。
           dimensions: [
             "name",
             "01",
@@ -84,7 +140,7 @@ export default {
             "11",
             "12",
           ],
-          source: outList[2022],
+          source: outList[year.value],
         },
         xAxis: { type: "category" },
         yAxis: {},
@@ -103,18 +159,42 @@ export default {
           { type: "bar" },
         ],
       };
-
-      let myChart1 = echarts.init(document.getElementById("in"));
+      let option2 = {
+        title: { text: "" },
+        legend: {},
+        tooltip: {},
+        dataset: {
+          dimensions: ["name", ...years.value],
+          source: yearList,
+        },
+        xAxis: { type: "category" },
+        yAxis: {},
+        series: series,
+      };
+      let myChart1 = echarts.init(document.getElementById("outMon"));
+      let myChart2 = echarts.init(document.getElementById("outYear"));
 
       myChart1.setOption(option1);
+      myChart2.setOption(option2);
     }
     onMounted(() => {
       getDoneList();
     });
-    return { doneList };
+    return {
+      doneList,
+      doneList,
+      year,
+      years,
+      getDoneList,
+      activeName,
+      yearList,
+    };
   },
 };
 </script>
 
 <style lang="less" scoped>
+.year {
+  margin-bottom: 15px;
+}
 </style>

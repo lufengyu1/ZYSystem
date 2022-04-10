@@ -40,7 +40,6 @@ export default {
     }
     function handleClose() {
       proxy.$refs.buyRef.resetFields();
-      s;
       number.value = 0;
       buyVisible.value = false;
     }
