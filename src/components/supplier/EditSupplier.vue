@@ -21,6 +21,20 @@
       <el-form-item label="地址" prop="address">
         <el-input v-model="editSupplierInfo.address"></el-input>
       </el-form-item>
+      <el-form-item label="开户行" prop="bank">
+        <el-select
+          v-model="editSupplierInfo.bank"
+          class="m-2"
+          placeholder="请选择银行"
+        >
+          <el-option
+            v-for="item in banks"
+            :key="item"
+            :label="item"
+            :value="item"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="银行卡" prop="card">
         <el-input v-model="editSupplierInfo.card"></el-input>
       </el-form-item>
@@ -38,11 +52,17 @@
 </template>
 
 <script>
-import { ref, getCurrentInstance, onMounted } from "vue";
+import { ref, getCurrentInstance, onMounted ,reactive} from "vue";
 export default {
   name: "EditSupplier",
   setup() {
     const { proxy } = getCurrentInstance();
+    const banks = reactive([
+      "中国银行",
+      "中国工商银行",
+      "中国建设银行",
+      "中国农业银行",
+    ]);
     //  验证手机号规则
     let checkPhone = (rule, value, cb) => {
       const regPhone =
@@ -85,12 +105,15 @@ export default {
     async function editSupplier() {
       proxy.$refs.editSupplierRef.validate(async (valid) => {
         if (!valid) return console.log("error");
-        console.log(editSupplierInfo.value);
-        let {data}=await proxy.$http.put("/supplier/update",editSupplierInfo.value);
-        if(data.meta.status!==200) return proxy.$message.error(data.meta.des);
+        let { data } = await proxy.$http.put(
+          "/supplier/update",
+          editSupplierInfo.value
+        );
+        if (data.meta.status !== 200)
+          return proxy.$message.error(data.meta.des);
         proxy.$message.success("供应商信息更新成功");
-        proxy.$bus.emit('getSupplierList');
-        editSupplierVisible.value = false;
+        proxy.$bus.emit("getSupplierList");
+        handleClose();
       });
     }
     onMounted(() => {
@@ -100,6 +123,7 @@ export default {
       editSupplierVisible,
       editSupplierInfo,
       editSupplierRules,
+      banks,
       editSupplier,
       handleClose,
     };

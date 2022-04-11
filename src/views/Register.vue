@@ -1,5 +1,5 @@
-<template>
-  <el-card>
+<template >
+  <el-card style="height:640px">
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>原料库存管理</el-breadcrumb-item>
@@ -87,8 +87,25 @@
                 @click="refuse(scope.row)"
                 >拒绝</el-button
               >
-              <i v-if="scope.row.status === 1">已入库 <el-button size="mini" @click="openRegisterInfoDialog(scope.row)" style="float:right"> 查看详情</el-button></i>
-              <i v-if="scope.row.status === 2">已拒收  <el-button size="mini" @click="openRegisterInfoDialog(scope.row)" style="float:right">查看详情</el-button></i>
+              <i v-if="scope.row.status === 1"
+                >已入库
+                <el-button
+                  size="mini"
+                  @click="openRegisterInfoDialog(scope.row)"
+                  style="float: right"
+                >
+                  查看详情</el-button
+                ></i
+              >
+              <i v-if="scope.row.status === 2"
+                >已拒收
+                <el-button
+                  size="mini"
+                  @click="openRegisterInfoDialog(scope.row)"
+                  style="float: right"
+                  >查看详情</el-button
+                ></i
+              >
             </template>
           </el-table-column>
         </el-table>
@@ -116,14 +133,14 @@
             <el-input
               placeholder="请输入订单号"
               class="input-with-select"
-              v-model="queryInfo.query1"
+              v-model="queryInfo1.query1"
               clearable
-              clear="getRegisterList"
+              clear="getToDosList"
             >
               <template #append>
                 <el-button
                   icon="el-icon-search"
-                  @click="getRegisterList"
+                  @click="getToDosList"
                 ></el-button>
               </template>
             </el-input>
@@ -183,9 +200,9 @@
           </el-table-column>
         </el-table>
         <el-pagination
-          v-model:currentPage="queryInfo.pageNum1"
+          v-model:currentPage="queryInfo1.pageNum1"
           :page-sizes="[5, 10, 15, 20]"
-          v-model:page-size="queryInfo.pageSize1"
+          v-model:page-size="queryInfo1.pageSize1"
           layout="total, sizes, prev, pager, next, jumper"
           :total="total1"
           @size-change="handleSizeChange"
@@ -202,48 +219,65 @@
 <script>
 import { ref, getCurrentInstance, onMounted, reactive } from "vue";
 import Refuse from "../components/register/Refuse.vue";
-import RegisterInfo from '../components/register/RegisterInfo.vue'
+import RegisterInfo from "../components/register/RegisterInfo.vue";
 export default {
   name: "Register",
-  components: { Refuse ,RegisterInfo},
+  components: { Refuse, RegisterInfo },
   setup() {
     const getCurrentTime = require("../assets/fun/getTime");
     const { proxy } = getCurrentInstance();
     let registerList = ref([]);
     let registerList1 = ref([]);
     let queryInfo = ref({
-      query1: "",
       query: "",
-      pageNum: 1,
       pageSize: 5,
-      pageNum1: 1,
-      pageSize1: 5,
+      pageNum: 1,
       type: "time",
       num: 1,
     });
-
+    let queryInfo1 = ref({
+      query1: "",
+      pageSize1: 5,
+      pageNum1: 1,
+      type: "time",
+      num: 1,
+    });
     let total = ref(0);
     let total1 = ref(0);
-    // 获取出入库信息
+    // 获取全部出入库信息
     async function getRegisterList() {
       if (
         queryInfo.value.query.trim().length === 0 ||
         queryInfo.value.query.trim().length === 24
       ) {
-        let { data } = await proxy.$http.get("/register/register", {
+        let { data } = await proxy.$http.get("/register/all", {
           params: queryInfo.value,
         });
         if (data.meta.status !== 200)
           return proxy.$message.error(data.meta.des);
         registerList.value = data.result.registerList;
-        registerList1.value = data.result.registerList1;
         total.value = data.result.total;
+      } else {
+        return proxy.$message.info("订单号错误");
+      }
+    }
+    // 获取未处理的出入库信息
+    async function getToDosList() {
+      if (
+        queryInfo1.value.query1.trim().length === 0 ||
+        queryInfo1.value.query1.trim().length === 24
+      ) {
+        let { data } = await proxy.$http.get("/register/todos", {
+          params: queryInfo1.value,
+        });
+        if (data.meta.status !== 200)
+          return proxy.$message.error(data.meta.des);
+        registerList1.value = data.result.registerList1;
         total1.value = data.result.total1;
       } else {
         return proxy.$message.info("订单号错误");
       }
     }
-
     function handleSizeChange() {
       getRegisterList();
     }
@@ -260,7 +294,6 @@ export default {
       let { data } = await proxy.$http.put("/register/update", info);
       if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
       proxy.$message.success(data.meta.des);
-      getRegisterList();
       let data1 = await proxy.$http.put("/stock/update", { ...info, type: 0 });
       let data2 = await proxy.$http.put("/bill/update", info);
       if (info.operation === 0) {
@@ -270,6 +303,8 @@ export default {
         let data4 = await proxy.$http.put("/isssuance/update", info);
         proxy.$bus.emit("getStockList");
       }
+      getRegisterList();
+      getToDosList();
     }
     // 拒绝入库时 打开详细页面
     function refuse(info) {
@@ -282,35 +317,37 @@ export default {
       queryInfo.value.type = key;
       queryInfo.value.num = value;
       //
-      let { data } = await proxy.$http.get("/register/register", {
+      let { data } = await proxy.$http.get("/register/all", {
         params: queryInfo.value,
       });
       if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
       registerList.value = data.result.registerList;
-      registerList1.value = data.result.registerList1;
       total.value = data.result.total;
-      total1.value = data.result.total1;
     }
-    function openRegisterInfoDialog(info){
-      proxy.$bus.emit('openRegisterInfo',info);
+    function openRegisterInfoDialog(info) {
+      proxy.$bus.emit("openRegisterInfo", info);
     }
     onMounted(() => {
       getRegisterList();
+      getToDosList();
       proxy.$bus.on("getRegisterList", getRegisterList);
+      proxy.$bus.on("getToDosList", getToDosList);
     });
     return {
       registerList,
       registerList1,
       queryInfo,
+      queryInfo1,
       total,
       total1,
       handleSizeChange,
       handleCurrentChange,
       getRegisterList,
+      getToDosList,
       receive,
       refuse,
       sort,
-      openRegisterInfoDialog
+      openRegisterInfoDialog,
     };
   },
 };

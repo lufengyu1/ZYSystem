@@ -22,7 +22,7 @@
         />
       </el-form-item>
       <el-form-item label="原料处理">
-        <template v-if="registerInfo.operation===0">
+        <template v-if="registerInfo.operation === 0">
           <el-select v-model="value" class="m-2" placeholder="Select">
             <el-option
               v-for="item in options"
@@ -32,8 +32,8 @@
             />
           </el-select>
         </template>
-        <template v-if="registerInfo.operation===1">
-           <el-input v-model="value"></el-input>
+        <template v-if="registerInfo.operation === 1">
+          <el-input v-model="value"></el-input>
         </template>
       </el-form-item>
     </el-form>
@@ -76,7 +76,6 @@ export default {
     function openRefuse(info) {
       refuseVisible.value = true;
       registerInfo.value = info;
-      console.log(registerInfo.value);
     }
     function handleClose() {
       refuseVisible.value = false;
@@ -85,8 +84,8 @@ export default {
     }
     // 拒绝原料入库 填写原因
     async function refuse() {
-      if(reason.value.trim().length===0||value.value.trim().length===0){
-        return proxy.$message.info("拒绝原因、原料处理不能为空")
+      if (reason.value.trim().length === 0 || value.value.trim().length === 0) {
+        return proxy.$message.info("拒绝原因、原料处理不能为空");
       }
       let time = getCurrentTime();
       let name = JSON.parse(window.sessionStorage.getItem("loginObj")).username;
@@ -116,6 +115,9 @@ export default {
           action: value.value,
         });
       }
+      proxy.$bus.emit("getRegisterList");
+      proxy.$bus.emit("getToDosList");
+
       handleClose();
     }
     return {

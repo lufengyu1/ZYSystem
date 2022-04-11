@@ -21,6 +21,20 @@
       <el-form-item label="地址" prop="address">
         <el-input v-model="addSupplierInfo.address"></el-input>
       </el-form-item>
+      <el-form-item label="开户行" prop="bank">
+        <el-select
+          v-model="addSupplierInfo.bank"
+          class="m-2"
+          placeholder="请选择银行"
+        >
+          <el-option
+            v-for="item in banks"
+            :key="item"
+            :label="item"
+            :value="item"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="银行卡" prop="card">
         <el-input v-model="addSupplierInfo.card"></el-input>
       </el-form-item>
@@ -38,7 +52,7 @@
 </template>
 
 <script>
-import { ref, getCurrentInstance, onMounted } from "vue";
+import { ref, getCurrentInstance, onMounted, reactive } from "vue";
 export default {
   name: "AddSuupplier",
   setup() {
@@ -57,6 +71,12 @@ export default {
       if (regCard.test(value)) return cb();
       cb(new Error("请输入合法的银行卡号"));
     };
+    const banks = reactive([
+      "中国银行",
+      "中国工商银行",
+      "中国建设银行",
+      "中国农业银行",
+    ]);
     let addSupplierVisible = ref(false);
     let addSupplierInfo = ref({
       name: "供应商",
@@ -65,7 +85,8 @@ export default {
       phone: "13888888888",
       address: "安徽",
       children: [],
-      card: "1234658615",
+      card: "6228482918445077176",
+      bank: "",
     });
     let addSupplierRules = ref({
       name: [{ required: true, message: "请输入供应商名", trigger: "blur" }],
@@ -97,7 +118,7 @@ export default {
     async function addSupplier() {
       addSupplierInfo.value.CD = getCurrentTime();
       proxy.$refs.addSupplierRef.validate(async (valid) => {
-        if(!valid) return console.log("err");
+        if (!valid) return console.log("err");
         let { data } = await proxy.$http.put(
           "/supplier/insert",
           addSupplierInfo.value
@@ -106,8 +127,8 @@ export default {
           return proxy.$message.error(data.meta.des);
         proxy.$message.success("供应商添加成功");
         proxy.$refs.addSupplierRef.resetFields();
-        addSupplierVisible.value = false;
         proxy.$bus.emit("getSupplierList");
+        handleClose();
       });
     }
     onMounted(() => {
@@ -119,6 +140,7 @@ export default {
       addSupplierInfo,
       addSupplierRules,
       addSupplier,
+      banks,
     };
   },
 };

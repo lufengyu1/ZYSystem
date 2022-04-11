@@ -1,5 +1,5 @@
 <template>
-  <el-card>
+  <el-card style="height:640px">
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>原料管理</el-breadcrumb-item>
@@ -81,12 +81,20 @@ export default {
     });
     let total = ref(0);
     async function getRejectList() {
-      let { data } = await proxy.$http.get("/reject/reject", {
-        params: queryInfo.value,
-      });
-      if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
-      rejectList.value = data.result.rejectList;
-      total.value = data.result.total;
+      if (
+        queryInfo.value.query.trim().length === 0 ||
+        queryInfo.value.query.trim().length === 24
+      ) {
+        let { data } = await proxy.$http.get("/reject/reject", {
+          params: queryInfo.value,
+        });
+        if (data.meta.status !== 200)
+          return proxy.$message.error(data.meta.des);
+        rejectList.value = data.result.rejectList;
+        total.value = data.result.total;
+      } else {
+        return proxy.$message.info("订单号错误");
+      }
     }
 
     function handleSizeChange() {

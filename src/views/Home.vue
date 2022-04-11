@@ -1,5 +1,5 @@
 <template>
-  <el-card class="card">
+  <el-card class="card" >
     <!-- <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item>首页</el-breadcrumb-item>
     </el-breadcrumb> -->
@@ -165,13 +165,12 @@ export default {
 
 <style lang="less" scoped>
 .card {
-  height: 600px;
+  height: 640px;
 }
 
 .first {
   background-color: #777;
   color: #fff;
-  // height:40px;
   margin: 0;
   padding: 0 !important;
   margin-bottom: 20px;

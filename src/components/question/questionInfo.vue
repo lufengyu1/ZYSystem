@@ -2,29 +2,67 @@
   <el-dialog
     v-model="infoVisible"
     title=""
-    width="30%"
+    width="50%"
     :before-close="handleClose"
     :close-on-click-modal="false"
   >
     <div id="printMe">
-        <h1>问题账单</h1>
-      <el-form ref="infoRef" :model="infoList" label-width="70px">
-        <el-form-item label="订单号">{{ infoList._id }}</el-form-item>
-        <el-form-item label="原料">{{ infoList.name }}</el-form-item>
-        <el-form-item label="操作类型">出库</el-form-item>
-        <el-form-item label="数量">{{ infoList.quantity }}</el-form-item>
-        <el-form-item label="问题原因">{{ infoList.reason }}</el-form-item>
-        <el-form-item label="原料处理">{{ infoList.action }}</el-form-item>
-        <el-form-item label="制单人">{{ infoList.operator }}</el-form-item>
-        <el-form-item label="制单时间">{{ infoList.time }}</el-form-item>
-      </el-form>
+     
+      <el-descriptions class="margin-top" :column="2" title="问题账单" border>
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">订单号</div>
+          </template>
+          {{ infoList._id }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">原料</div>
+          </template>
+          {{ infoList.name }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">操作类型</div>
+          </template>
+          出库
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">数量</div>
+          </template>
+          {{ infoList.quantity }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">问题原因</div>
+          </template>
+          {{ infoList.reason }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">原料处理</div>
+          </template>
+          {{ infoList.action }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">制单人</div>
+          </template>
+          {{ infoList.operator }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">下单时间</div>
+          </template>
+          {{ infoList.time }}
+        </el-descriptions-item>
+      </el-descriptions>
     </div>
     <template #footer>
       <span class="dialog-footer">
         <el-button @click="handleClose">取消</el-button>
-        <el-button v-print="'#printMe'" type="primary"
-          >打印</el-button
-        >
+        <el-button v-print="'#printMe'" type="primary">打印</el-button>
       </span>
     </template>
   </el-dialog>
@@ -40,7 +78,6 @@ export default {
     let infoVisible = ref(false);
     function handleClose() {
       infoVisible.value = false;
-      proxy.$refs.infoRef.resetFields();
     }
     function openQuestionInfo(info) {
       infoVisible.value = true;

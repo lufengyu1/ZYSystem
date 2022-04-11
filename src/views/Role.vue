@@ -1,5 +1,5 @@
 <template>
-  <el-card>
+  <el-card style="height:640px">
     <!-- 面包屑导航 -->
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>

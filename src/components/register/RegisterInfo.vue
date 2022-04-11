@@ -2,32 +2,60 @@
   <el-dialog
     v-model="infoVisible"
     title=""
-    width="30%"
+    width="50%"
     :before-close="handleClose"
     :close-on-click-modal="false"
   >
     <div id="printMe">
-      <h1 v-if="infoList.operation === 0">入库单</h1>
-      <h1 v-if="infoList.operation === 1">出库单</h1>
-      <el-form ref="infoRef" :model="infoList" label-width="70px">
-        <el-form-item label="订单号">{{ infoList._id }}</el-form-item>
-        <el-form-item label="原料">{{ infoList.name }}</el-form-item>
-        <el-form-item label="操作类型"
-          ><template v-if="infoList.operation === 0">入库</template>
-          <template v-if="infoList.operation === 1"
-            >出库</template
-          ></el-form-item
-        >
-        <el-form-item label="数量">{{ infoList.quantity }}</el-form-item>
-        <el-form-item label="制单人">{{ infoList.operator }}</el-form-item>
-        <el-form-item label="制单时间">{{ infoList.time }}</el-form-item>
-        <el-form-item label="状态">
-          <template v-if="infoList.status === 1">已接受</template
-          ><template v-if="infoList.status === 2"
-            >已拒收</template
-          ></el-form-item
-        >
-      </el-form>
+      <el-descriptions
+        class="margin-top"
+        :column="2"
+        :title="infoList.operation === 0 ? '入库单' : '出库单'"
+        border
+      >
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">订单号</div>
+          </template>
+          {{ infoList._id }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">原料</div>
+          </template>
+          {{ infoList.name }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">操作类型</div>
+          </template>
+          {{ infoList.operation === 0 ? "入库" : "出库" }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">数量</div>
+          </template>
+          {{ infoList.quantity }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">制单人</div>
+          </template>
+          {{ infoList.operator }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">下单时间</div>
+          </template>
+          {{ infoList.time }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">状态</div>
+          </template>
+          {{ infoList.status === 1 ? "已接受" : "已拒收" }}
+        </el-descriptions-item>
+      </el-descriptions>
     </div>
     <template #footer>
       <span class="dialog-footer">
@@ -48,7 +76,6 @@ export default {
     let infoVisible = ref(false);
     function handleClose() {
       infoVisible.value = false;
-      proxy.$refs.infoRef.resetFields();
     }
     function openRegisterInfo(info) {
       infoVisible.value = true;

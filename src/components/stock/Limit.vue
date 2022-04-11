@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     v-model="limitVisible"
-    title="拒收原因"
+    title="设置原料下限"
     width="50%"
     :before-close="handleClose"
     :close-on-click-modal="false"

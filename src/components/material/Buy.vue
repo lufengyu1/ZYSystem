@@ -49,7 +49,6 @@ export default {
           ? 0
           : num.toString().split(".")[1].length;
       let mathpow = (a) => a * 10 ** getMul(a);
-      // console.log((mathpow(a) * mathpow(b)) / 10 ** (getMul(a) + getMul(b)));
       return (mathpow(a) * mathpow(b)) / 10 ** (getMul(a) + getMul(b));
     }
 
@@ -72,7 +71,6 @@ export default {
       };
       let { data } = await proxy.$http.put("/bill/insert", billInfo);
       if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
-      console.log(data.result._id);
       proxy.$message.success(data.meta.des);
       let registerInfo = {
         id: data.result._id,
