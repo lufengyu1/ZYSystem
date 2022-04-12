@@ -10,6 +10,7 @@
       <el-form-item label="原料">{{ outInfo.name }}</el-form-item>
       <el-form-item label="供应商">{{ outInfo.supplier }}</el-form-item>
       <el-form-item label="总量">{{ outInfo.quantity }}</el-form-item>
+      <el-form-item label="可用">{{ outInfo.userable }}</el-form-item>
       <el-form-item label="数量">
         <el-input-number
           v-model="number"
@@ -52,11 +53,18 @@ export default {
         time: "",
         status: 0,
       };
-      let { data } = await proxy.$http.put("/register/insert", registerInfo);
-      if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
-      proxy.$message.success(data.meta.des);
-      handleClose();
-      proxy.$bus.emit("getStockList");
+      // 更新出库列表
+      let data1 = await proxy.$http.put("/isssuance/update1", registerInfo);
+      if (data1.data.meta.status !== 200) {
+        return proxy.$message.error(data1.data.meta.des);
+      } else {
+        let { data } = await proxy.$http.put("/register/insert", registerInfo);
+        if (data.meta.status !== 200)
+          return proxy.$message.error(data.meta.des);
+        proxy.$message.success(data.meta.des);
+        handleClose();
+        proxy.$bus.emit("getIsssuanceList");
+      }
     }
     function openOut(info) {
       outVisible.value = true;

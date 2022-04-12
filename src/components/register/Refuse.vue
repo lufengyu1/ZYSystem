@@ -106,6 +106,11 @@ export default {
           reason: reason.value,
           action: value.value,
         });
+        // 更新isssuance
+        let data3=await proxy.$http.put('/isssuance/update1',{
+          id:registerInfo.value.id,
+          quantity:-registerInfo.value.quantity,
+        })
       }
       // 向reject表插入
       if (registerInfo.value.operation === 0) {
@@ -115,6 +120,7 @@ export default {
           action: value.value,
         });
       }
+
       proxy.$bus.emit("getRegisterList");
       proxy.$bus.emit("getToDosList");
 

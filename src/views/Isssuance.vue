@@ -16,7 +16,10 @@
           @clear="getIsssuanceList"
         >
           <template #append>
-            <el-button icon="el-icon-search" @click="getIsssuanceList"></el-button>
+            <el-button
+              icon="el-icon-search"
+              @click="getIsssuanceList"
+            ></el-button>
           </template>
         </el-input>
       </el-col>
@@ -35,8 +38,12 @@
         width="220"
         label="供应商"
       ></el-table-column>
-      <el-table-column prop="time" width="220" label="入库时间"></el-table-column>
-     
+      <el-table-column
+        prop="time"
+        width="220"
+        label="入库时间"
+      ></el-table-column>
+
       <el-table-column
         prop="quantity"
         width="150"
@@ -44,6 +51,12 @@
         sortable="custom"
         :sort-orders="['ascending', 'descending']"
       ></el-table-column>
+      <el-table-column
+        prop="userable"
+        width="220"
+        label="可用"
+      ></el-table-column>
+      <el-table-column prop="todo" width="220" label="待处理"></el-table-column>
       <el-table-column width="220" label="出库"
         ><template #default="scope">
           <el-button
@@ -86,7 +99,7 @@ export default {
     let queryInfo = ref({
       pageNum: 1,
       pageSize: 5,
-      query:''
+      query: "",
     });
     let total = ref(0);
     async function getIsssuanceList() {
@@ -109,6 +122,7 @@ export default {
     async function sort() {}
     onMounted(() => {
       getIsssuanceList();
+      proxy.$bus.on("getIsssuanceList");
     });
     return {
       isssuanceList,
@@ -118,7 +132,7 @@ export default {
       handleCurrentChange,
       openOutDialog,
       sort,
-      getIsssuanceList
+      getIsssuanceList,
     };
   },
 };

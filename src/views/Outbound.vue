@@ -1,5 +1,5 @@
 <template>
-  <el-card style="height:640px">
+  <el-card style="height: 640px">
     <!-- 面包屑导航 -->
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
@@ -61,15 +61,17 @@ export default {
         let flag2 = false;
         if (!(y in outList)) outList[y] = [];
         if (item.operation === 1) {
-          // a
+          // a判断是入库还是出库
           if (outList[y].length === 0) {
+            // outList表为空时,直接插入
             let k = { name: item.name };
             k[m] = item.quantity;
             outList[y].push(k);
-            continue;
+            // continue;
           } else {
             // b
             for (let i of outList[y]) {
+              // flag1==true判断是否有该月份的数据，有就相加
               if (item.name === i.name) {
                 // 判断对象i 是否有这个属性
                 if (!(m in i)) {
@@ -82,14 +84,14 @@ export default {
             }
             // c
             if (!flag1) {
+              // flag1==false,直接插入
               let k = { name: item.name };
               k[m] = item.quantity;
               outList[y].push(k);
-              continue;
+              // continue;
             }
           }
 
-          //
           //
           //
           if (yearList.length === 0) {
@@ -115,13 +117,14 @@ export default {
           }
         }
       }
+      console.log(yearList);
       years.value = Object.keys(outList);
       let series = [];
       for (let i = 0; i < years.value.length; i++) {
         series.push({ type: "bar" });
       }
       let option1 = {
-        title: { text: "原料出库数据统计" },
+        title: { text: year.value + "原料出库数据统计" },
         legend: {},
         tooltip: {},
         dataset: {
