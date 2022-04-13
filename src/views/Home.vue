@@ -149,7 +149,7 @@ export default {
       getStockList();
       todo();
       getTime();
-      proxy.$bus.on("getStockList", times);
+      proxy.$bus.on("getStockList", getStockList);
     });
     return {
       number,

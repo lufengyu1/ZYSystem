@@ -17,13 +17,13 @@
       ></el-tab-pane>
     </el-tabs>
     <!-- 2 -->
-    <el-table :data="userList" border stripe max-height="470">
+    <el-table :data="userList" border stripe max-height="430">
       <el-table-column type="index" width="50" label="#"> </el-table-column>
       <el-table-column prop="username" label="用户名" width="180" />
       <el-table-column prop="name" label="姓名" width="180" />
       <el-table-column prop="email" label="邮箱" width="180" />
       <el-table-column prop="phone" label="号码" width="180" />
-      <el-table-column prop="department" label="部门" width="180" />
+      <el-table-column prop="department" label="部门" width="100" />
       <el-table-column prop="create" label="创建时间" width="" />
       <el-table-column
         label="操作"
@@ -40,7 +40,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <!-- 分页区 -->
+    <!-- 3 -->
     <el-pagination
       v-model:currentPage="queryInfo.pageNum"
       :page-sizes="[5, 10, 15, 20]"
@@ -51,16 +51,22 @@
       @current-change="handleCurrentChange"
     >
     </el-pagination>
+    <!-- 4 -->
+    <el-button class="addDep" type="primary" @click="openAddDepDialog">
+      添加部门</el-button
+    >
   </el-card>
   <DisDep></DisDep>
+  <AddDep></AddDep>
 </template>
 
 <script >
 import DisDep from "../components/department/DisDep.vue";
+import AddDep from "../components/department/AddDep";
 import { ref, onMounted, getCurrentInstance } from "vue";
 export default {
   name: "Department",
-  components: { DisDep },
+  components: { DisDep, AddDep },
   setup() {
     const { proxy } = getCurrentInstance();
     let depList = ref([]);
@@ -76,6 +82,7 @@ export default {
       depList.value = data.result;
     }
 
+    // 点击导航栏 ，重新渲染列表
     async function handleClick(tab, event) {
       if (activeName.value === "全部") {
         queryInfo.value.query = "";
@@ -87,20 +94,26 @@ export default {
       userList.value = data.result.users;
       total.value = data.result.total;
     }
+    // 分页
     function handleSizeChange() {
       handleClick();
     }
     function handleCurrentChange() {
       handleClick();
     }
+    // 打开分配部门dialog
     function openDisDepDialog(info) {
       proxy.$bus.emit("openDisDep", info);
+    }
+    function openAddDepDialog() {
+      proxy.$bus.emit("openAddDep");
     }
     onMounted(() => {
       login.value = JSON.parse(window.sessionStorage.getItem("loginObj"));
       getDepList();
       handleClick();
-      proxy.$bus.on("handleClick");
+      proxy.$bus.on("handleClick", handleClick);
+      proxy.$bus.on("getDepList", getDepList);
     });
     return {
       depList,
@@ -113,10 +126,14 @@ export default {
       handleSizeChange,
       handleCurrentChange,
       openDisDepDialog,
+      openAddDepDialog,
     };
   },
 };
 </script>
 
 <style lang="less" scoped>
+.addDep {
+  float: right;
+}
 </style>

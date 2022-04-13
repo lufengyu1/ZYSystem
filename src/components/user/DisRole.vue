@@ -62,7 +62,7 @@ export default {
         role:role.value,
       });
       if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
-      proxy.$message.success("用户角色更新成功");
+      proxy.$message.success("用户:"+disRoleInfo.value.username+",角色更新成功");
       handleClose();
       role.value='普通成员';
       proxy.$bus.emit("getUserList");

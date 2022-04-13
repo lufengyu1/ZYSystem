@@ -5,9 +5,35 @@
       <div class="container_form container--signup">
         <div class="form" id="form1">
           <h2 class="form_title">找回密码</h2>
-          <input type="text" placeholder="User" class="input" />
+          <!-- <input type="text" placeholder="User" class="input" />
           <input type="email" placeholder="Email" class="input" />
-          <input type="password" placeholder="Password" class="input" />
+          <input type="password" placeholder="Password" class="input" /> -->
+          <el-form class="" ref="forgetRef" label-width="0px" :model="forget">
+            <el-form-item prop="username">
+              <el-input
+                v-model="forget.username"
+                placeholder="用户名"
+              ></el-input>
+            </el-form-item>
+            <el-form-item prop="password">
+              <el-input
+                v-model="forget.password"
+                placeholder="新密码"
+              ></el-input>
+            </el-form-item>
+            <el-form-item prop="newPassword">
+              <el-input
+                v-model="forget.newPassword"
+                placeholder="确认密码"
+              ></el-input>
+            </el-form-item>
+            <el-form-item prop="yzm">
+              <el-input
+                v-model="forget.yzm"
+                placeholder="验证码"
+              ></el-input>
+            </el-form-item>
+          </el-form>
           <button class="btn">确定</button>
         </div>
       </div>
@@ -67,6 +93,12 @@ export default {
       username: "admin",
       password: "123456",
     });
+    let forget = reactive({
+      username: "",
+      password: "",
+      newPassword: "",
+      yzm: "",
+    });
     let classFlag = ref(false);
     let loginRules = {
       username: [
@@ -93,7 +125,13 @@ export default {
         // 登录成功
         loginRole = data.result;
         window.sessionStorage.setItem("token", data.token);
-        window.sessionStorage.setItem("loginObj", JSON.stringify({username:data.result.username,role:data.result.role}));
+        window.sessionStorage.setItem(
+          "loginObj",
+          JSON.stringify({
+            username: data.result.username,
+            role: data.result.role,
+          })
+        );
         proxy.$store.dispatch(
           "logining",
           JSON.parse(window.sessionStorage.getItem("loginObj"))
@@ -108,6 +146,7 @@ export default {
       loginInfo,
       loginRules,
       login,
+      forget,
     };
   },
 };

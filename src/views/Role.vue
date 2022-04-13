@@ -102,7 +102,7 @@ export default {
         if (data.meta.status !== 200) {
           return proxy.$message.error(data.meta.des);
         }
-        proxy.$message.success("角色：" + info.name + "已删除");
+        proxy.$message.success("角色:" + info.name + ",已删除");
         getRoleList();
       }else{
         proxy.$message("已取消删除角色:" + info.name);

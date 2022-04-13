@@ -46,7 +46,7 @@ export default {
         if (data.meta.status !== 200) {
           return proxy.$message.error(data.meta.des);
         }
-        proxy.$message.success("角色添加成功");
+        proxy.$message.success("角色:"+addRoleInfo.value.name+",添加成功");
         proxy.addRoleVisible = false;
         proxy.$bus.emit('getRoleList');
       });

@@ -122,8 +122,9 @@ export default {
     async function sort() {}
     onMounted(() => {
       getIsssuanceList();
-      proxy.$bus.on("getIsssuanceList");
+      proxy.$bus.on("getIsssuanceList", getIsssuanceList);
     });
+
     return {
       isssuanceList,
       queryInfo,

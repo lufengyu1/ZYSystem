@@ -62,7 +62,7 @@ export default {
         department: department.value,
       });
       if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
-      proxy.$message.success("用户角色更新成功");
+      proxy.$message.success("用户部门更新成功");
       handleClose();
       department.value = "开发部";
       proxy.$bus.emit("handleClick");

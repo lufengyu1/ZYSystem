@@ -7,10 +7,10 @@
     :close-on-click-modal="false"
   >
     <el-form :model="editRoleInfo" ref="editRoleRef" label-width="70px">
-      <el-form-item label="角色名">
+      <el-form-item label="角色名" prop="name">
         <el-input v-model="editRoleInfo.name" disabled></el-input>
       </el-form-item>
-      <el-form-item label="描述">
+      <el-form-item label="描述" prop="des">
         <el-input v-model="editRoleInfo.des"></el-input>
       </el-form-item>
     </el-form>
@@ -41,7 +41,7 @@ export default {
         let { data } = await proxy.$http.put("/role/update", editRoleInfo.value);
         if (data.meta.status !== 200)
           return proxy.$message.error(data.meta.des);
-        proxy.$message.success("角色信息更新成功");
+        proxy.$message.success("角色:"+editRoleInfo.value.name+",信息更新成功");
         editRoleVisible.value = false;
         proxy.$bus.emit("getRoleList");
       });
