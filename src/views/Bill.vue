@@ -21,7 +21,13 @@
         </el-input>
       </el-col>
     </el-row>
-    <el-table :data="billList" border stripe max-height="450">
+    <el-table
+      :data="billList"
+      border
+      stripe
+      max-height="450"
+      v-loading="loading"
+    >
       <el-table-column type="index" width="50" label="#"></el-table-column>
       <el-table-column prop="_id" width="220" label="订单号"></el-table-column>
       <el-table-column
@@ -108,6 +114,7 @@ export default {
       query: "",
     });
     let total = ref(0);
+    let loading = ref(true);
     // 获取账单信息
     async function getBillList() {
       let { data } = await proxy.$http.get("/bill/bill", {
@@ -116,6 +123,7 @@ export default {
       if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
       billList.value = data.result.billList;
       total.value = data.result.total;
+      loading.value = false;
     }
 
     function handleSizeChange() {
@@ -138,6 +146,7 @@ export default {
       handleCurrentChange,
       getBillList,
       openInfoDialog,
+      loading,
     };
   },
 };

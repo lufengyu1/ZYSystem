@@ -1,5 +1,5 @@
 <template>
-  <el-card style="height:640px">
+  <el-card style="height: 640px">
     <!-- 面包屑导航 -->
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
@@ -28,7 +28,13 @@
       </el-col>
     </el-row>
     <!-- 2 -->
-    <el-table :data="roleList" border stripe max-height="470">
+    <el-table
+      :data="roleList"
+      border
+      stripe
+      max-height="470"
+      v-loading="loading"
+    >
       <el-table-column type="index" width="50" label="#"> </el-table-column>
       <el-table-column width="300" label="角色" prop="name"> </el-table-column>
       <el-table-column width="300" label="描述" prop="des"> </el-table-column>
@@ -70,6 +76,7 @@ export default {
     let roleList = ref([]);
     let queryInfo = ref({ query: "", pageNum: 1, pageSize: 5 });
     let total = ref(0);
+    let loading = ref(true);
     // 获取角色列表
     async function getRoleList() {
       const { data } = await proxy.$http.get("/role", {
@@ -78,6 +85,7 @@ export default {
       if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
       roleList.value = data.result.users;
       total.value = data.result.total;
+      loading.value = false;
     }
     function openAddRoleDialog() {
       proxy.$bus.emit("openAddRole");
@@ -104,7 +112,7 @@ export default {
         }
         proxy.$message.success("角色:" + info.name + ",已删除");
         getRoleList();
-      }else{
+      } else {
         proxy.$message("已取消删除角色:" + info.name);
       }
     }
@@ -128,6 +136,7 @@ export default {
       handleCurrentChange,
       handleSizeChange,
       total,
+      loading,
     };
   },
 };

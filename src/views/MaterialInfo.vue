@@ -23,7 +23,13 @@
         </el-input>
       </el-col>
     </el-row>
-    <el-table :data="materialInfoList" border stripe max-height="500">
+    <el-table
+      :data="materialInfoList"
+      border
+      stripe
+      max-height="500"
+      v-loading="loading"
+    >
       <el-table-column type="index" width="50" label="#"></el-table-column>
       <el-table-column prop="name" label="原料" width="180"></el-table-column>
       <el-table-column
@@ -80,6 +86,7 @@ export default {
       pageNum: 1,
     });
     let total = ref(0);
+    let loading=ref(true)
     // 获取原料信息
     async function getMaterialInfoList() {
       const { data } = await proxy.$http.get("/materialInfo/materialInfo", {
@@ -88,6 +95,7 @@ export default {
       if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
       total.value = data.result.total;
       materialInfoList.value = data.result.materialInfo;
+      loading.value=false;
     }
     function handleSizeChange() {
       getMaterialInfoList();
@@ -106,6 +114,7 @@ export default {
       materialInfoList,
       queryInfo,
       total,
+      loading,
       handleSizeChange,
       handleCurrentChange,
       openBuyDialog,

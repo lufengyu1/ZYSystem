@@ -1,5 +1,5 @@
 <template>
-  <el-card class="card" >
+  <el-card class="card">
     <!-- <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item>首页</el-breadcrumb-item>
     </el-breadcrumb> -->
@@ -12,15 +12,19 @@
     >
 
     <el-row :gutter="20">
-      <el-col :span="16"
-        ><div id="main" style="width: 600px; height: 400px; float: left"></div
-      ></el-col>
+      <el-col :span="16"><div id="main" class="tongji"></div> </el-col>
       <el-col :span="8"
         ><el-card class="alarm some">
           <el-badge :value="number"> <h1 class="title">库存预警</h1></el-badge>
           <div>
             <template v-if="number === 0">库存充足，无需补充</template>
-            <template v-else><ul><li v-for="item in alarmList" :key="item._id">原料：{{item.name}}，库存不足</li></ul></template>
+            <template v-else
+              ><ul>
+                <li v-for="item in alarmList" :key="item._id">
+                  原料：{{ item.name }}，库存不足
+                </li>
+              </ul></template
+            >
           </div>
         </el-card>
         <el-card class="todo some">
@@ -29,7 +33,14 @@
           </el-badge>
           <div>
             <template v-if="todoNumber === 0">今日待办已完成</template>
-            <template v-else><ul><li v-for="item in toDoList" :key="item._id">原料：{{item.name}}，<i v-if="item.operation===0">入库</i><i v-else>入库</i>待处理</li></ul></template>
+            <template v-else
+              ><ul>
+                <li v-for="item in toDoList" :key="item._id">
+                  原料：{{ item.name }},<i v-if="item.operation === 0">入库</i
+                  ><i v-else>入库</i>待处理
+                </li>
+              </ul></template
+            >
           </div>
         </el-card>
       </el-col>
@@ -157,7 +168,8 @@ export default {
       proxy,
       times,
       alarmList,
-      toDoList
+      toDoList,
+      stockList,
     };
   },
 };
@@ -186,5 +198,13 @@ export default {
 }
 .alarm {
   margin-bottom: 20px;
+}
+
+.tongji {
+  width: 600px;
+  height: 400px;
+  float: left;
+  border: 1px solid #777;
+  border-radius: 5px;
 }
 </style>

@@ -154,7 +154,7 @@ export default {
     // 发送添加用户请求
     function addUser() {
       proxy.$refs.addUserRef.validate(async (valid) => {
-        if (!valid) return console.log(err);
+        if (!valid) return console.log('err');
         addUserInfo.value.create=getTime();
         let { data } = await proxy.$http.put("/user/add", addUserInfo.value);
         if (data.meta.status !== 200) {

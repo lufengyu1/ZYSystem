@@ -1,5 +1,5 @@
 <template>
-  <el-card style="height:640px">
+  <el-card style="height: 640px">
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>原料管理</el-breadcrumb-item>
@@ -21,7 +21,13 @@
         </el-input>
       </el-col>
     </el-row>
-    <el-table :data="rejectList" border stripe max-height="470">
+    <el-table
+      :data="rejectList"
+      border
+      stripe
+      max-height="470"
+      v-loading="loading"
+    >
       <el-table-column type="index" width="50" label="#"></el-table-column>
       <el-table-column prop="id" label="订单号" width="250"></el-table-column>
       <el-table-column prop="name" label="原料" width="180"></el-table-column>
@@ -80,6 +86,7 @@ export default {
       query: "",
     });
     let total = ref(0);
+    let loading = ref(true);
     async function getRejectList() {
       if (
         queryInfo.value.query.trim().length === 0 ||
@@ -92,6 +99,7 @@ export default {
           return proxy.$message.error(data.meta.des);
         rejectList.value = data.result.rejectList;
         total.value = data.result.total;
+        loading.value = false;
       } else {
         return proxy.$message.info("订单号错误");
       }
@@ -117,6 +125,7 @@ export default {
       handleCurrentChange,
       getRejectList,
       openRejectInfoDialog,
+      loading,
     };
   },
 };

@@ -4,43 +4,67 @@
       <!-- 找回密码框 -->
       <div class="container_form container--signup">
         <div class="form" id="form1">
-          <h2 class="form_title">找回密码</h2>
+          <h2 class="form_title2">找回密码</h2>
           <!-- <input type="text" placeholder="User" class="input" />
           <input type="email" placeholder="Email" class="input" />
           <input type="password" placeholder="Password" class="input" /> -->
-          <el-form class="" ref="forgetRef" label-width="0px" :model="forget">
+          <el-form
+            class=""
+            ref="forgetRef"
+            :rules="forgetRules"
+            label-width="0px"
+            :model="forget"
+          >
             <el-form-item prop="username">
               <el-input
                 v-model="forget.username"
                 placeholder="用户名"
+                clearable
               ></el-input>
             </el-form-item>
             <el-form-item prop="password">
               <el-input
+                type="password"
+                show-password
                 v-model="forget.password"
                 placeholder="新密码"
+                clearable
               ></el-input>
             </el-form-item>
-            <el-form-item prop="newPassword">
+            <el-form-item prop="confirmPassword">
               <el-input
-                v-model="forget.newPassword"
+                type="password"
+                show-password
+                v-model="forget.confirmPassword"
                 placeholder="确认密码"
+                clearable
               ></el-input>
             </el-form-item>
             <el-form-item prop="yzm">
               <el-input
                 v-model="forget.yzm"
                 placeholder="验证码"
+                clearable
               ></el-input>
             </el-form-item>
           </el-form>
-          <button class="btn">确定</button>
+          <!-- 1 -->
+          <div class="img-verify">
+            <canvas
+              ref="verify"
+              :width="width"
+              :height="height"
+              @click="handleDraw"
+            ></canvas>
+          </div>
+          <!-- 2 -->
+          <button class="btn" @click="newPassword">确定</button>
         </div>
       </div>
       <!-- 登录框 -->
       <div class="container_form container--signin">
         <div class="form" id="form2">
-          <h2 class="form_title">欢迎登录</h2>
+          <h2 class="form_title1">欢迎登录</h2>
           <el-form
             class="login_form"
             ref="loginRef"
@@ -52,13 +76,16 @@
               <el-input
                 prefix-icon="iconfont icon-denglu"
                 v-model="loginInfo.username"
+                clearable
               ></el-input>
             </el-form-item>
             <el-form-item prop="password">
               <el-input
                 prefix-icon="iconfont icon-mimadenglu"
                 type="password"
+                show-password
                 v-model="loginInfo.password"
+                clearable
               ></el-input>
             </el-form-item>
           </el-form>
@@ -84,7 +111,7 @@
 </template>
 
 <script>
-import { ref, reactive, getCurrentInstance } from "vue";
+import { ref, reactive, getCurrentInstance, onMounted, toRefs } from "vue";
 export default {
   name: "Login",
   setup() {
@@ -96,10 +123,12 @@ export default {
     let forget = reactive({
       username: "",
       password: "",
-      newPassword: "",
+      confirmPassword: "",
       yzm: "",
     });
     let classFlag = ref(false);
+    //随机数
+    let yzm = ref("");
     let loginRules = {
       username: [
         { required: true, message: "请输入用户名", trigger: "blur" },
@@ -110,6 +139,21 @@ export default {
         { min: 6, max: 18, message: "长度在 6 到 18 个字符", trigger: "blur" },
       ],
     };
+    let forgetRules = reactive({
+      username: [
+        { required: true, message: "请输入用户名", trigger: "blur" },
+        { min: 3, max: 12, message: "长度在 3 到 12 个字符", trigger: "blur" },
+      ],
+      password: [
+        { required: true, message: "请输入密码", trigger: "blur" },
+        { min: 6, max: 18, message: "长度在 6 到 18 个字符", trigger: "blur" },
+      ],
+      confirmPassword: [
+        { required: true, message: "请再次输入密码", trigger: "blur" },
+        { min: 6, max: 18, message: "长度在 6 到 18 个字符", trigger: "blur" },
+      ],
+      yzm: [{ required: true, message: "请输入验证码", trigger: "blur" }],
+    });
     let loginRole = reactive({});
     // 切换 登录和找回密码
     function changeFlag() {
@@ -140,6 +184,77 @@ export default {
         proxy.$message.success(data.meta.des);
       });
     }
+    //生成画布
+    const verify = ref(null);
+    const state = reactive({
+      pool: "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz", // 字符串
+      width: 120, // canvas宽
+      height: 40, // canvas高
+    });
+    // 点击图片重新绘制
+    const handleDraw = () => {
+      draw();
+    };
+    // 随机数
+    const randomNum = (min, max) => {
+      return parseInt(Math.random() * (max - min) + min);
+    };
+    // 随机颜色
+    const randomColor = (min, max) => {
+      const r = randomNum(min, max);
+      const g = randomNum(min, max);
+      const b = randomNum(min, max);
+      return `rgb(${r},${g},${b})`;
+    };
+    // 绘制图片
+    const draw = () => {
+      yzm.value = "";
+      const ctx = verify.value.getContext("2d");
+      // 填充颜色
+      ctx.fillStyle = randomColor(180, 230);
+      // 填充的位置
+      ctx.fillRect(0, 0, state.width, state.height);
+      // 随机产生字符串，并且随机旋转
+      for (let i = 0; i < 4; i++) {
+        // 随机的一个字符
+        let text = state.pool[randomNum(0, state.pool.length)];
+        yzm.value += text;
+        // 随机的字体大小
+        const fontSize = randomNum(18, 40);
+        // 字体随机的旋转角度
+        const deg = randomNum(-30, 30);
+        ctx.font = fontSize + "px Simhei";
+        ctx.textBaseline = "top";
+        ctx.fillStyle = randomColor(80, 150);
+        ctx.save();
+        ctx.translate(30 * i + 15, 15);
+        ctx.rotate((deg * Math.PI) / 180);
+        ctx.fillText(text, -15 + 5, -15);
+        ctx.restore();
+      }
+    };
+    onMounted(() => {
+      // 初始化绘制图片验证码
+      draw();
+    });
+    //生成画布
+    // 重新设置密码
+    function newPassword() {
+      proxy.$refs.forgetRef.validate(async (valid) => {
+        if (!valid) return console.log("err");
+        if (forget.yzm.toLowerCase() !== yzm.value.toLowerCase()) {
+          return proxy.$message.info("验证码错误");
+        } else if (forget.password !== forget.confirmPassword) {
+          return proxy.$message.info("两次密码不一致");
+        } else {
+          let { data } = await proxy.$http.put("/user/newpassword", forget);
+          if (data.meta.status !== 200)
+            return proxy.$message.error(data.meta.des);
+          proxy.$message.success("密码设置成功");
+          proxy.$refs.forgetRef.resetFields();
+        }
+      });
+    }
     return {
       changeFlag,
       classFlag,
@@ -147,6 +262,11 @@ export default {
       loginRules,
       login,
       forget,
+      ...toRefs(state),
+      verify,
+      handleDraw,
+      newPassword,
+      forgetRules,
     };
   },
 };
@@ -166,10 +286,15 @@ export default {
   place-items: center;
 }
 
-.form_title {
+.form_title1 {
   font-weight: 300;
   margin: 0;
   margin-bottom: 3rem;
+}
+.form_title2 {
+  font-weight: 300;
+  margin: 0;
+  margin-bottom: 0rem;
 }
 
 .link {

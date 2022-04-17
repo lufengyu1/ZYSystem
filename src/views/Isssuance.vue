@@ -30,6 +30,7 @@
       stripe
       max-height="450"
       @sort-change="sort"
+      v-loading="loading"
     >
       <el-table-column type="index" width="50" label="#"></el-table-column>
       <el-table-column prop="name" width="150" label="原料"></el-table-column>
@@ -102,6 +103,7 @@ export default {
       query: "",
     });
     let total = ref(0);
+    let loading=ref(true);
     async function getIsssuanceList() {
       let { data } = await proxy.$http.get("/isssuance/isssuance", {
         params: queryInfo.value,
@@ -109,6 +111,7 @@ export default {
       if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
       isssuanceList.value = data.result.isssuance;
       total.value = data.result.total;
+      loading.value=false;
     }
     function handleSizeChange() {
       getIsssuanceList();
@@ -134,6 +137,7 @@ export default {
       openOutDialog,
       sort,
       getIsssuanceList,
+      loading
     };
   },
 };

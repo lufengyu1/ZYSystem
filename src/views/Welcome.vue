@@ -109,9 +109,18 @@ export default {
         }
         menuList.value = data.result;
         if (person.value.role !== "超级管理员") {
-          menuList.value = menuList.value.filter((item) => {
-            return item.name !== "用户管理";
-          });
+          // menuList.value = menuList.value.filter((item) => {
+          //   return item.name !== "用户管理";
+          // });
+          let arr = [];
+          for (let item of menuList.value) {
+            let index = 0;
+            if (item.name === "用户管理") {
+              item.children = item.children.filter((item1) => {
+                return (item1.name === "部门列表");
+              });
+            }
+          }
         }
         defaultActive.value = window.sessionStorage.getItem("activePath");
       });

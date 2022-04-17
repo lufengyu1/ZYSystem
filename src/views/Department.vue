@@ -52,7 +52,7 @@
     >
     </el-pagination>
     <!-- 4 -->
-    <el-button class="addDep" type="primary" @click="openAddDepDialog">
+    <el-button class="addDep" type="primary" @click="openAddDepDialog" v-if="login.role === '超级管理员'">
       添加部门</el-button
     >
   </el-card>

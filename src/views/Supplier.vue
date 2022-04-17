@@ -1,5 +1,5 @@
 <template>
-  <el-card style="height:640px">
+  <el-card style="height: 640px">
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>原料管理</el-breadcrumb-item>
@@ -29,7 +29,13 @@
         >
       </el-col>
     </el-row>
-    <el-table :data="supplierList" border stripe max-height="450">
+    <el-table
+      :data="supplierList"
+      border
+      stripe
+      max-height="450"
+      v-loading="loading"
+    >
       <el-table-column type="expand">
         <template #default="scope">
           <el-row :gutter="20">
@@ -159,6 +165,7 @@ export default {
       query: "",
     });
     let total = ref(0);
+    let loading = ref(true);
     // 添加的原料信息
     let addInfo = ref({
       name: "",
@@ -173,6 +180,7 @@ export default {
       if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
       supplierList.value = data.result.supplierList;
       total.value = data.result.total;
+      loading.value = false;
     }
     function handleSizeChange() {
       getSupplierList();
@@ -270,6 +278,7 @@ export default {
       del,
       openEditPriceDialog,
       delMaterial,
+      loading,
     };
   },
 };

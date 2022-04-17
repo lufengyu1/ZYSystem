@@ -1,5 +1,5 @@
 <template >
-  <el-card style="height:640px">
+  <el-card style="height: 640px">
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>原料库存管理</el-breadcrumb-item>
@@ -33,6 +33,7 @@
           stripe
           max-height="410"
           @sort-change="sort"
+          v-loading="loading"
         >
           <el-table-column type="index" width="50" label="#"></el-table-column>
           <el-table-column label="订单号" width="250px"
@@ -244,6 +245,7 @@ export default {
     });
     let total = ref(0);
     let total1 = ref(0);
+    let loading=ref(true);
     // 获取全部出入库信息
     async function getRegisterList() {
       if (
@@ -257,6 +259,7 @@ export default {
           return proxy.$message.error(data.meta.des);
         registerList.value = data.result.registerList;
         total.value = data.result.total;
+        loading.value=false;
       } else {
         return proxy.$message.info("订单号错误");
       }
@@ -348,6 +351,7 @@ export default {
       refuse,
       sort,
       openRegisterInfoDialog,
+      loading
     };
   },
 };

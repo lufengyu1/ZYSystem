@@ -5,7 +5,7 @@
       <el-breadcrumb-item>原料库存管理</el-breadcrumb-item>
       <el-breadcrumb-item>原料库存检查</el-breadcrumb-item>
     </el-breadcrumb>
-    <el-table :data="stockList" border stripe max-height="470">
+    <el-table :data="stockList" border stripe max-height="470"  v-loading="loading">
       <el-table-column type="index" width="50" label="#"></el-table-column>
       <el-table-column prop="name" label="原料" width="180"></el-table-column>
       <el-table-column
@@ -48,6 +48,7 @@ export default {
       pageSize: 5,
     });
     let total = ref(0);
+    let loading=ref(true);
     // 获取库存信息
     async function getStockList() {
       let { data } = await proxy.$http.get("/stock/stock", {
@@ -56,6 +57,7 @@ export default {
       if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
       stockList.value = data.result.stockList;
       total.value = data.result.total;
+      loading.value=false;
     }
     function handleSizeChange() {
       getStockList();
@@ -77,7 +79,8 @@ export default {
       total,
       handleSizeChange,
       handleCurrentChange,
-      openLimitDialog
+      openLimitDialog,
+      loading
     };
   },
 };

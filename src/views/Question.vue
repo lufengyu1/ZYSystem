@@ -1,5 +1,5 @@
 <template>
-  <el-card style="height:640px">
+  <el-card style="height: 640px">
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>原料库存管理</el-breadcrumb-item>
@@ -24,7 +24,13 @@
         </el-input>
       </el-col>
     </el-row>
-    <el-table :data="questionList" border stripe max-height="470">
+    <el-table
+      :data="questionList"
+      border
+      stripe
+      max-height="470"
+      v-loading="loading"
+    >
       <el-table-column type="index" width="50" label="#"></el-table-column>
       <el-table-column prop="_id" label="订单号" width="250"></el-table-column>
       <el-table-column prop="name" label="原料" width="180"></el-table-column>
@@ -40,12 +46,17 @@
         </template></el-table-column
       >
       <el-table-column label="操作人" prop="operator"></el-table-column>
-      <el-table-column label="操作时间" prop="time"  width="180"></el-table-column>
+      <el-table-column
+        label="操作时间"
+        prop="time"
+        width="180"
+      ></el-table-column>
       <el-table-column prop="reason" label="问题" width="180"></el-table-column>
-      <el-table-column label="操作"  width="180" fixed="right">
+      <el-table-column label="操作" width="180" fixed="right">
         <template #default="scope">
-          <el-button size="mini" @click="openQuestionInfoDialog(scope.row)">查看详情</el-button>
-
+          <el-button size="mini" @click="openQuestionInfoDialog(scope.row)"
+            >查看详情</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -65,10 +76,10 @@
 
 <script>
 import { ref, getCurrentInstance, onMounted } from "vue";
-import Info from '../components/question/questionInfo.vue'
+import Info from "../components/question/questionInfo.vue";
 export default {
   name: "Question",
-  components:{Info},
+  components: { Info },
   setup() {
     const { proxy } = getCurrentInstance();
     let questionList = ref([]);
@@ -78,8 +89,12 @@ export default {
       query: "",
     });
     let total = ref(0);
+    let loading = ref(true);
     async function getQuestionList() {
-      if (queryInfo.value.query.trim().length===0||queryInfo.value.query.trim().length===24) {
+      if (
+        queryInfo.value.query.trim().length === 0 ||
+        queryInfo.value.query.trim().length === 24
+      ) {
         let { data } = await proxy.$http.get("/question/question", {
           params: queryInfo.value,
         });
@@ -87,7 +102,8 @@ export default {
           return proxy.$message.error(data.meta.des);
         questionList.value = data.result.questionList;
         total.value = data.result.total;
-      }else{
+        loading.value = false;
+      } else {
         return proxy.$message.info("订单号错误");
       }
     }
@@ -98,8 +114,8 @@ export default {
     function handleCurrentChange() {
       getQuestionList();
     }
-    function openQuestionInfoDialog(info){
-      proxy.$bus.emit('openQuestionInfo',info);
+    function openQuestionInfoDialog(info) {
+      proxy.$bus.emit("openQuestionInfo", info);
     }
     onMounted(() => {
       getQuestionList();
@@ -111,7 +127,8 @@ export default {
       handleSizeChange,
       handleCurrentChange,
       getQuestionList,
-      openQuestionInfoDialog
+      openQuestionInfoDialog,
+      loading,
     };
   },
 };

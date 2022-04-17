@@ -32,4 +32,3 @@ app.use(print)
 // 使用elementplus
 installElementPlus(app)
 app.use(store).use(router).mount('#app')
-
