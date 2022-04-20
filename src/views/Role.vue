@@ -45,10 +45,17 @@
           >
           <el-button type="danger" size="mini" @click="del(scope.row)"
             >删除</el-button
+          >
+          <el-button
+            type="success"
+            size="mini"
+            @click="openAddRightsDialog(scope.row)"
+            >添加权限</el-button
           ></template
         >
       </el-table-column>
     </el-table>
+    <!-- 3 -->
     <el-pagination
       v-model:currentPage="queryInfo.pageNum"
       :page-sizes="[5, 10, 15, 20]"
@@ -62,15 +69,17 @@
   </el-card>
   <AddRole></AddRole>
   <EditRole></EditRole>
+  <AddRights></AddRights>
 </template>
 
 <script >
 import { ref, onMounted, getCurrentInstance } from "vue";
 import AddRole from "../components/role/AddRole";
 import EditRole from "../components/role/EditRole";
+import AddRights from "../components/role/AddRights.vue"
 export default {
   name: "Role",
-  components: { AddRole, EditRole },
+  components: { AddRole, EditRole,AddRights },
   setup() {
     const { proxy } = getCurrentInstance();
     let roleList = ref([]);
@@ -92,6 +101,9 @@ export default {
     }
     function edit(info) {
       proxy.$bus.emit("openEditRole", info);
+    }
+    function openAddRightsDialog(info) {
+      proxy.$bus.emit("openAddRights", info);
     }
     async function del(info) {
       let confirmResult = await proxy
@@ -135,6 +147,7 @@ export default {
       queryInfo,
       handleCurrentChange,
       handleSizeChange,
+      openAddRightsDialog,
       total,
       loading,
     };

@@ -13,45 +13,48 @@ const routes: Array<RouteRecordRaw> = [
     children: [{
       path: '/users',
       component: () => import('../views/User.vue')
-    },{
+    }, {
       path: '/materialinfo',
       component: () => import('../views/MaterialInfo.vue')
-    },{
+    }, {
       path: '/supplier',
       component: () => import('../views/Supplier.vue')
-    },{
+    }, {
       path: '/bill',
       component: () => import('../views/Bill.vue')
-    },{
-      path:'/reject',
-      component:()=>import('../views/Reject.vue')
-    },{
-      path:'/register',
-      component:()=>import('../views/Register.vue')
-    },{
-      path:'/stock',
-      component:()=>import('../views/Stock.vue')
-    },{
-      path:'/isssuance',
-      component:()=>import('../views/Isssuance.vue')
-    },{
-      path:'/question',
-      component:()=>import('../views/Question.vue')
-    },{
-      path:'/home',
-      component:()=>import('../views/Home.vue')
-    },{
-      path:'/role',
-      component:()=>import('../views/Role.vue')
-    },{
-      path:'/department',
-      component:()=>import('../views/Department.vue')
-    },{
-      path:'/inbound',
-      component:()=>import('../views/Inbound.vue')
-    },{
-      path:'/outbound',
-      component:()=>import('../views/Outbound.vue')
+    }, {
+      path: '/reject',
+      component: () => import('../views/Reject.vue')
+    }, {
+      path: '/register',
+      component: () => import('../views/Register.vue')
+    }, {
+      path: '/stock',
+      component: () => import('../views/Stock.vue')
+    }, {
+      path: '/isssuance',
+      component: () => import('../views/Isssuance.vue')
+    }, {
+      path: '/question',
+      component: () => import('../views/Question.vue')
+    }, {
+      path: '/home',
+      component: () => import('../views/Home.vue')
+    }, {
+      path: '/role',
+      component: () => import('../views/Role.vue')
+    }, {
+      path: '/department',
+      component: () => import('../views/Department.vue')
+    }, {
+      path: '/inbound',
+      component: () => import('../views/Inbound.vue')
+    }, {
+      path: '/outbound',
+      component: () => import('../views/Outbound.vue')
+    }, {
+      path: '/Right',
+      component: () => import('../views/Right.vue')
     }]
   }
 ]
