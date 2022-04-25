@@ -10,15 +10,26 @@ import './assets/icon/iconfont.css'
 import installElementPlus from './plugins/element'
 import Axios from 'axios'
 import mitt from 'mitt'
+// 导入nprogress
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
+
 // 引入打印组件
 import print from 'vue3-print-nb'
 // 配置axios根地址
 Axios.defaults.baseURL = 'http://localhost:3000/'
+// 在request拦截器展示nprogress res中隐藏
+
 // 配置请求拦截器，每次发送请求都携带token
 Axios.interceptors.request.use((config: any) => {
+    NProgress.start();
     config.headers.Authorization = window.sessionStorage.getItem('token') || null;
     return config;
 });
+Axios.interceptors.response.use((config:any)=>{
+    NProgress.done();
+    return config;
+})
 // 修改sessionStorage的内容 当修改后会重新赋值修改前的值
 window.addEventListener('storage', function (e: any) {
     sessionStorage.setItem(e.key, e.oldValue)

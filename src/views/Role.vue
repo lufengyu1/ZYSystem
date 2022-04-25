@@ -76,10 +76,10 @@
 import { ref, onMounted, getCurrentInstance } from "vue";
 import AddRole from "../components/role/AddRole";
 import EditRole from "../components/role/EditRole";
-import AddRights from "../components/role/AddRights.vue"
+import AddRights from "../components/role/AddRights.vue";
 export default {
   name: "Role",
-  components: { AddRole, EditRole,AddRights },
+  components: { AddRole, EditRole, AddRights },
   setup() {
     const { proxy } = getCurrentInstance();
     let roleList = ref([]);

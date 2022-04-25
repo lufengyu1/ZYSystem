@@ -54,7 +54,7 @@ export default {
         roleRight.value = [];
       } else {
         for (let item of roleInfo.value.right) {
-          if (item !== 0) {
+          if (item.split("").pop() !== '0') {
             arr.push(item);
           }
         }

@@ -35,13 +35,20 @@
       max-height="470"
       v-loading="loading"
     >
-      {{ rightList }}
       <el-table-column type="index" width="50" label="#"> </el-table-column>
       <el-table-column width="300" label="权限" prop="name"> </el-table-column>
-      <el-table-column width="300" label="等级" prop="level">
+      <el-table-column
+        width="300"
+        label="等级"
+        prop="level"
+        sortable="custom"
+        :sort-orders="['ascending', 'descending']"
+      >
         <template #default="scope">
           <el-tag v-if="scope.row.level === 0">一级权限</el-tag>
-          <el-tag v-else-if="scope.row.level === 1"  type="warning">二级权限</el-tag>
+          <el-tag v-else-if="scope.row.level === 1" type="warning"
+            >二级权限</el-tag
+          >
           <el-tag v-else type="danger">三级权限</el-tag>
         </template>
       </el-table-column>
@@ -67,7 +74,7 @@ export default {
   setup() {
     const { proxy } = getCurrentInstance();
     let rightList = ref([]);
-    let queryInfo = reactive({ query: "", pageNum: 1, pageSize: 5 });
+    let queryInfo = reactive({ query: "", pageNum: 1, pageSize: 5 ,type:'level',num:1});
     let loading = ref(true);
     let total = ref(0);
     async function getRightList() {
@@ -77,8 +84,7 @@ export default {
       total.value = data.result.total;
       loading.value = false;
     }
-    function openAddRightDialog() {
-    }
+    function openAddRightDialog() {}
     function handleSizeChange() {
       getRightList();
     }

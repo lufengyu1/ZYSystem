@@ -120,10 +120,10 @@ export default {
       username: "admin",
       password: "123456",
     });
-    let forget = reactive({
-      username: "",
-      password: "",
-      confirmPassword: "",
+    let forget = ref({
+      username: "admin1",
+      password: "123456",
+      confirmPassword: "123456",
       yzm: "",
     });
     let classFlag = ref(false);
@@ -139,6 +139,12 @@ export default {
         { min: 6, max: 18, message: "长度在 6 到 18 个字符", trigger: "blur" },
       ],
     };
+    let yzmRule = (rule, value, cb) => {
+      if (value !== forget.value.password)
+        return cb(new Error("两次密码不一致"));
+
+      return cb();
+    };
     let forgetRules = reactive({
       username: [
         { required: true, message: "请输入用户名", trigger: "blur" },
@@ -151,6 +157,7 @@ export default {
       confirmPassword: [
         { required: true, message: "请再次输入密码", trigger: "blur" },
         { min: 6, max: 18, message: "长度在 6 到 18 个字符", trigger: "blur" },
+        { validator: yzmRule, trigger: "blur" },
       ],
       yzm: [{ required: true, message: "请输入验证码", trigger: "blur" }],
     });
@@ -240,18 +247,24 @@ export default {
     //生成画布
     // 重新设置密码
     function newPassword() {
+      console.log(1);
       proxy.$refs.forgetRef.validate(async (valid) => {
+        console.log(2);
         if (!valid) return console.log("err");
-        if (forget.yzm.toLowerCase() !== yzm.value.toLowerCase()) {
+        if (forget.value.yzm.toLowerCase() !== yzm.value.toLowerCase()) {
           return proxy.$message.info("验证码错误");
-        } else if (forget.password !== forget.confirmPassword) {
-          return proxy.$message.info("两次密码不一致");
         } else {
-          let { data } = await proxy.$http.put("/user/newpassword", forget);
-          if (data.meta.status !== 200)
+          let { data } = await proxy.$http.put(
+            "/user/newpassword",
+            forget.value
+          );
+          if (data.meta.status !== 200) {
+            draw();
             return proxy.$message.error(data.meta.des);
+          }
           proxy.$message.success("密码设置成功");
           proxy.$refs.forgetRef.resetFields();
+          draw();
         }
       });
     }
