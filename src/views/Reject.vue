@@ -2,8 +2,8 @@
   <el-card style="height: 640px">
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>原料管理</el-breadcrumb-item>
-      <el-breadcrumb-item>退货信息</el-breadcrumb-item>
+      <el-breadcrumb-item>入库管理</el-breadcrumb-item>
+      <el-breadcrumb-item>入库退货查询</el-breadcrumb-item>
     </el-breadcrumb>
     <!-- 搜索区 -->
     <el-row :gutter="20">
@@ -104,7 +104,7 @@ export default {
         return proxy.$message.info("订单号错误");
       }
     }
-
+// 分页
     function handleSizeChange() {
       getRejectList();
     }

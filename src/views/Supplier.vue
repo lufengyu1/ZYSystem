@@ -2,7 +2,7 @@
   <el-card style="height: 640px">
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>原料管理</el-breadcrumb-item>
+      <el-breadcrumb-item>基础可以</el-breadcrumb-item>
       <el-breadcrumb-item>供应商信息</el-breadcrumb-item>
     </el-breadcrumb>
     <!-- 搜索区 -->

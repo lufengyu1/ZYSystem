@@ -2,7 +2,7 @@
   <el-card style="height: 640px">
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>原料库存管理</el-breadcrumb-item>
+      <el-breadcrumb-item>基础管理</el-breadcrumb-item>
       <el-breadcrumb-item>登记出入库信息</el-breadcrumb-item>
     </el-breadcrumb>
     <!--  Badege -->
@@ -298,7 +298,7 @@ export default {
       if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
       proxy.$message.success(data.meta.des);
       let data1 = await proxy.$http.put("/stock/update", { ...info, type: 0 });
-      let data2 = await proxy.$http.put("/bill/update", info);
+      let data2 = await proxy.$http.put("/bill/update", {...info,state:1});
       if (info.operation === 0) {
         let data3 = await proxy.$http.put("/isssuance/insert", info);
         proxy.$bus.emit("getStockList");

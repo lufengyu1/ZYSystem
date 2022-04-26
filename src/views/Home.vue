@@ -1,8 +1,5 @@
 <template>
   <el-card class="card">
-    <!-- <el-breadcrumb separator-class="el-icon-arrow-right">
-      <el-breadcrumb-item>首页</el-breadcrumb-item>
-    </el-breadcrumb> -->
     <el-card class="first"
       ><div>
         欢迎使用筑优拌合站原料入库管理系统，{{

@@ -2,7 +2,7 @@
   <el-card class="h640">
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>原料管理</el-breadcrumb-item>
+      <el-breadcrumb-item>账单管理</el-breadcrumb-item>
       <el-breadcrumb-item>账单信息</el-breadcrumb-item>
     </el-breadcrumb>
     <!-- 搜索区 -->
@@ -81,7 +81,15 @@
               >查看订单详情</el-button
             ></i
           >
-          <i v-else>异常</i>
+          <i v-else
+            >异常
+            <el-button
+              size="mini"
+              style="float: right"
+              @click="openInfoDialog(scope.row)"
+              >查看订单详情</el-button
+            ></i
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -125,13 +133,14 @@ export default {
       total.value = data.result.total;
       loading.value = false;
     }
-
+    // 分页
     function handleSizeChange() {
       getBillList();
     }
     function handleCurrentChange() {
       getBillList();
     }
+    // 查看账单详情
     function openInfoDialog(info) {
       proxy.$bus.emit("openInfo", info);
     }

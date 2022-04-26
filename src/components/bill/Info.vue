@@ -2,33 +2,88 @@
   <el-dialog
     v-model="infoVisible"
     title=""
-    width="30%"
+    width="50%"
     :before-close="handleClose"
     :close-on-click-modal="false"
   >
     <div id="printMe">
       <h1 style="margin-bottom: 15px">账单</h1>
-      <el-form
-        ref="infoRef"
-        :model="infoList"
-        label-width="70px"
-        v-show="infoList.state === 1"
+      <h2 v-if="infoList.state === 0">等待原料运送</h2>
+
+      <el-descriptions
+        class="margin-top"
+        :column="2"
+        border
+        v-if="infoList.state === 1"
       >
-        <el-form-item label="订单号">{{ infoList._id }}</el-form-item>
-        <el-form-item label="原料">{{ infoList.name }}</el-form-item>
-        <el-form-item label="供应商">{{ infoList.supplier }}</el-form-item>
-        <el-form-item label="数量">{{ infoList.quantity }}</el-form-item>
-        <el-form-item label="单价">{{ infoList.price }}</el-form-item>
-        <el-form-item label="总价">{{ infoList.total }}</el-form-item>
-        <el-form-item label="下单人">{{ infoList.operator }}</el-form-item>
-        <el-form-item label="下单时间">{{ infoList.time }}</el-form-item>
-        <el-form-item label="收货信息">
-          安徽省合肥市庐阳区长江中路49号</el-form-item
-        >
-        <el-form-item label="付款账号"> 6228482918445077111</el-form-item>
-        <el-form-item label="收款账号"> {{ supplierInfo.card}}</el-form-item>
-      </el-form>
-      <el-timeline v-show="infoList.state === 0">
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">订单号</div>
+          </template>
+          {{ infoList._id }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">原料</div>
+          </template>
+          {{ infoList.name }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">供应商</div>
+          </template>
+          {{ infoList.supplier }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">数量</div>
+          </template>
+          {{ infoList.quantity }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">单价</div>
+          </template>
+          {{ infoList.price }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">总价</div>
+          </template>
+          {{ infoList.total }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">下单人</div>
+          </template>
+          {{ infoList.operator }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">下单时间</div>
+          </template>
+          {{ infoList.time }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">收货信息</div>
+          </template>
+          安徽省合肥市庐阳区长江中路49号
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">付款账号</div>
+          </template>
+          6228482918445077111
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">收款账号</div>
+          </template>
+          {{ supplierInfo.card }}
+        </el-descriptions-item>
+      </el-descriptions>
+      <el-timeline v-if="infoList.state === 2">
         <el-timeline-item :timestamp="infoList.time">
           下单时间
         </el-timeline-item>
@@ -63,13 +118,15 @@ export default {
     let supplierInfo = ref({});
     function handleClose() {
       infoVisible.value = false;
-      proxy.$refs.infoRef.resetFields();
+      if (proxy.$refs.infoRef) {
+        proxy.$refs.infoRef.resetFields();
+      }
     }
-    
+
     async function openInfo(info) {
       infoVisible.value = true;
       infoList.value = info;
-      if (info.state === 0) {
+      if (info.state === 2) {
         let { data } = await proxy.$http.get("/reject/id", {
           params: { id: info._id },
         });
@@ -77,9 +134,10 @@ export default {
           return proxy.$message.error(data.meta.des);
         questionList.value = data.result;
       }
-         let data1 = await proxy.$http.get("/supplier/name", {
-        params: { name: info.supplier }});
-        supplierInfo.value=data1.data.result;
+      let data1 = await proxy.$http.get("/supplier/name", {
+        params: { name: info.supplier },
+      });
+      supplierInfo.value = data1.data.result;
     }
     onMounted(() => {
       proxy.$bus.on("openInfo", openInfo);

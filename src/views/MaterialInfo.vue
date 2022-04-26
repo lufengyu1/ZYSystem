@@ -2,8 +2,8 @@
   <el-card class="h640">
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>原料管理</el-breadcrumb-item>
-      <el-breadcrumb-item>原料信息</el-breadcrumb-item>
+      <el-breadcrumb-item>入库管理</el-breadcrumb-item>
+      <el-breadcrumb-item>原料入库</el-breadcrumb-item>
     </el-breadcrumb>
     <!-- 搜索区 -->
     <el-row :gutter="20">

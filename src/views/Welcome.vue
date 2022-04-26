@@ -86,10 +86,12 @@ export default {
   setup() {
     const { proxy } = getCurrentInstance();
     const iconObj = ref({
-      100: "iconfont icon-users",
-      200: "iconfont icon-tijikongjian",
-      300: "iconfont icon-danju",
-      400: "iconfont icon-shujutongji",
+      100: "iconfont icon-jichuguanli",
+      200: "iconfont icon-ruku",
+      300: "iconfont icon-chuku",
+      400: "iconfont icon-danju",
+      500: "iconfont icon-shujutongji",
+      600: "iconfont icon-users",
     });
     let menuList = ref([]);
     let person = ref({});
@@ -109,9 +111,6 @@ export default {
         }
         menuList.value = data.result;
         if (person.value.role !== "超级管理员") {
-          // menuList.value = menuList.value.filter((item) => {
-          //   return item.name !== "用户管理";
-          // });
           let arr = [];
           for (let item of menuList.value) {
             let index = 0;
