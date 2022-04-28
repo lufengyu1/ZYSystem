@@ -96,7 +96,8 @@ export default {
     let menuList = ref([]);
     let person = ref({});
     let isCollapse = ref(false);
-    let defaultActive = ref("12");
+    let defaultActive = ref("");
+    let rights = ref([]);
     // 加载菜单
     onMounted(() => {
       proxy.$store.dispatch(
@@ -110,15 +111,17 @@ export default {
           return proxy.$message.error(data.meta.des);
         }
         menuList.value = data.result;
-        if (person.value.role !== "超级管理员") {
-          let arr = [];
-          for (let item of menuList.value) {
-            let index = 0;
-            if (item.name === "用户管理") {
-              item.children = item.children.filter((item1) => {
-                return (item1.name === "部门列表");
-              });
-            }
+        rights.value = JSON.parse(window.sessionStorage.getItem("role"));
+        menuList.value = menuList.value.filter((item) => {
+          return rights.value.includes(item.id);
+        });
+        for (let item of menuList.value) {
+          if (rights.value.includes(item.id)) {
+            item.children = item.children.filter((item1) => {
+              return rights.value.includes(item1.id);
+            });
+          } else {
+            item.children = [];
           }
         }
         defaultActive.value = window.sessionStorage.getItem("activePath");

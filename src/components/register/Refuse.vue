@@ -33,7 +33,14 @@
           </el-select>
         </template>
         <template v-if="registerInfo.operation === 1">
-          <el-input v-model="value"></el-input>
+          <el-select v-model="value" class="m-2" placeholder="Select">
+            <el-option
+              v-for="item in options1"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
         </template>
       </el-form-item>
     </el-form>
@@ -72,6 +79,16 @@ export default {
         label: "仅退款",
       },
     ];
+    const options1 = [
+      {
+        value: "退回仓库",
+        label: "退回仓库",
+      },
+      {
+        value: "处理",
+        label: "处理",
+      },
+    ];
     // 拒绝原料的信息
     function openRefuse(info) {
       refuseVisible.value = true;
@@ -107,9 +124,10 @@ export default {
           action: value.value,
         });
         // 更新isssuance
-        let data3 = await proxy.$http.put("/isssuance/update1", {
+        let data3 = await proxy.$http.put("/isssuance/update", {
           id: registerInfo.value.id,
-          quantity: -registerInfo.value.quantity,
+          quantity: registerInfo.value.quantity,
+          action: value.value,
         });
       }
       // 向reject表插入
@@ -120,9 +138,11 @@ export default {
           action: value.value,
         });
         // 更新bill状态
-        let data4 = await proxy.$http.put("/bill/update", {...registerInfo.value,state:2});
+        let data4 = await proxy.$http.put("/bill/update", {
+          ...registerInfo.value,
+          state: 2,
+        });
       }
-      
 
       proxy.$bus.emit("getRegisterList");
       proxy.$bus.emit("getToDosList");
@@ -137,6 +157,7 @@ export default {
       refuse,
       options,
       value,
+      options1,
     };
   },
 };

@@ -142,7 +142,6 @@ export default {
     let yzmRule = (rule, value, cb) => {
       if (value !== forget.value.password)
         return cb(new Error("两次密码不一致"));
-
       return cb();
     };
     let forgetRules = reactive({
@@ -175,6 +174,8 @@ export default {
         }
         // 登录成功
         loginRole = data.result;
+        getRoleRight();
+
         window.sessionStorage.setItem("token", data.token);
         window.sessionStorage.setItem(
           "loginObj",
@@ -190,6 +191,16 @@ export default {
         proxy.$router.push("/home");
         proxy.$message.success(data.meta.des);
       });
+    }
+    // 获取角色权限
+    async function getRoleRight() {
+      let { data } = await proxy.$http.get("/role/rolename", {
+        params: { name: loginRole.role },
+      });
+      if (data.meta.status !== 200) {
+        return proxy.$message.error(data.meta.des);
+      }
+      window.sessionStorage.setItem("role", JSON.stringify(data.result.right));
     }
     //生成画布
     const verify = ref(null);
@@ -247,9 +258,7 @@ export default {
     //生成画布
     // 重新设置密码
     function newPassword() {
-      console.log(1);
       proxy.$refs.forgetRef.validate(async (valid) => {
-        console.log(2);
         if (!valid) return console.log("err");
         if (forget.value.yzm.toLowerCase() !== yzm.value.toLowerCase()) {
           return proxy.$message.info("验证码错误");
@@ -268,6 +277,7 @@ export default {
         }
       });
     }
+
     return {
       changeFlag,
       classFlag,

@@ -53,8 +53,14 @@ const routes: Array<RouteRecordRaw> = [
       path: '/outbound',
       component: () => import('../views/Outbound.vue')
     }, {
-      path: '/Right',
+      path: '/right',
       component: () => import('../views/Right.vue')
+    },{
+      path: '/instock',
+      component: () => import('../views/Instock.vue')
+    },{
+      path: '/outstock',
+      component: () => import('../views/Outstock.vue')
     }]
   }
 ]
