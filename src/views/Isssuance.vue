@@ -13,12 +13,14 @@
           class="input-with-select"
           v-model="queryInfo.query"
           clearable
+          :disabled="!rights.includes('314')"
           @clear="getIsssuanceList"
         >
           <template #append>
             <el-button
               icon="el-icon-search"
               @click="getIsssuanceList"
+              :disabled="!rights.includes('314')"
             ></el-button>
           </template>
         </el-input>
@@ -44,6 +46,11 @@
         width="220"
         label="入库时间"
       ></el-table-column>
+      <el-table-column
+        prop="des"
+        width="220"
+        label="参数描述"
+      ></el-table-column>
 
       <el-table-column
         prop="quantity"
@@ -58,15 +65,15 @@
         label="可用"
       ></el-table-column>
       <el-table-column prop="todo" width="220" label="待处理"></el-table-column>
-      <el-table-column width="220" label="出库"
+      <el-table-column width="220" label="出库" fixed="right" 
         ><template #default="scope">
           <el-button
             v-if="scope.row.state === 0"
             size="mini"
             type="primary"
-            icon="el-icon-edit"
+            :disabled="!rights.includes('311')"
             @click="openOutDialog(scope.row)"
-          >
+            >原料出库
           </el-button>
           <i v-if="scope.row.state === 1">处理中</i>
         </template></el-table-column
@@ -103,7 +110,8 @@ export default {
       query: "",
     });
     let total = ref(0);
-    let loading=ref(true);
+    let loading = ref(true);
+    let rights = ref([]);
     async function getIsssuanceList() {
       let { data } = await proxy.$http.get("/isssuance/isssuance", {
         params: queryInfo.value,
@@ -111,7 +119,7 @@ export default {
       if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
       isssuanceList.value = data.result.isssuance;
       total.value = data.result.total;
-      loading.value=false;
+      loading.value = false;
     }
     function handleSizeChange() {
       getIsssuanceList();
@@ -124,6 +132,7 @@ export default {
     }
     async function sort() {}
     onMounted(() => {
+      rights.value = JSON.parse(window.sessionStorage.getItem("role"));
       getIsssuanceList();
       proxy.$bus.on("getIsssuanceList", getIsssuanceList);
     });
@@ -137,7 +146,8 @@ export default {
       openOutDialog,
       sort,
       getIsssuanceList,
-      loading
+      loading,
+      rights,
     };
   },
 };

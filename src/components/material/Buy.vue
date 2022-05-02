@@ -9,6 +9,7 @@
     <el-form ref="buyRef" :model="materialInfo" label-width="70px">
       <el-form-item label="原料">{{ materialInfo.name }}</el-form-item>
       <el-form-item label="供应商">{{ materialInfo.supplier }}</el-form-item>
+      <el-form-item label="参数描述">{{ materialInfo.des }}</el-form-item>
       <el-form-item label="价格">{{ materialInfo.price }}元/千克</el-form-item>
       <el-form-item label="数量"
         ><el-input-number v-model="number" :step="10" :min="0"
@@ -55,15 +56,16 @@ export default {
     // 购买成功 向bill 和 register 中添加对应的信息
     async function insert() {
       if (number.value <= 0) return proxy.$message.info("购买数量必须大于0");
-      let x= multiply(materialInfo.value.price, number.value);
+      let x = multiply(materialInfo.value.price, number.value);
       let billInfo = {
         name: materialInfo.value.name,
         supplier: materialInfo.value.supplier,
         PD: materialInfo.value.PD,
         EXP: materialInfo.value.EXP,
         price: materialInfo.value.price,
+        des: materialInfo.value.des,
         quantity: number.value,
-        total:x,
+        total: x,
         status: 0,
         operator: JSON.parse(window.sessionStorage.getItem("loginObj"))
           .username,
@@ -77,6 +79,8 @@ export default {
         name: data.result.name,
         operation: 0,
         quantity: number.value,
+        price: materialInfo.value.price,
+        des: materialInfo.value.des,
         operator: "",
         time: "",
         status: 0,

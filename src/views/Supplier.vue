@@ -13,18 +13,23 @@
           class="input-with-select"
           v-model="queryInfo.query"
           clearable
+          :disabled="!rights.includes('134')"
           @clear="getSupplierList"
         >
           <template #append>
             <el-button
               icon="el-icon-search"
               @click="getSupplierList"
+              :disabled="!rights.includes('134')"
             ></el-button>
           </template>
         </el-input>
       </el-col>
       <el-col :span="4">
-        <el-button type="primary" @click="openAddSupplierDialog"
+        <el-button
+          type="primary"
+          @click="openAddSupplierDialog"
+          :disabled="!rights.includes('131')"
           >添加供应商</el-button
         >
       </el-col>
@@ -38,37 +43,12 @@
     >
       <el-table-column type="expand">
         <template #default="scope">
-          <el-row :gutter="20">
-            <el-col :span="6"
-              ><el-input
-                v-model="addInfo.name"
-                placeholder="请输入原料"
-                size="small"
-                class="w-50 m-2"
-              >
-                <template #prepend>原料</template>
-              </el-input></el-col
-            >
-            <el-col :span="6"
-              ><el-input
-                v-model="addInfo.price"
-                placeholder="请输入价格"
-                size="small"
-                class="w-50 m-2"
-              >
-                <template #prepend>价格</template>
-              </el-input></el-col
-            >
-            <el-col :span="8">
-              <el-button
-                type="success"
-                size="mini"
-                @click="addMaterial(scope.row)"
-                >添加原料</el-button
-              ></el-col
-            >
-          </el-row>
-
+          <el-button
+            size="mini"
+            type="primary"
+            @click="openAddMaterialDialog(scope.row)"
+            >添加原料</el-button
+          >
           <el-table
             :data="scope.row.children"
             v-if="scope.row.children.length"
@@ -76,13 +56,14 @@
           >
             <el-table-column prop="name" label="原料" width="180" />
             <el-table-column prop="price" label="价格" width="180" />
+            <el-table-column prop="des" label="参数描述" width="180" />
             <el-table-column label="操作">
               <template #default="scope">
                 <el-button
                   type="primary"
                   size="mini"
                   @click="openEditPriceDialog(scope.row)"
-                  >修改价格</el-button
+                  >修改信息</el-button
                 >
                 <el-button
                   type="danger"
@@ -120,9 +101,14 @@
             type="primary"
             size="mini"
             @click="openEditSupplierDialog(scope.row)"
+            :disabled="!rights.includes('133')"
             >编辑</el-button
           >
-          <el-button type="danger" size="mini" @click="del(scope.row)"
+          <el-button
+            type="danger"
+            size="mini"
+            @click="del(scope.row)"
+            :disabled="!rights.includes('132')"
             >删除</el-button
           >
         </template>
@@ -142,6 +128,7 @@
   <AddSupplier></AddSupplier>
   <EditSupplier></EditSupplier>
   <EditPrice></EditPrice>
+  <AddMaterial></AddMaterial>
 </template>
 
 <script>
@@ -149,12 +136,14 @@ import { ref, getCurrentInstance, onMounted } from "vue";
 import AddSupplier from "../components/supplier/AddSupplier.vue";
 import EditSupplier from "../components/supplier/EditSupplier.vue";
 import EditPrice from "../components/supplier/EditPrice.vue";
+import AddMaterial from "../components/supplier/AddMaterial.vue";
 export default {
   name: "Supplier",
   components: {
     AddSupplier,
     EditSupplier,
     EditPrice,
+    AddMaterial,
   },
   setup() {
     const { proxy } = getCurrentInstance();
@@ -166,6 +155,7 @@ export default {
     });
     let total = ref(0);
     let loading = ref(true);
+    let rights = ref([]);
     // 添加的原料信息
     let addInfo = ref({
       name: "",
@@ -192,19 +182,9 @@ export default {
     function openAddSupplierDialog() {
       proxy.$bus.emit("openAddSupplier");
     }
-    //添加供应商的原料
-    async function addMaterial(info) {
-      addInfo.value.supplier = info.name;
-      let { data } = await proxy.$http.put("/supplier/insertMaterial", {
-        ...info,
-        info: addInfo.value,
-      });
-      if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
-      proxy.$message.success("信息更新成功");
-      info.children = data.result;
-      addInfo.value.name = "";
-      addInfo.value.price = "";
-      addInfo.value.supplier = "";
+    //打开添加原料dialog
+    function openAddMaterialDialog(info) {
+      proxy.$bus.emit("addMaterialDialog", info);
     }
     // 编辑供应商信息
     function openEditSupplierDialog(info) {
@@ -261,6 +241,7 @@ export default {
       }
     }
     onMounted(() => {
+      rights.value = JSON.parse(window.sessionStorage.getItem("role"));
       getSupplierList();
       proxy.$bus.on("getSupplierList", getSupplierList);
     });
@@ -272,13 +253,14 @@ export default {
       handleCurrentChange,
       getSupplierList,
       openAddSupplierDialog,
-      addMaterial,
       addInfo,
       openEditSupplierDialog,
       del,
       openEditPriceDialog,
       delMaterial,
       loading,
+      rights,
+      openAddMaterialDialog,
     };
   },
 };

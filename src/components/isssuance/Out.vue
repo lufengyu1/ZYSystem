@@ -10,6 +10,7 @@
       <el-form-item label="原料">{{ outInfo.name }}</el-form-item>
       <el-form-item label="供应商">{{ outInfo.supplier }}</el-form-item>
       <el-form-item label="总量">{{ outInfo.quantity }}</el-form-item>
+      <el-form-item label="参数描述">{{ outInfo.des }}</el-form-item>
       <el-form-item label="可用">{{ outInfo.userable }}</el-form-item>
       <el-form-item label="数量">
         <el-input-number
@@ -52,6 +53,7 @@ export default {
         operator: "",
         time: "",
         status: 0,
+        des: outInfo.value.des,
       };
       // 更新出库列表
       let data1 = await proxy.$http.put("/isssuance/update1", registerInfo);

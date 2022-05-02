@@ -20,6 +20,9 @@
       <el-form-item label="价格" prop="price">
         <el-input v-model="editPriceInfo.price"></el-input>
       </el-form-item>
+      <el-form-item label="描述" prop="des">
+        <el-input v-model="editPriceInfo.des"></el-input>
+      </el-form-item>
     </el-form>
     <template #footer>
       <span class="dialog-footer">

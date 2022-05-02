@@ -14,11 +14,13 @@
           v-model="queryInfo.query"
           clearable
           @clear="getInStockList"
+          :disabled="!rights.includes('324')"
         >
           <template #append>
             <el-button
               icon="el-icon-search"
               @click="getInStockList"
+              :disabled="!rights.includes('324')"
             ></el-button>
           </template>
         </el-input>
@@ -55,7 +57,10 @@
       ></el-table-column>
       <el-table-column label="操作">
         <template #default="scope">
-          <el-button size="mini" @click="openInStockInfoDialog(scope.row)"
+          <el-button
+            size="mini"
+            @click="openInStockInfoDialog(scope.row)"
+            :disabled="!rights.includes('324')"
             >查看详情</el-button
           >
         </template>
@@ -92,6 +97,7 @@ export default {
     });
     let total = ref(0);
     let loading = ref(true);
+    let rights = ref([]);
     async function getInStockList() {
       let { data } = await proxy.$http.get("/register/inout", {
         params: queryInfo.value,
@@ -111,6 +117,7 @@ export default {
       proxy.$bus.emit("openRegisterInfo", info);
     }
     onMounted(() => {
+      rights.value = JSON.parse(window.sessionStorage.getItem("role"));
       getInStockList();
     });
     return {
@@ -122,6 +129,7 @@ export default {
       queryInfo,
       loading,
       total,
+      rights,
     };
   },
 };

@@ -37,7 +37,6 @@ export default {
     }
     async function addDep() {
       let { data } = await proxy.$http.put("/department/insert", addDepInfo);
-      console.log(data);
       if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
       proxy.$message.success("新部门创建成功");
       handleClose();

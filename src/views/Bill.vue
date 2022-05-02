@@ -14,9 +14,14 @@
           v-model="queryInfo.query"
           clearable
           @clear="getBillList"
+          :disabled="!rights.includes('414')"
         >
           <template #append>
-            <el-button icon="el-icon-search" @click="getBillList"></el-button>
+            <el-button
+              icon="el-icon-search"
+              @click="getBillList"
+              :disabled="!rights.includes('414')"
+            ></el-button>
           </template>
         </el-input>
       </el-col>
@@ -69,6 +74,7 @@
               size="mini"
               style="float: right"
               @click="openInfoDialog(scope.row)"
+              :disabled="!rights.includes('414')"
               >查看订单详情</el-button
             ></i
           >
@@ -78,6 +84,7 @@
               size="mini"
               style="float: right"
               @click="openInfoDialog(scope.row)"
+              :disabled="!rights.includes('414')"
               >查看订单详情</el-button
             ></i
           >
@@ -87,6 +94,7 @@
               size="mini"
               style="float: right"
               @click="openInfoDialog(scope.row)"
+              :disabled="!rights.includes('414')"
               >查看订单详情</el-button
             ></i
           >
@@ -123,6 +131,7 @@ export default {
     });
     let total = ref(0);
     let loading = ref(true);
+    let rights = ref([]);
     // 获取账单信息
     async function getBillList() {
       let { data } = await proxy.$http.get("/bill/bill", {
@@ -145,6 +154,7 @@ export default {
       proxy.$bus.emit("openInfo", info);
     }
     onMounted(() => {
+      rights.value = JSON.parse(window.sessionStorage.getItem("role"));
       getBillList();
     });
     return {
@@ -156,6 +166,7 @@ export default {
       getBillList,
       openInfoDialog,
       loading,
+      rights,
     };
   },
 };

@@ -39,6 +39,12 @@
         </el-descriptions-item>
         <el-descriptions-item>
           <template #label>
+            <div class="cell-item">参数描述</div>
+          </template>
+          {{ infoList.des }}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
             <div class="cell-item">制单人</div>
           </template>
           {{ infoList.operator }}

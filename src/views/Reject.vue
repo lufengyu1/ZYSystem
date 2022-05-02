@@ -14,9 +14,14 @@
           v-model="queryInfo.query"
           clearable
           @clear="getRejectList"
+          :disabled="!rights.includes('234')"
         >
           <template #append>
-            <el-button icon="el-icon-search" @click="getRejectList"></el-button>
+            <el-button
+              icon="el-icon-search"
+              @click="getRejectList"
+              :disabled="!rights.includes('234')"
+            ></el-button>
           </template>
         </el-input>
       </el-col>
@@ -51,7 +56,10 @@
       <el-table-column prop="reason" label="问题" width="180"></el-table-column>
       <el-table-column label="操作" width="200" fixed="right">
         <template #default="scope">
-          <el-button size="mini" @click="openRejectInfoDialog(scope.row)"
+          <el-button
+            size="mini"
+            @click="openRejectInfoDialog(scope.row)"
+            :disabled="!rights.includes('234')"
             >查看详情</el-button
           >
         </template>
@@ -87,6 +95,7 @@ export default {
     });
     let total = ref(0);
     let loading = ref(true);
+    let rights = ref([]);
     async function getRejectList() {
       if (
         queryInfo.value.query.trim().length === 0 ||
@@ -104,7 +113,7 @@ export default {
         return proxy.$message.info("订单号错误");
       }
     }
-// 分页
+    // 分页
     function handleSizeChange() {
       getRejectList();
     }
@@ -115,6 +124,7 @@ export default {
       proxy.$bus.emit("openRejectInfo", info);
     }
     onMounted(() => {
+      rights.value = JSON.parse(window.sessionStorage.getItem("role"));
       getRejectList();
     });
     return {
@@ -126,6 +136,7 @@ export default {
       getRejectList,
       openRejectInfoDialog,
       loading,
+      rights,
     };
   },
 };

@@ -14,11 +14,13 @@
           v-model="queryInfo.query"
           clearable
           @clear="getQuestionList"
+          :disabled="!rights.includes('334')"
         >
           <template #append>
             <el-button
               icon="el-icon-search"
               @click="getQuestionList"
+              :disabled="!rights.includes('334')"
             ></el-button>
           </template>
         </el-input>
@@ -54,7 +56,10 @@
       <el-table-column prop="reason" label="问题" width="180"></el-table-column>
       <el-table-column label="操作" width="180" fixed="right">
         <template #default="scope">
-          <el-button size="mini" @click="openQuestionInfoDialog(scope.row)"
+          <el-button
+            size="mini"
+            @click="openQuestionInfoDialog(scope.row)"
+            :disabled="!rights.includes('334')"
             >查看详情</el-button
           >
         </template>
@@ -90,6 +95,7 @@ export default {
     });
     let total = ref(0);
     let loading = ref(true);
+    let rights = ref([]);
     async function getQuestionList() {
       if (
         queryInfo.value.query.trim().length === 0 ||
@@ -118,6 +124,7 @@ export default {
       proxy.$bus.emit("openQuestionInfo", info);
     }
     onMounted(() => {
+      rights.value = JSON.parse(window.sessionStorage.getItem("role"));
       getQuestionList();
     });
     return {
@@ -129,6 +136,7 @@ export default {
       getQuestionList,
       openQuestionInfoDialog,
       loading,
+      rights,
     };
   },
 };

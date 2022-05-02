@@ -14,15 +14,16 @@
           class="input-with-select"
           v-model="queryInfo.query"
           clearable
+           :disabled="!rights.includes('644')"
           @clear="getRightList"
         >
           <template #append>
-            <el-button icon="el-icon-search" @click="getRightList"></el-button>
+            <el-button icon="el-icon-search" @click="getRightList" :disabled="!rights.includes('644')"></el-button>
           </template>
         </el-input>
       </el-col>
       <el-col :span="4">
-        <el-button type="primary" @click="openAddRightDialog"
+        <el-button type="primary" @click="openAddRightDialog" :disabled="!rights.includes('641')"
           >添加权限</el-button
         >
       </el-col>
@@ -74,9 +75,16 @@ export default {
   setup() {
     const { proxy } = getCurrentInstance();
     let rightList = ref([]);
-    let queryInfo = reactive({ query: "", pageNum: 1, pageSize: 5 ,type:'level',num:1});
+    let queryInfo = reactive({
+      query: "",
+      pageNum: 1,
+      pageSize: 5,
+      type: "level",
+      num: 1,
+    });
     let loading = ref(true);
     let total = ref(0);
+    let rights = ref([]);
     async function getRightList() {
       const { data } = await proxy.$http.get("/right", { params: queryInfo });
       if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
@@ -92,6 +100,7 @@ export default {
       getRightList();
     }
     onMounted(() => {
+      rights.value = JSON.parse(window.sessionStorage.getItem("role"));
       getRightList();
     });
     return {
@@ -103,6 +112,7 @@ export default {
       openAddRightDialog,
       handleCurrentChange,
       handleSizeChange,
+      rights,
     };
   },
 };

@@ -76,7 +76,6 @@ export default {
         ...proxy.$refs.treeRef.getCheckedKeys(),
       ];
       roleInfo.value.right = key;
-      console.log(roleInfo.value);
       let { data } = await proxy.$http.put("/role/update", roleInfo.value);
       if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
       proxy.$message.success("更新成功");

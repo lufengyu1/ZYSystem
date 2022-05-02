@@ -1,8 +1,8 @@
-import { ElTree,ElLoading, ElDescriptions, ElDescriptionsItem, ElSelect, ElOption, ElTimeline, ElTimelineItem, ElTag, ElDropdown, ElDropdownItem, ElDropdownMenu, ElInputNumber, ElTabs, ElTabPane, ElBadge, ElMessageBox, ElDialog, ElSwitch, ElPagination, ElTable, ElTableColumn, ElButton, ElForm, ElFormItem, ElInput, ElMessage, ElContainer, ElHeader, ElAside, ElMain, ElMenu, ElSubmenu, ElMenuItem, ElCard, ElBreadcrumb, ElBreadcrumbItem, ElRow, ElCol } from 'element-plus'
+import { ElTree, ElLoading, ElDescriptions, ElDescriptionsItem, ElSelect, ElOption, ElTimeline, ElTimelineItem, ElTag, ElDropdown, ElDropdownItem, ElDropdownMenu, ElInputNumber, ElTabs, ElTabPane, ElBadge, ElMessageBox, ElDialog, ElSwitch, ElPagination, ElTable, ElTableColumn, ElButton, ElForm, ElFormItem, ElInput, ElMessage, ElContainer, ElHeader, ElAside, ElMain, ElMenu, ElSubmenu, ElMenuItem, ElCard, ElBreadcrumb, ElBreadcrumbItem, ElRow, ElCol } from 'element-plus'
 
 export default (app: any) => {
-  app.use(ElButton),
-    app.use(ElForm)
+  app.use(ElButton)
+  app.use(ElForm)
   app.use(ElFormItem)
   app.use(ElInput)
   app.use(ElContainer)

@@ -13,11 +13,13 @@
           class="input-with-select"
           v-model="queryInfo.query"
           clearable
+          :disabled="!rights.includes('224')"
           @clear="getInStockList"
         >
           <template #append>
             <el-button
               icon="el-icon-search"
+              :disabled="!rights.includes('224')"
               @click="getInStockList"
             ></el-button>
           </template>
@@ -55,7 +57,10 @@
       ></el-table-column>
       <el-table-column label="操作">
         <template #default="scope">
-          <el-button size="mini" @click="openInStockInfoDialog(scope.row)"
+          <el-button
+            size="mini"
+            @click="openInStockInfoDialog(scope.row)"
+            :disabled="!rights.includes('224')"
             >查看详情</el-button
           >
         </template>
@@ -80,7 +85,7 @@ import { ref, getCurrentInstance, onMounted, reactive } from "vue";
 import RegisterInfo from "../components/register/RegisterInfo.vue";
 export default {
   name: "Instock",
-  components:{RegisterInfo},
+  components: { RegisterInfo },
   setup() {
     const { proxy } = getCurrentInstance();
     let inStockList = ref([]);
@@ -92,6 +97,7 @@ export default {
     });
     let total = ref(0);
     let loading = ref(true);
+    let rights = ref([]);
     async function getInStockList() {
       let { data } = await proxy.$http.get("/register/inout", {
         params: queryInfo.value,
@@ -108,9 +114,10 @@ export default {
       getInStockList();
     }
     function openInStockInfoDialog(info) {
-      proxy.$bus.emit('openRegisterInfo',info)
+      proxy.$bus.emit("openRegisterInfo", info);
     }
     onMounted(() => {
+      rights.value = JSON.parse(window.sessionStorage.getItem("role"));
       getInStockList();
     });
     return {
@@ -122,6 +129,7 @@ export default {
       queryInfo,
       loading,
       total,
+      rights,
     };
   },
 };

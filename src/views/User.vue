@@ -15,15 +15,23 @@
           class="input-with-select"
           v-model="queryInfo.query"
           clearable
+          :disabled="!rights.includes('614')"
           @clear="getUserList"
         >
           <template #append>
-            <el-button icon="el-icon-search" @click="getUserList"></el-button>
+            <el-button
+              icon="el-icon-search"
+              @click="getUserList"
+              :disabled="!rights.includes('614')"
+            ></el-button>
           </template>
         </el-input>
       </el-col>
       <el-col :span="4">
-        <el-button type="primary" @click="openAddUserDialog"
+        <el-button
+          type="primary"
+          @click="openAddUserDialog"
+          :disabled="!rights.includes('611')"
           >添加用户</el-button
         >
       </el-col>
@@ -63,14 +71,14 @@
             size="mini"
             type="success"
             @click="openDisRoleDialog(scope.row)"
-            :disabled="scope.row.username === 'admin'"
+            :disabled="!rights.includes('613') || scope.row.username === 'admin'"
             >分配角色</el-button
           >
           <el-button
             size="mini"
             type="danger"
             @click="deleteUserById(scope.row)"
-            :disabled="scope.row.username === 'admin'"
+            :disabled="!rights.includes('612') || scope.row.username === 'admin'"
             >删除用户</el-button
           >
         </template>
@@ -111,7 +119,7 @@ export default {
     let queryInfo = ref({ query: "", pageNum: 1, pageSize: 5 });
     let total = ref(0);
     let loading = ref(true);
-    // let loading = ref(true);
+    let rights = ref([]);
     // 获取用户列表
     async function getUserList() {
       const { data } = await proxy.$http.get("/user/users", {
@@ -183,6 +191,7 @@ export default {
       }
     }
     onMounted(() => {
+      rights.value = JSON.parse(window.sessionStorage.getItem("role"));
       getUserList();
     });
     proxy.$bus.on("getUserList", getUserList);
@@ -199,6 +208,7 @@ export default {
       openAddUserDialog,
       openEditUserDialog,
       openDisRoleDialog,
+      rights,
     };
   },
 };

@@ -25,16 +25,13 @@
       <el-table-column prop="phone" label="号码" width="180" />
       <el-table-column prop="department" label="部门" width="100" />
       <el-table-column prop="create" label="创建时间" width="" />
-      <el-table-column
-        label="操作"
-        width="180"
-        v-if="login.role === '超级管理员'"
-      >
+      <el-table-column label="操作" width="180" >
         <template #default="scope">
           <el-button
             type="primary"
             size="mini"
             @click="openDisDepDialog(scope.row)"
+            :disabled="!rights.includes('633')"
             >分配部门</el-button
           >
         </template>
@@ -52,7 +49,12 @@
     >
     </el-pagination>
     <!-- 4 -->
-    <el-button class="addDep" type="primary" @click="openAddDepDialog" v-if="login.role === '超级管理员'">
+    <el-button
+      class="addDep"
+      type="primary"
+      @click="openAddDepDialog"
+      v-if="rights.includes('631')"
+    >
       添加部门</el-button
     >
   </el-card>
@@ -75,6 +77,7 @@ export default {
     let queryInfo = ref({ query: "", pageNum: 1, pageSize: 5 });
     let total = ref(0);
     const login = ref("");
+    let rights = ref([]);
     // 获取部门列表
     async function getDepList() {
       let { data } = await proxy.$http.get("/department");
@@ -109,6 +112,7 @@ export default {
       proxy.$bus.emit("openAddDep");
     }
     onMounted(() => {
+      rights.value = JSON.parse(window.sessionStorage.getItem("role"));
       login.value = JSON.parse(window.sessionStorage.getItem("loginObj"));
       getDepList();
       handleClick();
@@ -127,6 +131,7 @@ export default {
       handleCurrentChange,
       openDisDepDialog,
       openAddDepDialog,
+      rights,
     };
   },
 };

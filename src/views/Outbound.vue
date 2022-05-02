@@ -117,7 +117,6 @@ export default {
           }
         }
       }
-      console.log(yearList);
       years.value = Object.keys(outList);
       let series = [];
       for (let i = 0; i < years.value.length; i++) {

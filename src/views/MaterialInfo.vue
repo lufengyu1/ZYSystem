@@ -12,12 +12,14 @@
           placeholder="请输入原料"
           class="input-with-select"
           v-model="queryInfo.query"
+          :disabled="!rights.includes('214')"
           clearable
         >
           <template #append>
             <el-button
               icon="el-icon-search"
               @click="getMaterialInfoList"
+              :disabled="!rights.includes('214')"
             ></el-button>
           </template>
         </el-input>
@@ -43,15 +45,21 @@
         label="单价(元)"
         width="150"
       ></el-table-column>
+      <el-table-column
+        prop="des"
+        label="参数描述"
+        width="150"
+      ></el-table-column>
 
       <el-table-column label="操作">
         <template #default="scope">
           <el-button
             type="primary"
-            icon="el-icon-edit"
             size="mini"
             @click="openBuyDialog(scope.row)"
-          ></el-button>
+            :disabled="!rights.includes('211')"
+            >购买原料</el-button
+          >
         </template>
       </el-table-column>
     </el-table>
@@ -86,7 +94,8 @@ export default {
       pageNum: 1,
     });
     let total = ref(0);
-    let loading=ref(true)
+    let loading = ref(true);
+    let rights = ref([]);
     // 获取原料信息
     async function getMaterialInfoList() {
       const { data } = await proxy.$http.get("/materialInfo/materialInfo", {
@@ -95,7 +104,8 @@ export default {
       if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
       total.value = data.result.total;
       materialInfoList.value = data.result.materialInfo;
-      loading.value=false;
+
+      loading.value = false;
     }
     function handleSizeChange() {
       getMaterialInfoList();
@@ -108,6 +118,7 @@ export default {
       proxy.$bus.emit("openBuy", info);
     }
     onMounted(() => {
+      rights.value = JSON.parse(window.sessionStorage.getItem("role"));
       getMaterialInfoList();
     });
     return {
@@ -115,6 +126,7 @@ export default {
       queryInfo,
       total,
       loading,
+      rights,
       handleSizeChange,
       handleCurrentChange,
       openBuyDialog,

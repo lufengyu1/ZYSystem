@@ -14,15 +14,23 @@
           class="input-with-select"
           v-model="queryInfo.query"
           clearable
+          :disabled="!rights.includes('624')"
           @clear="getRoleList"
         >
           <template #append>
-            <el-button icon="el-icon-search" @click="getRoleList"></el-button>
+            <el-button
+              icon="el-icon-search"
+              @click="getRoleList"
+              :disabled="!rights.includes('624')"
+            ></el-button>
           </template>
         </el-input>
       </el-col>
       <el-col :span="4">
-        <el-button type="primary" @click="openAddRoleDialog"
+        <el-button
+          type="primary"
+          @click="openAddRoleDialog"
+          :disabled="!rights.includes('621')"
           >添加角色</el-button
         >
       </el-col>
@@ -40,16 +48,25 @@
       <el-table-column width="300" label="描述" prop="des"> </el-table-column>
       <el-table-column width="" label="操作">
         <template #default="scope">
-          <el-button type="primary" size="mini" @click="edit(scope.row)"
+          <el-button
+            type="primary"
+            size="mini"
+            @click="edit(scope.row)"
+            :disabled="!rights.includes('623')"
             >编辑</el-button
           >
-          <el-button type="danger" size="mini" @click="del(scope.row)"
+          <el-button
+            type="danger"
+            size="mini"
+            @click="del(scope.row)"
+            :disabled="!rights.includes('622')"
             >删除</el-button
           >
           <el-button
             type="success"
             size="mini"
             @click="openAddRightsDialog(scope.row)"
+            :disabled="!rights.includes('623')"
             >添加权限</el-button
           ></template
         >
@@ -86,6 +103,7 @@ export default {
     let queryInfo = ref({ query: "", pageNum: 1, pageSize: 5 });
     let total = ref(0);
     let loading = ref(true);
+    let rights = ref([]);
     // 获取角色列表
     async function getRoleList() {
       const { data } = await proxy.$http.get("/role", {
@@ -135,6 +153,7 @@ export default {
       getRoleList();
     }
     onMounted(() => {
+      rights.value = JSON.parse(window.sessionStorage.getItem("role"));
       getRoleList();
       proxy.$bus.on("getRoleList", getRoleList);
     });
@@ -150,6 +169,7 @@ export default {
       openAddRightsDialog,
       total,
       loading,
+      rights,
     };
   },
 };
