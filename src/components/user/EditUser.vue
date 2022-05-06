@@ -16,11 +16,23 @@
       <el-form-item label="用户名">
         <el-input v-model="editUserInfo.username" disabled></el-input>
       </el-form-item>
+      <el-form-item label="姓名">
+        <el-input v-model="editUserInfo.name" disabled></el-input>
+      </el-form-item>
       <el-form-item label="邮箱" prop="email">
         <el-input v-model="editUserInfo.email"></el-input>
       </el-form-item>
       <el-form-item label="电话" prop="phone">
         <el-input v-model="editUserInfo.phone"></el-input>
+      </el-form-item>
+      <el-form-item label="银行卡" prop="card">
+        <el-input v-model="editUserInfo.card"></el-input>
+      </el-form-item>
+      <el-form-item label="身份证" prop="idcard">
+        <el-input v-model="editUserInfo.idcard"></el-input>
+      </el-form-item>
+      <el-form-item label="住址" prop="address">
+        <el-input v-model="editUserInfo.address"></el-input>
       </el-form-item>
     </el-form>
     <template #footer>
@@ -51,6 +63,18 @@ export default {
       if (regPhone.test(value)) return cb();
       cb(new Error("请输入合法的号码"));
     };
+    // 验证银行卡号
+    let checkCard = (rule, value, cb) => {
+      const regCard = /^([1-9]{1})(\d{14}|\d{18})$/;
+      if (regCard.test(value)) return cb();
+      cb(new Error("请输入合法的银行卡号"));
+    };
+    // 验证身份证
+    let checkIdcard = (rule, value, cb) => {
+      const reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+      if (reg.test(value)) return cb();
+      cb(new Error("请输入正确的身份证号"));
+    };
     const { proxy } = getCurrentInstance();
     let editUserVisible = ref(false);
     let editUserInfo = ref({});
@@ -77,6 +101,21 @@ export default {
           trigger: "blur",
         },
       ],
+      card: [
+        { required: true, message: "请输入银行卡号", trigger: "blur" },
+        {
+          validator: checkCard,
+          trigger: "blur",
+        },
+      ],
+      idcard: [
+        { required: true, message: "请输入身份证号", trigger: "blur" },
+        {
+          validator: checkIdcard,
+          trigger: "blur",
+        },
+      ],
+      address:[ { required: true, message: "请输入住址", trigger: "blur" },]
     });
     async function openEditUser(info) {
       let { data } = await proxy.$http.get("/user/userinfo", {

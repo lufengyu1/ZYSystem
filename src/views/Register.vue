@@ -179,7 +179,7 @@
             label="操作时间"
             width="180"
           ></el-table-column>
-          <el-table-column label="操作" >
+          <el-table-column label="操作" fixed="right" width="200">
             <template #default="scope">
               <el-button
                 size="mini"

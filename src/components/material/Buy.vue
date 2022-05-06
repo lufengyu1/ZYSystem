@@ -33,17 +33,33 @@ export default {
     const { proxy } = getCurrentInstance();
     let buyVisible = ref(false);
     let materialInfo = ref({});
+    let enterpriseInfo = ref({});
+    let supplierInfo = ref({});
     let number = ref(0);
     // 获取购买原料的信息
-    function openBuy(info) {
+    async function openBuy(info) {
       buyVisible.value = true;
       materialInfo.value = info;
+      // 获取供应商信息
+      let { data } = await proxy.$http.get("/supplier/name", {
+        params: { name: info.supplier },
+      });
+      if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
+      supplierInfo.value = data.result;
     }
     function handleClose() {
       proxy.$refs.buyRef.resetFields();
       number.value = 0;
       buyVisible.value = false;
     }
+    // 获取公司信息
+    async function getEnterpriseInfo() {
+      let { data } = await proxy.$http.get("/enterprise");
+      if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
+      enterpriseInfo.value = data.result;
+    }
+
+    // 精确乘法
     function multiply(a, b) {
       let getMul = (num) =>
         num.toString().indexOf(".") == -1
@@ -70,6 +86,10 @@ export default {
         operator: JSON.parse(window.sessionStorage.getItem("loginObj"))
           .username,
         time: getCurrentTime(),
+        fkcard: enterpriseInfo.value.card[0],
+        skcard: supplierInfo.value.card,
+        shaddress: enterpriseInfo.value.address[0],
+        fhaddress: supplierInfo.value.address,
       };
       let { data } = await proxy.$http.put("/bill/insert", billInfo);
       if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
@@ -94,6 +114,7 @@ export default {
     }
 
     onMounted(() => {
+      getEnterpriseInfo();
       proxy.$bus.on("openBuy", openBuy);
     });
     return {
@@ -102,6 +123,8 @@ export default {
       materialInfo,
       number,
       insert,
+      enterpriseInfo,
+      supplierInfo,
     };
   },
 };

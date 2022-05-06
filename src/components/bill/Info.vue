@@ -66,21 +66,27 @@
         </el-descriptions-item>
         <el-descriptions-item>
           <template #label>
-            <div class="cell-item">收货信息</div>
+            <div class="cell-item">收货地址</div>
           </template>
-          安徽省合肥市庐阳区长江中路49号
+          {{infoList.shaddress}}
+        </el-descriptions-item>
+        <el-descriptions-item>
+          <template #label>
+            <div class="cell-item">发货地址</div>
+          </template>
+          {{infoList.fhaddress}}
         </el-descriptions-item>
         <el-descriptions-item>
           <template #label>
             <div class="cell-item">付款账号</div>
           </template>
-          6228482918445077111
+          {{infoList.fkcard}}
         </el-descriptions-item>
         <el-descriptions-item>
           <template #label>
             <div class="cell-item">收款账号</div>
           </template>
-          {{ supplierInfo.card }}
+          {{ infoList.skcard }}
         </el-descriptions-item>
       </el-descriptions>
       <el-timeline v-if="infoList.state === 2">
@@ -124,6 +130,7 @@ export default {
     }
 
     async function openInfo(info) {
+      console.log(info);
       infoVisible.value = true;
       infoList.value = info;
       if (info.state === 2) {

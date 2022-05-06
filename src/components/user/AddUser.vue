@@ -12,42 +12,84 @@
       ref="addUserRef"
       label-width="70px"
     >
-      <el-form-item label="用户名" prop="username">
-        <el-input v-model="addUserInfo.username"></el-input>
-      </el-form-item>
-      <el-form-item label="姓名" prop="name">
-        <el-input v-model="addUserInfo.name"></el-input>
-      </el-form-item>
-      <el-form-item label="密码" prop="password">
-        <el-input v-model="addUserInfo.password"></el-input>
-      </el-form-item>
-      <el-form-item label="邮箱" prop="email">
-        <el-input v-model="addUserInfo.email"></el-input>
-      </el-form-item>
-      <el-form-item label="电话" prop="phone">
-        <el-input v-model="addUserInfo.phone"></el-input>
-      </el-form-item>
-      <el-form-item label="分配角色">
-        <el-select v-model="addUserInfo.role" class="m-2" placeholder="Select">
-          <el-option
-            v-for="item in roleList"
-            :key="item.name"
-            :label="item.name"
-            :value="item.name"
-            :disabled="item.name === '超级管理员'"
-          />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="选择部门">
-        <el-select v-model="addUserInfo.department" class="m-2" placeholder="Select">
-          <el-option
-            v-for="item in depList"
-            :key="item.name"
-            :label="item.name"
-            :value="item.name"
-          />
-        </el-select>
-      </el-form-item>
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item label="用户名" prop="username">
+            <el-input v-model="addUserInfo.username"></el-input> </el-form-item
+        ></el-col>
+        <el-col :span="12">
+          <el-form-item label="姓名" prop="name">
+            <el-input v-model="addUserInfo.name"></el-input> </el-form-item
+        ></el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="12"></el-col>
+        <el-col :span="12"></el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="12"
+          ><el-form-item label="密码" prop="password">
+            <el-input v-model="addUserInfo.password"></el-input> </el-form-item
+        ></el-col>
+        <el-col :span="12"
+          ><el-form-item label="邮箱" prop="email">
+            <el-input v-model="addUserInfo.email"></el-input> </el-form-item
+        ></el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="12"
+          ><el-form-item label="电话" prop="phone">
+            <el-input v-model="addUserInfo.phone"></el-input> </el-form-item
+        ></el-col>
+        <el-col :span="12">
+          <el-form-item label="银行卡" prop="card">
+            <el-input v-model="addUserInfo.card"></el-input> </el-form-item
+        ></el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="12"
+          ><el-form-item label="身份证" prop="idcard">
+            <el-input v-model="addUserInfo.idcard"></el-input> </el-form-item
+        ></el-col>
+        <el-col :span="12">
+          <el-form-item label="住址" prop="address">
+            <el-input v-model="addUserInfo.address"></el-input> </el-form-item
+        >
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+        <el-col :span="12"
+          ><el-form-item label="分配角色">
+            <el-select
+              v-model="addUserInfo.role"
+              class="m-2"
+              placeholder="Select"
+            >
+              <el-option
+                v-for="item in roleList"
+                :key="item.name"
+                :label="item.name"
+                :value="item.name"
+                :disabled="item.name === '超级管理员'"
+              />
+            </el-select> </el-form-item
+        ></el-col>
+        <el-col :span="12"
+          ><el-form-item label="选择部门">
+            <el-select
+              v-model="addUserInfo.department"
+              class="m-2"
+              placeholder="Select"
+            >
+              <el-option
+                v-for="item in depList"
+                :key="item.name"
+                :label="item.name"
+                :value="item.name"
+              />
+            </el-select> </el-form-item
+        ></el-col>
+      </el-row>
     </el-form>
     <template #footer>
       <span class="dialog-footer">
@@ -63,7 +105,7 @@ import { ref, getCurrentInstance, onMounted } from "vue";
 export default {
   name: "AddUser",
   setup() {
-    const getTime=require('../../assets/fun/getTime');
+    const getTime = require("../../assets/fun/getTime");
     const { proxy } = getCurrentInstance();
     //  验证邮箱规则
     let checkEmail = (rule, value, cb) => {
@@ -79,6 +121,18 @@ export default {
       if (regPhone.test(value)) return cb();
       cb(new Error("请输入合法的号码"));
     };
+    // 验证银行卡号
+    let checkCard = (rule, value, cb) => {
+      const regCard = /^([1-9]{1})(\d{14}|\d{18})$/;
+      if (regCard.test(value)) return cb();
+      cb(new Error("请输入合法的银行卡号"));
+    };
+    // 验证身份证
+    let checkIdcard = (rule, value, cb) => {
+      const reg = /(^\d{15}$)|(^\d{18}$)|(^\d{17}(\d|X|x)$)/;
+      if (reg.test(value)) return cb();
+      cb(new Error("请输入正确的身份证号"));
+    };
     let addUserVisible = ref(false);
     let addUserInfo = ref({
       username: "panjie",
@@ -90,8 +144,11 @@ export default {
       isLogin: 0,
       create: "",
       department: "开发部",
+      card: "6228482918445077176",
+      idcard: "341125200000000000",
     });
     let addUserRules = {
+      name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
       username: [
         {
           required: true,
@@ -140,6 +197,21 @@ export default {
           trigger: "blur",
         },
       ],
+      card: [
+        { required: true, message: "请输入银行卡号", trigger: "blur" },
+        {
+          validator: checkCard,
+          trigger: "blur",
+        },
+      ],
+      idcard: [
+        { required: true, message: "请输入身份证号", trigger: "blur" },
+        {
+          validator: checkIdcard,
+          trigger: "blur",
+        },
+      ],
+      address:[{required: true, message: "请输入住址", trigger: "blur"}]
     };
     let roleList = ref([]);
     let depList = ref([]);
@@ -154,8 +226,8 @@ export default {
     // 发送添加用户请求
     function addUser() {
       proxy.$refs.addUserRef.validate(async (valid) => {
-        if (!valid) return console.log('err');
-        addUserInfo.value.create=getTime();
+        if (!valid) return console.log("err");
+        addUserInfo.value.create = getTime();
         let { data } = await proxy.$http.put("/user/add", addUserInfo.value);
         if (data.meta.status !== 200) {
           return proxy.$message.error(data.meta.des);

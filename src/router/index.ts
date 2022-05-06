@@ -61,6 +61,9 @@ const routes: Array<RouteRecordRaw> = [
     },{
       path: '/outstock',
       component: () => import('../views/Outstock.vue')
+    },{
+      path: '/enterprise',
+      component: () => import('../views/Enterprise.vue')
     }]
   }
 ]
