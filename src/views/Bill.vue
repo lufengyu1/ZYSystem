@@ -64,7 +64,7 @@
       <el-table-column
         prop="time"
         label="下单时间"
-        width="150"
+        width="180"
       ></el-table-column>
 
       <el-table-column label="状态" fixed="right" width="200">
@@ -73,9 +73,9 @@
             >处理中<el-button
               size="mini"
               style="float: right"
-              @click="openInfoDialog(scope.row)"
-              :disabled="!rights.includes('414')"
-              >查看订单详情</el-button
+              @click="delBill(scope.row)"
+              :disabled="!rights.includes('412')"
+              >取消订单</el-button
             ></i
           >
           <i v-else-if="scope.row.state === 1"
@@ -134,13 +134,21 @@ export default {
     let rights = ref([]);
     // 获取账单信息
     async function getBillList() {
-      let { data } = await proxy.$http.get("/bill/bill", {
-        params: queryInfo.value,
-      });
-      if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
-      billList.value = data.result.billList;
-      total.value = data.result.total;
-      loading.value = false;
+      if (
+        queryInfo.value.query.trim().length === 0 ||
+        queryInfo.value.query.trim().length === 24
+      ) {
+        let { data } = await proxy.$http.get("/bill/bill", {
+          params: queryInfo.value,
+        });
+        if (data.meta.status !== 200)
+          return proxy.$message.error(data.meta.des);
+        billList.value = data.result.billList;
+        total.value = data.result.total;
+        loading.value = false;
+      }else{
+        return proxy.$message.info("订单号错误");
+      }
     }
     // 分页
     function handleSizeChange() {
@@ -152,6 +160,30 @@ export default {
     // 查看账单详情
     function openInfoDialog(info) {
       proxy.$bus.emit("openInfo", info);
+    }
+    // 取消订单
+    async function delBill(info){
+      let confirmResult = await proxy
+        .$confirm(
+          "此操作将永久删除订单:" + info._id + ", 是否继续?",
+          "提示",
+          {
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning",
+          }
+        )
+        .catch((err) => {
+          return err;
+        });
+        if(confirmResult === "confirm"){
+          let {data}=await proxy.$http.delete('/bill/delete',{
+            params:{_id:info._id}
+          })
+          if(data.meta.status!==200) return proxy.$message.error('订单取消失败');
+          proxy.$message.success('订单已经取消');
+          getBillList();
+        }
     }
     onMounted(() => {
       rights.value = JSON.parse(window.sessionStorage.getItem("role"));
@@ -167,6 +199,7 @@ export default {
       openInfoDialog,
       loading,
       rights,
+      delBill
     };
   },
 };

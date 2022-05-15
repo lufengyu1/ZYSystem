@@ -7,6 +7,7 @@
         <span @click="toHome" class="toHome">筑优拌合站原料入库管理系统</span>
       </div>
       <div>
+        <span style="margin-right:20px">{{times}}</span>
         <el-dropdown trigger="click" size="small">
           <el-button type="primary">
             {{ person.username }}<i class="el-icon-arrow-right"></i>
@@ -85,6 +86,7 @@ export default {
   components: { EditInfo, Password },
   setup() {
     const { proxy } = getCurrentInstance();
+    const getCurrentTime = require("../assets/fun/getTime");
     const iconObj = ref({
       100: "iconfont icon-jichuguanli",
       200: "iconfont icon-ruku",
@@ -98,6 +100,7 @@ export default {
     let isCollapse = ref(false);
     let defaultActive = ref("");
     let rights = ref([]);
+    let times = ref("");
     // 加载菜单
     onMounted(() => {
       proxy.$store.dispatch(
@@ -154,8 +157,27 @@ export default {
     function openEditPasswordDialog() {
       proxy.$bus.emit("openEditPassword", person.value);
     }
+    // 获取时间
+    function getTime() {
+      let time = getCurrentTime();
+      let now = new Date();
+      let day = now.getDay();
+      let weeks = new Array(
+        "星期日",
+        "星期一",
+        "星期二",
+        "星期三",
+        "星期四",
+        "星期五",
+        "星期六"
+      );
+      let week = weeks[day];
+      times.value = time + " " + week;
+    }
+    setInterval(getTime, 1000);
     onMounted(() => {
       proxy.$bus.on("logout", logout);
+      getTime();
     });
     return {
       menuList,
@@ -163,6 +185,7 @@ export default {
       defaultActive,
       iconObj,
       person,
+      times,
       saveNavState,
       toggleCollapse,
       logout,

@@ -99,13 +99,20 @@ export default {
     let loading = ref(true);
     let rights = ref([]);
     async function getInStockList() {
-      let { data } = await proxy.$http.get("/register/inout", {
-        params: queryInfo.value,
-      });
-      if (data.meta.status != 200) return proxy.$message.error(data.meta.des);
-      inStockList.value = data.result.list;
-      total.value = data.result.total;
-      loading.value = false;
+      if (
+        queryInfo.value.query.trim().length === 0 ||
+        queryInfo.value.query.trim().length === 24
+      ) {
+        let { data } = await proxy.$http.get("/register/inout", {
+          params: queryInfo.value,
+        });
+        if (data.meta.status != 200) return proxy.$message.error(data.meta.des);
+        inStockList.value = data.result.list;
+        total.value = data.result.total;
+        loading.value = false;
+      }else{
+        return proxy.$message.info("订单号错误");
+      }
     }
     function handleSizeChange() {
       getInStockList();

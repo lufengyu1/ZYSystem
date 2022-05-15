@@ -7,7 +7,7 @@
       <el-breadcrumb-item>权限列表</el-breadcrumb-item>
     </el-breadcrumb>
     <!-- 1 -->
-    <el-row :gutter="20">
+    <!-- <el-row :gutter="20">
       <el-col :span="7">
         <el-input
           placeholder="请输入权限名"
@@ -27,7 +27,7 @@
           >添加权限</el-button
         >
       </el-col>
-    </el-row>
+    </el-row> -->
     <!-- 2 -->
     <el-table
       :data="rightList"

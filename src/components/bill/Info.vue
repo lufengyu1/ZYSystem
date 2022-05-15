@@ -130,7 +130,6 @@ export default {
     }
 
     async function openInfo(info) {
-      console.log(info);
       infoVisible.value = true;
       infoList.value = info;
       if (info.state === 2) {

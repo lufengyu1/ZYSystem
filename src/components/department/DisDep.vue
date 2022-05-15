@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     v-model="disDepVisible"
-    title="分配角色"
+    title="分配小组"
     width="50%"
     :before-close="handleClose"
     :close-on-click-modal="false"
@@ -10,7 +10,7 @@
       <el-form-item label="用户名" prop="username">
         <el-input v-model="disDepInfo.username" disabled></el-input>
       </el-form-item>
-      <el-form-item label="当前部门" prop="department">
+      <el-form-item label="当前小组" prop="department">
         <el-input v-model="disDepInfo.department" disabled></el-input>
       </el-form-item>
       <el-form-item label="分配角色">
@@ -43,7 +43,7 @@ export default {
     let disDepVisible = ref(false);
     let disDepInfo = ref({});
     let depList = ref({});
-    let department = ref("开发部");
+    let department = ref("A组");
     async function openDisDep(info) {
       disDepVisible.value = true;
       disDepInfo.value = info;
@@ -62,9 +62,9 @@ export default {
         department: department.value,
       });
       if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
-      proxy.$message.success("用户部门更新成功");
+      proxy.$message.success("用户小组更新成功");
       handleClose();
-      department.value = "开发部";
+      department.value = "A组";
       proxy.$bus.emit("handleClick");
     }
     onMounted(() => {

@@ -4,7 +4,7 @@
     <el-breadcrumb separator-class="el-icon-arrow-right">
       <el-breadcrumb-item :to="{ path: '/home' }">首页</el-breadcrumb-item>
       <el-breadcrumb-item>人力资源管理</el-breadcrumb-item>
-      <el-breadcrumb-item>部门列表</el-breadcrumb-item>
+      <el-breadcrumb-item>分组列表</el-breadcrumb-item>
     </el-breadcrumb>
     <!-- 1 -->
     <el-tabs v-model="activeName" class="demo-tabs" @tab-click="handleClick">
@@ -32,7 +32,7 @@
             size="mini"
             @click="openDisDepDialog(scope.row)"
             :disabled="!rights.includes('633')"
-            >分配部门</el-button
+            >分配小组</el-button
           >
         </template>
       </el-table-column>

@@ -60,18 +60,26 @@ export default {
     }
 
     // 精确乘法
-    function multiply(a, b) {
-      let getMul = (num) =>
-        num.toString().indexOf(".") == -1
-          ? 0
-          : num.toString().split(".")[1].length;
-      let mathpow = (a) => a * 10 ** getMul(a);
-      return (mathpow(a) * mathpow(b)) / 10 ** (getMul(a) + getMul(b));
+    function multiply(arg1, arg2) {
+      var m = 0,
+        s1 = arg1.toString(),
+        s2 = arg2.toString();
+      try {
+        m += s1.split(".")[1].length;
+      } catch (e) {}
+      try {
+        m += s2.split(".")[1].length;
+      } catch (e) {}
+      return (
+        (Number(s1.replace(".", "")) * Number(s2.replace(".", ""))) /
+        Math.pow(10, m)
+      );
     }
 
     // 购买成功 向bill 和 register 中添加对应的信息
     async function insert() {
-      if (number.value <= 0) return proxy.$message.info("购买数量必须大于0");
+      if (number.value <= 0 || !number.value)
+        return proxy.$message.info("购买数量必须大于0");
       let x = multiply(materialInfo.value.price, number.value);
       let billInfo = {
         name: materialInfo.value.name,

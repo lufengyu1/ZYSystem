@@ -8,6 +8,7 @@
   >
     <el-form
       :model="editPriceInfo"
+      :rules="editMaterialRules"
       ref="editPriceRef"
       label-width="70px"
     >
@@ -18,7 +19,7 @@
         <el-input v-model="editPriceInfo.supplier" disabled></el-input>
       </el-form-item>
       <el-form-item label="价格" prop="price">
-        <el-input v-model="editPriceInfo.price"></el-input>
+        <el-input-number v-model="editPriceInfo.price" :min="0" />
       </el-form-item>
       <el-form-item label="描述" prop="des">
         <el-input v-model="editPriceInfo.des"></el-input>
@@ -41,6 +42,16 @@ export default {
     const { proxy } = getCurrentInstance();
     let editPriceVisible = ref(false);
     let editPriceInfo = ref({});
+    const checkPrice = (rule, value, cb) => {
+      if (value <= 0) return cb(new Error("数量不能为0"));
+      return cb();
+    };
+    let editMaterialRules = ref({
+      name: [{ required: true, message: "请输入供应商名", trigger: "blur" }],
+      price: [{ required: true, message: "请输入供应商名", trigger: "blur" }],
+      des: [{ required: true, message: "请输入供应商名", trigger: "blur" }],
+      price: [{ validator: checkPrice, trigger: "blur" }],
+    });
     function handleClose() {
       proxy.$refs.editPriceRef.resetFields();
       editPriceVisible.value = false;
@@ -50,11 +61,15 @@ export default {
       editPriceInfo.value = info;
     }
     async function editPrice() {
-        let {data} = await proxy.$http.put('/supplier/updateMaterial',editPriceInfo.value);
-        if(data.meta.status!==200) return proxy.$message.error(data.meta.des);
-        proxy.$message.success("原料信息修改成功");
-        proxy.$bus.emit('getSupplierList');
-        editPriceVisible.value = false;
+      if(!editPriceInfo.value.price||editPriceInfo.value.price<=0) return proxy.$message.info('请设置合理的价格');
+      let { data } = await proxy.$http.put(
+        "/supplier/updateMaterial",
+        editPriceInfo.value
+      );
+      if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
+      proxy.$message.success("原料信息修改成功");
+      proxy.$bus.emit("getSupplierList");
+      editPriceVisible.value = false;
     }
     onMounted(() => {
       proxy.$bus.on("openEditPrice", openEditPrice);
@@ -65,6 +80,7 @@ export default {
       editPrice,
       editPriceVisible,
       editPriceInfo,
+      editMaterialRules,
     };
   },
 };

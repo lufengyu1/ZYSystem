@@ -1,13 +1,13 @@
 <template>
   <el-dialog
     v-model="addDepVisible"
-    title="添加部门"
+    title="添加小组"
     width="50%"
     :before-close="handleClose"
     :close-on-click-modal="false"
   >
     <el-form :model="addDepInfo" ref="addDepRef" label-width="70px">
-      <el-form-item label="部门名" prop="name">
+      <el-form-item label="小组名" prop="name">
         <el-input v-model="addDepInfo.name"></el-input>
       </el-form-item>
     </el-form>
@@ -38,7 +38,7 @@ export default {
     async function addDep() {
       let { data } = await proxy.$http.put("/department/insert", addDepInfo);
       if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
-      proxy.$message.success("新部门创建成功");
+      proxy.$message.success("新小组创建成功");
       handleClose();
       proxy.$bus.emit("getDepList");
     }

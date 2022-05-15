@@ -64,7 +64,7 @@
       <!-- 登录框 -->
       <div class="container_form container--signin">
         <div class="form" id="form2">
-          <h2 class="form_title1">欢迎登录</h2>
+          <h3 class="form_title1">筑优拌合站原料入库管理系统</h3>
           <el-form
             class="login_form"
             ref="loginRef"
@@ -132,7 +132,7 @@ export default {
     let loginRules = {
       username: [
         { required: true, message: "请输入用户名", trigger: "blur" },
-        { min: 3, max: 12, message: "长度在 3 到 12 个字符", trigger: "blur" },
+        { min: 3, max: 18, message: "长度在 3 到 18 个字符", trigger: "blur" },
       ],
       password: [
         { required: true, message: "请输入密码", trigger: "blur" },
@@ -177,6 +177,8 @@ export default {
         getRoleRight();
 
         window.sessionStorage.setItem("token", data.token);
+        window.sessionStorage.setItem("activePath", "/home");
+
         window.sessionStorage.setItem(
           "loginObj",
           JSON.stringify({

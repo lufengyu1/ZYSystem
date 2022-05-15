@@ -34,7 +34,7 @@
               ><ul>
                 <li v-for="item in toDoList" :key="item._id">
                   原料：{{ item.name }},<i v-if="item.operation === 0">入库</i
-                  ><i v-else>入库</i>待处理
+                  ><i v-else>出库</i>待处理
                 </li>
               </ul></template
             >

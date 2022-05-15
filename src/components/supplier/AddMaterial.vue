@@ -19,7 +19,7 @@
         <el-input v-model="addMaterialInfo.name"></el-input>
       </el-form-item>
       <el-form-item label="价格" prop="price">
-        <el-input-number v-model="addMaterialInfo.price" />
+        <el-input-number v-model="addMaterialInfo.price" :min="0" />
       </el-form-item>
       <el-form-item label="描述" prop="des">
         <el-input v-model="addMaterialInfo.des"></el-input>
@@ -48,10 +48,16 @@ export default {
       des: "",
       supplier: "",
     });
+    const checkPrice = (rule, value, cb) => {
+      if (value <= 0) return cb(new Error("数量不能为0"));
+      return cb();
+    };
     let addMaterialRules = ref({
-      name: [{ required: true, message: "请输入供应商名", trigger: "blur" }],
-      price: [{ required: true, message: "请输入供应商名", trigger: "blur" }],
-      des: [{ required: true, message: "请输入供应商名", trigger: "blur" }],
+      name: [{ required: true, message: "请输入原料名", trigger: "blur" }],
+      price: [{ required: true, message: "请输入价格", trigger: "blur" }],
+      des: [{ required: true, message: "请输入原料参数", trigger: "blur" }],
+      price: [{ validator: checkPrice,trigger: "blur",}]
+
     });
     function handleClose() {
       proxy.$refs.addMaterialRef.resetFields();

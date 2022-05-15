@@ -1,7 +1,7 @@
 <template>
   <el-dialog
     v-model="refuseVisible"
-    title="拒收原因"
+    title="拒绝原因"
     width="50%"
     :before-close="handleClose"
     :close-on-click-modal="false"

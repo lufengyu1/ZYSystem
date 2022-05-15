@@ -13,14 +13,14 @@
           class="input-with-select"
           v-model="queryInfo.query"
           clearable
-          :disabled="!rights.includes('134')"
+          v-show="rights.includes('134')"
           @clear="getSupplierList"
         >
           <template #append>
             <el-button
               icon="el-icon-search"
               @click="getSupplierList"
-              :disabled="!rights.includes('134')"
+               v-show="rights.includes('134')"
             ></el-button>
           </template>
         </el-input>
@@ -29,7 +29,7 @@
         <el-button
           type="primary"
           @click="openAddSupplierDialog"
-          :disabled="!rights.includes('131')"
+          v-show="rights.includes('131')"
           >添加供应商</el-button
         >
       </el-col>

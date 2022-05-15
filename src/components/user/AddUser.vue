@@ -75,7 +75,7 @@
             </el-select> </el-form-item
         ></el-col>
         <el-col :span="12"
-          ><el-form-item label="选择部门">
+          ><el-form-item label="分配小组">
             <el-select
               v-model="addUserInfo.department"
               class="m-2"
@@ -143,7 +143,7 @@ export default {
       state: true,
       isLogin: 0,
       create: "",
-      department: "开发部",
+      department: "A组",
       card: "6228482918445077176",
       idcard: "341125200000000000",
     });
