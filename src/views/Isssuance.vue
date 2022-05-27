@@ -56,8 +56,6 @@
         prop="quantity"
         width="150"
         label="数量"
-        sortable="custom"
-        :sort-orders="['ascending', 'descending']"
       ></el-table-column>
       <el-table-column
         prop="userable"

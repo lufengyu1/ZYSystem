@@ -2,7 +2,7 @@
   <el-dialog
     v-model="limitVisible"
     title="设置原料下限"
-    width="50%"
+    width="30%"
     :before-close="handleClose"
     :close-on-click-modal="false"
   >

@@ -23,7 +23,7 @@
       </el-form-item>
       <el-form-item label="原料处理">
         <template v-if="registerInfo.operation === 0">
-          <el-select v-model="value" class="m-2" placeholder="Select">
+          <el-select v-model="value" class="m-2" placeholder="选择处理方式">
             <el-option
               v-for="item in options"
               :key="item.value"
@@ -33,7 +33,7 @@
           </el-select>
         </template>
         <template v-if="registerInfo.operation === 1">
-          <el-select v-model="value" class="m-2" placeholder="Select">
+          <el-select v-model="value" class="m-2" placeholder="选择处理方式">
             <el-option
               v-for="item in options1"
               :key="item.value"

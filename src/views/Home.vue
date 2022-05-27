@@ -85,7 +85,7 @@ export default {
         tooltip: {
           trigger: "axis",
           axisPointer: {
-            type: "cross",
+            type: "cross", //鼠标放上去有竖线
             crossStyle: { color: "#999" },
           },
         },

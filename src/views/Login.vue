@@ -76,6 +76,7 @@
               <el-input
                 prefix-icon="iconfont icon-denglu"
                 v-model="loginInfo.username"
+                placeholder="输入用户名"
                 clearable
               ></el-input>
             </el-form-item>
@@ -84,6 +85,7 @@
                 prefix-icon="iconfont icon-mimadenglu"
                 type="password"
                 show-password
+                placeholder="输入密码"
                 v-model="loginInfo.password"
                 clearable
               ></el-input>
@@ -117,13 +119,13 @@ export default {
   setup() {
     const { proxy } = getCurrentInstance();
     let loginInfo = reactive({
-      username: "admin",
-      password: "123456",
+      username: "",
+      password: "",
     });
     let forget = ref({
-      username: "admin1",
-      password: "123456",
-      confirmPassword: "123456",
+      username: "",
+      password: "",
+      confirmPassword: "",
       yzm: "",
     });
     let classFlag = ref(false);
@@ -167,6 +169,7 @@ export default {
     }
     // 登录
     function login() {
+      if(loginInfo.username.trim().length===0||loginInfo.password.trim().length===0) return proxy.$message.info('用户名或密码不能为空！');
       proxy.$http.post("/user/login", loginInfo).then((res) => {
         let { data } = res;
         if (data.meta.status !== 200) {
@@ -261,7 +264,7 @@ export default {
     // 重新设置密码
     function newPassword() {
       proxy.$refs.forgetRef.validate(async (valid) => {
-        if (!valid) return console.log("err");
+        if (!valid) {  return console.log("err");}
         if (forget.value.yzm.toLowerCase() !== yzm.value.toLowerCase()) {
           return proxy.$message.info("验证码错误");
         } else {

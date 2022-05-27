@@ -14,6 +14,7 @@
           v-model="queryInfo.query"
           :disabled="!rights.includes('214')"
           clearable
+          @clear="getMaterialInfoList"
         >
           <template #append>
             <el-button

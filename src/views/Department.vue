@@ -25,7 +25,7 @@
       <el-table-column prop="phone" label="号码" width="180" />
       <el-table-column prop="department" label="部门" width="100" />
       <el-table-column prop="create" label="创建时间" width="" />
-      <el-table-column label="操作" width="180" >
+      <el-table-column label="操作" width="180" v-if="rights.includes('633')">
         <template #default="scope">
           <el-button
             type="primary"
@@ -50,10 +50,10 @@
     </el-pagination>
     <!-- 4 -->
     <el-button
+      v-if="false"
       class="addDep"
       type="primary"
       @click="openAddDepDialog"
-      v-if="rights.includes('631')"
     >
       添加部门</el-button
     >

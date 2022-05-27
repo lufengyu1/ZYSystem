@@ -79,13 +79,13 @@ export default {
     ]);
     let addSupplierVisible = ref(false);
     let addSupplierInfo = ref({
-      name: "供应商",
-      des: "123",
+      name: "",
+      des: "",
       CD: "",
-      phone: "13888888888",
-      address: "安徽",
+      phone: "",
+      address: "",
       children: [],
-      card: "6228482918445077176",
+      card: "",
       bank: "",
     });
     let addSupplierRules = ref({

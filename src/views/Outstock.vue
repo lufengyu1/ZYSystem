@@ -9,7 +9,7 @@
     <el-row :gutter="20">
       <el-col :span="7">
         <el-input
-          placeholder="请输入原料"
+          placeholder="请输入订单号"
           class="input-with-select"
           v-model="queryInfo.query"
           clearable

@@ -135,17 +135,17 @@ export default {
     };
     let addUserVisible = ref(false);
     let addUserInfo = ref({
-      username: "panjie",
-      password: "123456",
-      email: "123@qq.com",
-      phone: "13888888888",
+      username: "",
+      password: "",
+      email: "",
+      phone: "",
       role: "普通成员",
       state: true,
       isLogin: 0,
       create: "",
       department: "A组",
-      card: "6228482918445077176",
-      idcard: "341125200000000000",
+      card: "",
+      idcard: "",
     });
     let addUserRules = {
       name: [{ required: true, message: "请输入姓名", trigger: "blur" }],

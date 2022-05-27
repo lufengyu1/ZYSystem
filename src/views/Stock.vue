@@ -10,7 +10,7 @@
       <el-table-column prop="name" label="原料" width="180"></el-table-column>
       <el-table-column
         prop="quantity"
-        label="库存"
+        label="库存(kg)"
         width="150"
       ></el-table-column>
       <el-table-column prop="limit" label="下限" width="150"></el-table-column>

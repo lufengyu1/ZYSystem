@@ -101,7 +101,6 @@ export default {
       };
       let { data } = await proxy.$http.put("/bill/insert", billInfo);
       if (data.meta.status !== 200) return proxy.$message.error(data.meta.des);
-      proxy.$message.success(data.meta.des);
       let registerInfo = {
         id: data.result._id,
         name: data.result.name,
@@ -116,7 +115,7 @@ export default {
       let data1 = await proxy.$http.put("/register/insert", registerInfo);
       if (data1.data.meta.status !== 200)
         return proxy.$message.error(data1.data.meta.des);
-      proxy.$message.success(data1.data.meta.des);
+      proxy.$message.success('账单已创建');
       number.value = 0;
       buyVisible.value = false;
     }
