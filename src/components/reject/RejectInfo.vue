@@ -7,7 +7,7 @@
     :close-on-click-modal="false"
   >
     <div id="printMe">
-      <el-descriptions class="margin-top" :column="2" title="问题账单" border>
+      <el-descriptions class="margin-top" :column="2" title="问题入库单" border>
         <el-descriptions-item>
           <template #label>
             <div class="cell-item">订单号</div>

@@ -85,8 +85,8 @@ export default {
         label: "退回仓库",
       },
       {
-        value: "处理",
-        label: "处理",
+        value: "仓库处理",
+        label: "仓库处理",
       },
     ];
     // 拒绝原料的信息

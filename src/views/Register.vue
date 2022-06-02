@@ -90,22 +90,23 @@
               >
               <i v-if="scope.row.status === 1"
                 >已入库
-                <el-button
+                <!-- <el-button
                   size="mini"
                   @click="openRegisterInfoDialog(scope.row)"
                   style="float: right"
                 >
                   查看详情</el-button
-                ></i
+                >--></i 
               >
               <i v-if="scope.row.status === 2"
                 >已拒收
-                <el-button
+                <!-- <el-button
                   size="mini"
                   @click="openRegisterInfoDialog(scope.row)"
                   style="float: right"
                   >查看详情</el-button
-                ></i
+                > -->
+                </i
               >
             </template>
           </el-table-column>

@@ -55,12 +55,12 @@ export default {
       doneList.value = data.result;
       // 数据处理
       for (let item of doneList.value) {
-        let y = item.time.split("-")[0];
-        let m = item.time.split("-")[1];
-        let flag1 = false;
-        let flag2 = false;
-        if (!(y in outList)) outList[y] = [];
         if (item.operation === 1) {
+          let y = item.time.split("-")[0];
+          let m = item.time.split("-")[1];
+          let flag1 = false;
+          let flag2 = false;
+          if (!(y in outList)) outList[y] = [];
           // a判断是入库还是出库
           if (outList[y].length === 0) {
             // outList表为空时,直接插入

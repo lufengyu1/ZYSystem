@@ -16,7 +16,7 @@
         border
         v-if="infoList.state === 1"
       >
-        <el-descriptions-item>
+        <el-descriptions-item >
           <template #label>
             <div class="cell-item">订单号</div>
           </template>

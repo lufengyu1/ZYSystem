@@ -2,6 +2,14 @@ import { createRouter, createWebHashHistory, RouteRecordRaw } from 'vue-router'
 
 const routes: Array<RouteRecordRaw> = [
   {
+    path: '/404',
+    component: () => import('../views/NotFound.vue')
+  },
+  {
+    path: '/:pathMatch(.*)',
+    redirect: '/404'
+  },
+  {
     path: '/',
     component: () => import('../views/Login.vue')
   }, {
